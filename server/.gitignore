@@ -11,6 +11,7 @@
 *.dll
 *.so
 *.dylib
+.env
 
 # Test binary, built with `go test -c`
 *.test
@@ -23,11 +24,5 @@
 
 # Go workspace file
 go.work
-
-# Environment
-*.env
-*.env.example
-*.env.local
-*.env.staging
 
 # End of https://www.toptal.com/developers/gitignore/api/go
