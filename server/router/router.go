@@ -1,0 +1,21 @@
+package router
+
+import (
+	"github.com/IMarcellinus/blog/server/controller"
+	"github.com/gofiber/fiber/v2"
+)
+
+func SetupRoutes(app *fiber.App) {
+
+	// list => get
+	// add => post
+	// update => put
+	// delete => delete
+
+	app.Get("/", controller.WelcomeBlog)
+	app.Get("/", controller.BlogList)
+	app.Get("/api/blog", controller.BlogList)
+	app.Post("/api/blog", controller.BlogCreate)
+	app.Put("/api/blog", controller.BlogUpdate)
+	app.Delete("/api/blog", controller.BlogDelete)
+}

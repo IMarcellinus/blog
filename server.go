@@ -1,11 +1,21 @@
 package main
 
 import (
+	"log"
+
 	"github.com/IMarcellinus/blog/server/database"
+	"github.com/IMarcellinus/blog/server/router"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/joho/godotenv"
 )
 
 func init() {
+
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal("Error in loading .env file.")
+	}
+
 	database.ConnectDB()
 }
 
@@ -21,11 +31,9 @@ func main() {
 
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
+	app.Use(logger.New())
 
-		return c.JSON(fiber.Map{"message": "Welcome to my CRUD Blog Ignacy"})
-
-	})
+	router.SetupRoutes(app)
 
 	app.Listen(":8080")
 }
