@@ -1,3 +1,5 @@
+// blog.go (model)
+
 package model
 
 type Blog struct {

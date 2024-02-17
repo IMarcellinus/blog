@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/IMarcellinus/blog/server/controller"
+	"github.com/IMarcellinus/blog/controller"
 	"github.com/gofiber/fiber/v2"
 )
 

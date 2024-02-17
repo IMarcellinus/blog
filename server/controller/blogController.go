@@ -1,10 +1,12 @@
+// blogController.go
+
 package controller
 
 import (
 	"log"
 
-	"github.com/IMarcellinus/blog/server/database"
-	"github.com/IMarcellinus/blog/server/model"
+	"github.com/IMarcellinus/blog/database"
+	"github.com/IMarcellinus/blog/model"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -1,10 +1,12 @@
+// server.go
+
 package main
 
 import (
 	"log"
 
-	"github.com/IMarcellinus/blog/server/database"
-	"github.com/IMarcellinus/blog/server/router"
+	"github.com/IMarcellinus/blog/database"
+	"github.com/IMarcellinus/blog/router"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
