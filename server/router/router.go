@@ -18,5 +18,5 @@ func SetupRoutes(app *fiber.App) {
 	app.Get("/api/blog", controller.BlogList)
 	app.Post("/api/blog", controller.BlogCreate)
 	app.Put("/api/blog/:id", controller.BlogUpdate)
-	app.Delete("/api/blog", controller.BlogDelete)
+	app.Delete("/api/blog/:id", controller.BlogDelete)
 }
