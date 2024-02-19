@@ -48,11 +48,11 @@ func BlogListById(c *fiber.Ctx) error {
 
 	var record model.Blog
 
-	database.DBConn.Find(&record, id)
+	database.DBConn.First(&record, id)
 
 	context := fiber.Map{
 		"statusText": "Ok",
-		"msg":        "Success Get List By Id",
+		"msg":        "Blog Detail",
 	}
 
 	if record.ID == 0 {
