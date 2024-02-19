@@ -4,6 +4,7 @@ package controller
 
 import (
 	"log"
+	"time"
 
 	"github.com/IMarcellinus/blog/database"
 	"github.com/IMarcellinus/blog/model"
@@ -22,6 +23,8 @@ func WelcomeBlog(c *fiber.Ctx) error {
 }
 
 func BlogList(c *fiber.Ctx) error {
+
+	time.Sleep(time.Millisecond * 500)
 
 	db := database.DBConn
 
