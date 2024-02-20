@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import CustomButton from "../components/CustomButton";
+import Header from "../layout/Header";
 
 function Home() {
   const [apiDatas, setApiDatas] = useState(false);
@@ -53,11 +55,18 @@ function Home() {
   }
 
   return (
-    <div className="bg-red-200 mx-auto max-w-[1440px] flex flex-col items-center justify-center">
-      <h1 className="text-lg font-bold underline">Hello world!</h1>
-      <div className="bg-blue-300 w-9/12 overflow-x-auto">
-        <table className="relative w-full bg-neutral-300 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <caption>Table Blog List</caption>
+    <div className="mx-auto flex bg-red-300 flex-col">
+      <Header />
+      <div className="overflow-x-auto">
+        <Link to="/add">
+          <CustomButton
+            title="Add New"
+            btnStyles="text-black bg-blue-300 rounded-lg py-4"
+            btnType="button"
+          />
+        </Link>
+        <table className="bg-blue-300 relative w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <caption className="text-2xl">Table Blog List</caption>
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th className="px-6 py-3">Id</th>
@@ -83,9 +92,11 @@ function Home() {
               ))}
           </tbody>
         </table>
+
       </div>
     </div>
   );
 }
+
 
 export default Home;
