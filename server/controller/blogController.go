@@ -129,7 +129,7 @@ func BlogUpdate(c *fiber.Ctx) error {
 		log.Println("Error in parsing request.")
 	}
 
-	result := database.DBConn.Save(record)
+	result := database.DBConn.Save(&record)
 
 	if result.Error != nil {
 		log.Println("Error in update data.")

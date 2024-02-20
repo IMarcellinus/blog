@@ -1,30 +1,68 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { PiWarningDiamondThin } from "react-icons/pi";
+import { Link, useNavigate } from "react-router-dom";
 import CustomButton from "../components/CustomButton";
+import Modal from "../components/Modal";
 import Header from "../layout/Header";
 
 function Home() {
   const [apiDatas, setApiDatas] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+  const [deleteId, setDeleteId] = useState("");
+  const navigate = useNavigate();
+
+  const handleDeleteButtonClick = (id) => {
+    setDeleteId(id);
+    setOpenModal(true);
+    // Tambahkan logika lain yang perlu dijalankan ketika tombol delete ditekan
+  };
+
+  const handleConfirmDelete = (id) => {
+    // Implementasi logika penghapusan di sini
+    handleDelete(id);
+    setOpenModal(false);
+  };
+
+  const handleCancelDelete = () => {
+    setOpenModal(false);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const apiUrl = `${import.meta.env.VITE_DEV_URL}/${id}`;
+      const response = await axios.delete(apiUrl);
+
+      if (response.status === 200) {
+        console.log("Blog List Deleted");
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_DEV_URL;
+      const response = await axios.get(apiUrl);
+      if (response.status === 200) {
+        if (response?.data.statusText === "Ok") {
+          setApiDatas(response?.data?.blog);
+        }
+      } else {
+        console.log("Error bro!");
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const apiUrl = import.meta.env.VITE_DEV_URL;
-        const response = await axios.get(apiUrl);
-        if (response.status === 200) {
-          if (response?.data.statusText === "Ok") {
-            setApiDatas(response?.data?.blog);
-          }
-        } else {
-          console.log("Error bro!");
-        }
-        setLoading(false);
-      } catch (error) {
-        console.log(error.response);
-      }
-    };
     fetchData();
   }, []);
 
@@ -55,7 +93,7 @@ function Home() {
   }
 
   return (
-    <div className="mx-auto flex bg-red-300 flex-col">
+    <div className="mx-auto flex bg-red-300 flex-col ">
       <Header />
       <div className="overflow-x-auto">
         <Link to="/add">
@@ -72,9 +110,10 @@ function Home() {
               <th className="px-6 py-3">Id</th>
               <th className="px-6 py-3">Title</th>
               <th className="px-6 py-3">Post</th>
+              <th className="px-6 py-3">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="overflow-x-auto relative">
             {apiDatas &&
               apiDatas.map((apiData, index) => (
                 <tr
@@ -88,15 +127,44 @@ function Home() {
                     <Link to={`blog/${apiData.id}`}>{apiData.title}</Link>
                   </th>
                   <th className="px-6 py-3">{apiData.post}</th>
+                  <th className="px-6 py-3 flex gap-4">
+                    <Link to={`edit/${apiData.id}`}>
+                      <FaRegEdit className="h-6 w-6" />
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteButtonClick(apiData.id)}
+                    >
+                      <MdDelete className="h-6 w-6" />
+                    </button>
+                    <Modal open={openModal} onClose={() => setOpenModal(false)}>
+                      <div className="p-4 bg-white rounded-md flex flex-col items-center">
+                        <PiWarningDiamondThin className="h-16 w-16" />
+                        <p>Are you sure you want to delete this item?</p>
+                        <div className="flex mt-4">
+                          <button
+                            onClick={() => handleConfirmDelete(apiData.id)}
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 mr-2 rounded"
+                          >
+                            Delete
+                          </button>
+                          <button
+                            onClick={handleCancelDelete}
+                            className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </Modal>
+                  </th>
                 </tr>
               ))}
           </tbody>
         </table>
-
       </div>
     </div>
   );
 }
-
 
 export default Home;
