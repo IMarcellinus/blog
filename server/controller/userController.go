@@ -35,8 +35,8 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Add formdata to model
-	// user := new(model.User)
-	var user model.User
+	user := new(model.User)
+	// var user model.User
 
 	database.DBConn.First(&user, "username = ?", formData.Username)
 
@@ -55,7 +55,7 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
 	}
 
-	token, err := helper.GenerateToken(user)
+	token, err := helper.GenerateToken(*user)
 
 	if err != nil {
 		returnObject["msg"] = "Invalid Password."
@@ -134,6 +134,11 @@ func Logout() {
 
 }
 
-func RefreshToken() {
+func RefreshToken(c *fiber.Ctx) error {
+	returnObject := fiber.Map{
+		"status": "Ok",
+		"msg":    "Refresh Token Route",
+	}
 
+	return c.Status(fiber.StatusOK).JSON(returnObject)
 }

@@ -39,3 +39,23 @@ func GenerateToken(user model.User) (string, error) {
 	return t, nil
 
 }
+
+func ValidateToken(clientToken string) (claims *CustomClaims, msg string) {
+	token, err := jwt.ParseWithClaims(clientToken, &CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secret), nil
+	})
+
+	if err != nil {
+		msg = err.Error()
+		return
+	}
+
+	claims, ok := token.Claims.(*CustomClaims)
+
+	if !ok {
+		msg = err.Error()
+		return
+	}
+
+	return claims, msg
+}
