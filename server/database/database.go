@@ -33,6 +33,7 @@ func ConnectDB() {
 	log.Println("Connection Successfull.")
 
 	db.AutoMigrate(new(model.Blog))
+	db.AutoMigrate(new(model.User))
 
 	DBConn = db
 }

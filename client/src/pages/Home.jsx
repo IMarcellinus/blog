@@ -96,13 +96,22 @@ function Home() {
     <div className="mx-auto flex bg-red-300 flex-col ">
       <Header />
       <div className="overflow-x-auto">
-        <Link to="/add">
-          <CustomButton
-            title="Add New"
-            btnStyles="text-black bg-blue-300 rounded-lg py-4"
-            btnType="button"
-          />
-        </Link>
+        <div className="w-full justify-between flex flex-row">
+          <Link to="/add">
+            <CustomButton
+              title="Add New"
+              btnStyles="text-black bg-blue-300 rounded-lg py-4 "
+              btnType="button"
+            />
+          </Link>
+          <Link to="/login">
+            <CustomButton
+              title="Login"
+              btnStyles="text-black bg-blue-300 rounded-lg py-4 "
+              btnType="button"
+            />
+          </Link>
+        </div>
         <table className="bg-blue-300 relative w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <caption className="text-2xl">Table Blog List</caption>
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
