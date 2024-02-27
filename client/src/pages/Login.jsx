@@ -2,7 +2,14 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import CustomButton from "../components/CustomButton";
 
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setUser } from "../../services/store/reducers/Authslice";
+
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -12,16 +19,19 @@ function Login() {
   const saveForm = async (data) => {
     console.log(data);
     try {
-      const apiUrl = import.meta.env.VITE_DEV_URL 
-      const response = await axios.post(apiUrl,data);
-      if(response.status === 200){
+      const apiUrl = import.meta.env.VITE_AUTH_URL;
+      const response = await axios.post(apiUrl, data);
+      if (response.status === 200) {
         const data = await response.data;
-        console.log(data)
+        console.log(data);
+        localStorage.setItem("token", data.token)
+        dispatch(setUser(data))
+        navigate("/", {state: data.msg})
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <section className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
@@ -36,12 +46,12 @@ function Login() {
           >
             <div>
               <label
-                htmlFor="email"
+                htmlFor="username"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Your email
+                Your Username
               </label>
-              <input {...register("email")} />
+              <input {...register("username")} />
             </div>
             <div>
               <label
