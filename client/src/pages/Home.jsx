@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { PiWarningDiamondThin } from "react-icons/pi";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { logoutUser } from "../../services/store/reducers/Authslice";
 import CustomButton from "../components/CustomButton";
 import Modal from "../components/Modal";
-import Header from "../layout/Header";
 
 function Home() {
   const [apiDatas, setApiDatas] = useState(false);
@@ -14,6 +15,8 @@ function Home() {
   const [openModal, setOpenModal] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  // State Redux
 
   const handleDeleteButtonClick = (id) => {
     setDeleteId(id);
@@ -62,6 +65,26 @@ function Home() {
     }
   };
 
+  const Logout = (dispatch, navigate) => {
+    // Async cleanup logic, if any
+    // ...
+
+    // Clear token from local storage
+    window.localStorage.removeItem("token");
+
+    // Dispatch the logoutUser action (assuming it is a Redux action)
+    dispatch(logoutUser());
+
+    // Navigate to the login page with a success message
+    navigate("/login", {
+      state: "Success Logout",
+    });
+  };
+
+  const handleLogoutClick = () => {
+    Logout(dispatch, navigate);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -94,7 +117,6 @@ function Home() {
 
   return (
     <div className="mx-auto flex bg-red-300 flex-col ">
-      <Header />
       <div className="overflow-x-auto">
         <div className="w-full justify-between flex flex-row">
           <Link to="/add">
@@ -111,6 +133,12 @@ function Home() {
               btnType="button"
             />
           </Link>
+          <CustomButton
+            title="Logout"
+            btnStyles="text-black bg-blue-300 rounded-lg py-4 "
+            btnType="button"
+            onClick={handleLogoutClick}
+          />
         </div>
         <table className="bg-blue-300 relative w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <caption className="text-2xl">Table Blog List</caption>

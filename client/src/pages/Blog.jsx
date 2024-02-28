@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { FaLongArrowAltLeft } from "react-icons/fa";
-import Header from "../layout/Header";
 
 function Blog() {
   const [apiDatas, setApiDatas] = useState(false);
@@ -30,7 +29,6 @@ function Blog() {
 
   return (
     <div className="bg-red-200">
-      <Header />
       <Link to="/">
         <FaLongArrowAltLeft className="h-12 w-12" />
       </Link>

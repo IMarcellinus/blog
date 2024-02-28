@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../components/CustomButton";
-import Header from "../layout/Header";
 
 function Add() {
   const [loading, setLoading] = useState(false);
@@ -61,7 +60,6 @@ function Add() {
 
   return (
     <div className="bg-red-300">
-      <Header />
       <h1 className="text-2xl font-bold">Add a New Post</h1>
       <form className="max-w-sm my-10" onSubmit={handleSubmit(saveForm)}>
         <div className="mb-5">

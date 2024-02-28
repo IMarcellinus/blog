@@ -17,13 +17,11 @@ function Login() {
   } = useForm();
 
   const saveForm = async (data) => {
-    console.log(data);
     try {
       const apiUrl = import.meta.env.VITE_AUTH_URL;
       const response = await axios.post(apiUrl, data);
       if (response.status === 200) {
         const data = await response.data;
-        console.log(data);
         localStorage.setItem("token", data.token)
         dispatch(setUser(data))
         navigate("/", {state: data.msg})

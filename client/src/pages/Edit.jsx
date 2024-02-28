@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomButton from "../components/CustomButton";
-import Header from "../layout/Header";
 
 function Edit() {
   const [loading, setLoading] = useState(false);
@@ -86,7 +85,6 @@ function Edit() {
 
   return (
     <div className="bg-red-300">
-      <Header />
       <h1 className="text-2xl font-bold">Edit Post</h1>
       {apiDatas && (
         <form className="max-w-sm my-10" onSubmit={handleSubmit(saveForm)}>
