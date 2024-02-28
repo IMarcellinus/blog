@@ -18,7 +18,7 @@ type formData struct {
 func Login(c *fiber.Ctx) error {
 	returnObject := fiber.Map{
 		"status": "Ok",
-		"msg":    "Login Route",
+		"msg":    "Something went wrong.",
 	}
 
 	// Check user for the given credentials
@@ -64,6 +64,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	returnObject["token"] = token
+	returnObject["user"] = user
 	returnObject["msg"] = "Success Login."
 	returnObject["status"] = "Ok."
 
@@ -136,9 +137,48 @@ func Logout() {
 
 func RefreshToken(c *fiber.Ctx) error {
 	returnObject := fiber.Map{
-		"status": "Ok",
+		"status": "OK",
 		"msg":    "Refresh Token Route",
 	}
+
+	// Mendapatkan nilai username dari Local storage
+	username, exists := c.Locals("username").(string)
+	log.Println(username)
+
+	// Memeriksa keberadaan username
+	if !exists {
+		log.Println("username key not found.")
+		returnObject["msg"] = "username not found."
+		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
+	}
+
+	// Mencari pengguna berdasarkan username
+	var user model.User
+	if err := database.DBConn.First(&user, "username=?", username).Error; err != nil {
+		// Jika terjadi kesalahan saat mencari user
+		log.Println("Error while fetching user:", err)
+		returnObject["msg"] = "Error while fetching user."
+		return c.Status(fiber.StatusInternalServerError).JSON(returnObject)
+	}
+
+	// Memastikan user ditemukan
+	if user.ID == 0 {
+		returnObject["msg"] = "User not found."
+		returnObject["status"] = "Error."
+		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
+	}
+
+	// Generate token baru
+	token, err := helper.GenerateToken(user)
+	if err != nil {
+		log.Println("Error while generating token:", err)
+		returnObject["msg"] = "Error while generating token."
+		return c.Status(fiber.StatusInternalServerError).JSON(returnObject)
+	}
+
+	// Menyimpan token dan informasi user ke dalam response
+	returnObject["token"] = token
+	returnObject["user"] = user
 
 	return c.Status(fiber.StatusOK).JSON(returnObject)
 }
