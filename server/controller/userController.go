@@ -2,6 +2,7 @@ package controller
 
 import (
 	"log"
+	"time"
 
 	"github.com/IMarcellinus/blog/database"
 	"github.com/IMarcellinus/blog/helper"
@@ -58,10 +59,19 @@ func Login(c *fiber.Ctx) error {
 	token, err := helper.GenerateToken(*user)
 
 	if err != nil {
-		returnObject["msg"] = "Invalid Password."
+		returnObject["msg"] = "Could not Login."
 		returnObject["status"] = "Error."
 		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
 	}
+
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
 
 	returnObject["token"] = token
 	returnObject["user"] = user
@@ -131,8 +141,30 @@ func Register(c *fiber.Ctx) error {
 
 }
 
-func Logout() {
+func Logout(c *fiber.Ctx) error {
+	// Cek jika JWT sudah kosong
+	if c.Cookies("jwt") == "" {
+		return c.Status(401).JSON(fiber.Map{
+			"error": "Already logged out.",
+		})
+	}
 
+	// Set cookie JWT dengan nilai kosong dan waktu kedaluwarsa yang sudah lewat
+	cookie := fiber.Cookie{
+		Name:     "jwt",
+		Value:    "",
+		Expires:  time.Now().Add(-time.Hour),
+		HTTPOnly: true,
+	}
+
+	// Menetapkan cookie
+	c.Cookie(&cookie)
+
+	// Respons berhasil
+	return c.Status(200).JSON(fiber.Map{
+		"status": "Ok",
+		"msg":    "Success Logout",
+	})
 }
 
 func RefreshToken(c *fiber.Ctx) error {

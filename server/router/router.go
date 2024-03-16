@@ -13,20 +13,20 @@ func SetupRoutes(app *fiber.App) {
 	// update => put
 	// delete => delete
 
-	app.Get("/", controller.WelcomeBlog)
-	app.Get("/api/blog/:id", controller.BlogListById)
-	app.Get("/api/blog", controller.BlogList)
-	app.Post("/api/blog", controller.BlogCreate)
-	app.Put("/api/blog/:id", controller.BlogUpdate)
-	app.Delete("/api/blog/:id", controller.BlogDelete)
 	// Auth
 	app.Post("api/login", controller.Login)
 	app.Post("api/register", controller.Register)
+	app.Get("api/logout", controller.Logout)
 
 	private := app.Group("/api")
 
 	private.Use(middleware.Authenticate)
 
-	private.Get("/refreshtoken", controller.RefreshToken)
-
+	private.Get("/user", controller.RefreshToken)
+	private.Get("/", controller.WelcomeBlog)
+	private.Get("/blog/:id", controller.BlogListById)
+	private.Get("/blog", controller.BlogList)
+	private.Post("/blog", controller.BlogCreate)
+	private.Put("/blog/:id", controller.BlogUpdate)
+	private.Delete("/blog/:id", controller.BlogDelete)
 }
