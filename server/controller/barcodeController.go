@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
@@ -9,6 +10,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/skip2/go-qrcode"
 )
+
+type formBarcode struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	CodeQr   string `json:"codeqr"`
+}
 
 func GenerateQRCodeFromUser(c *fiber.Ctx) error {
 	idStr := c.Params("id")
@@ -34,4 +41,39 @@ func GenerateQRCodeFromUser(c *fiber.Ctx) error {
 
 	// Mengirimkan gambar QR code sebagai respons
 	return c.Send(qr)
+}
+
+func ScanUser(c *fiber.Ctx) error {
+	returnObject := fiber.Map{
+		"status": "Ok",
+		"msg":    "Something went wrong.",
+	}
+
+	var formBarcode formBarcode
+
+	// Parse JSON request body
+	if err := c.BodyParser(&formBarcode); err != nil {
+		log.Println("Error in json binding.")
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Invalid JSON format",
+		})
+	}
+
+	// Add formdata to model
+	user := new(model.User)
+
+	database.DBConn.First(&user, "codeqr = ?", formBarcode.CodeQr)
+
+	if user.ID == 0 {
+		returnObject["msg"] = "User not found."
+		returnObject["status"] = "Error."
+		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
+	}
+
+	returnObject["user"] = user
+	returnObject["msg"] = "Success Scan Barcode."
+	returnObject["status"] = "Ok."
+
+	return c.Status(200).JSON(returnObject)
 }

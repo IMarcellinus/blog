@@ -25,6 +25,7 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/user", controller.RefreshToken)
 	// Barcode
 	private.Get("/:id", controller.GenerateQRCodeFromUser)
+	private.Post("/scanuser", controller.ScanUser)
 	// Blog CRUD
 	private.Get("/", controller.WelcomeBlog)
 	private.Get("/blog/:id", controller.BlogListById)
