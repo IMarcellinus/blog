@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -18,27 +17,21 @@ func GenerateQRCodeFromUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).SendString("Invalid ID")
 	}
 
-	// Query the user from the database
+	// Query data pengguna dari database berdasarkan ID
 	var user model.User
 	if err := database.DBConn.First(&user, id).Error; err != nil {
 		return c.Status(http.StatusNotFound).SendString("User not found")
 	}
 
-	// Convert user data to JSON
-	userData, err := json.Marshal(user)
+	// Membuat QR code dari kolom CodeQr
+	qr, err := qrcode.Encode(user.CodeQr, qrcode.Medium, 256)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString("Error generating QR code")
 	}
 
-	// Generate QR code from user data
-	qr, err := qrcode.Encode(string(userData), qrcode.Medium, 256)
-	if err != nil {
-		return c.Status(http.StatusInternalServerError).SendString("Error generating QR code")
-	}
-
-	// Set response headers
+	// Mengatur header respons
 	c.Set("Content-Type", "image/png")
 
-	// Send QR code image as response
+	// Mengirimkan gambar QR code sebagai respons
 	return c.Send(qr)
 }

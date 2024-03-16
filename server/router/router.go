@@ -17,13 +17,15 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("api/login", controller.Login)
 	app.Post("api/register", controller.Register)
 	app.Get("api/logout", controller.Logout)
-	// app.Get("/api/generate", controller.HandleGenerate) // Panggil handleGenerate di sini
-
 	private := app.Group("/api")
 
+	// Middleware menggunakan cookies jwt
 	private.Use(middleware.Authenticate)
+	// Fetch User
 	private.Get("/user", controller.RefreshToken)
+	// Barcode
 	private.Get("/:id", controller.GenerateQRCodeFromUser)
+	// Blog CRUD
 	private.Get("/", controller.WelcomeBlog)
 	private.Get("/blog/:id", controller.BlogListById)
 	private.Get("/blog", controller.BlogList)
