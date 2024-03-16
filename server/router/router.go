@@ -18,13 +18,12 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("api/register", controller.Register)
 	app.Get("api/logout", controller.Logout)
 	// app.Get("/api/generate", controller.HandleGenerate) // Panggil handleGenerate di sini
-	app.Get("/api/:id", controller.GenerateQRCodeFromUser)
 
 	private := app.Group("/api")
 
 	private.Use(middleware.Authenticate)
-
 	private.Get("/user", controller.RefreshToken)
+	private.Get("/:id", controller.GenerateQRCodeFromUser)
 	private.Get("/", controller.WelcomeBlog)
 	private.Get("/blog/:id", controller.BlogListById)
 	private.Get("/blog", controller.BlogList)

@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"encoding/json"
 	"log"
 	"time"
 
@@ -8,12 +11,14 @@ import (
 	"github.com/IMarcellinus/blog/helper"
 	"github.com/IMarcellinus/blog/model"
 	"github.com/gofiber/fiber/v2"
+	"github.com/skip2/go-qrcode"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type formData struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	CodeQr   string `json:"codeqr"`
 }
 
 func Login(c *fiber.Ctx) error {
@@ -83,10 +88,6 @@ func Login(c *fiber.Ctx) error {
 }
 
 func Register(c *fiber.Ctx) error {
-	returnObject := fiber.Map{
-		"status": "Ok",
-	}
-
 	// Collect form data
 	var formData formData
 
@@ -117,14 +118,40 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	// Add formdata to model
-	user := new(model.User)
+	// Create QR code from user data
+	userData, err := json.Marshal(formData)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate QR code",
+		})
+	}
 
-	user.Username = formData.Username
-	user.Password = helper.HashPassword(formData.Password)
+	qr, err := qrcode.Encode(string(userData), qrcode.Medium, 256)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate QR code",
+		})
+	}
+
+	// Save QR code to database
+	// Simpan QR code di sini ke dalam database, misalnya dalam bentuk byte slice
+
+	// Decode QR code using MD5
+	hasher := md5.New()
+	hasher.Write([]byte(qr))
+	codeQr := hex.EncodeToString(hasher.Sum(nil))
+
+	// Create user in database
+	user := model.User{
+		Username: formData.Username,
+		Password: helper.HashPassword(formData.Password),
+		CodeQr:   codeQr, // Save decoded QR code to CodeQr column
+		// Jika Anda menyimpan QR code dalam database, tambahkan QR code di sini
+	}
 
 	result := database.DBConn.Create(&user)
-
 	if result.Error != nil {
 		log.Println(result.Error)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -133,12 +160,20 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	returnObject["data"] = user
-	returnObject["msg"] = "Register Successfully"
+	// Create QR code from CodeQr column
+	qrFromCodeQr, err := qrcode.Encode(user.CodeQr, qrcode.Medium, 256)
+	if err != nil {
+		log.Println("Error generating QR code from CodeQr:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate QR code from CodeQr",
+		})
+	}
 
-	// Return success response
-	return c.Status(fiber.StatusOK).JSON(returnObject)
+	c.Set("Content-Type", "image/png")
 
+	// Return success response with QR code
+	return c.Status(fiber.StatusOK).Send(qrFromCodeQr)
 }
 
 func Logout(c *fiber.Ctx) error {
@@ -170,7 +205,7 @@ func Logout(c *fiber.Ctx) error {
 func RefreshToken(c *fiber.Ctx) error {
 	returnObject := fiber.Map{
 		"status": "OK",
-		"msg":    "Refresh Token Route",
+		"msg":    "Success Fetch User",
 	}
 
 	// Mendapatkan nilai username dari Local storage
