@@ -21,6 +21,7 @@ type formData struct {
 	CodeQr   string `json:"codeqr"`
 }
 
+// Function Login
 func Login(c *fiber.Ctx) error {
 	returnObject := fiber.Map{
 		"status": "Ok",
@@ -87,6 +88,7 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(returnObject)
 }
 
+// Function Register
 func Register(c *fiber.Ctx) error {
 	// Collect form data
 	var formData formData
@@ -176,6 +178,7 @@ func Register(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).Send(qrFromCodeQr)
 }
 
+// Function Logout
 func Logout(c *fiber.Ctx) error {
 	// Cek jika JWT sudah kosong
 	if c.Cookies("jwt") == "" {
@@ -202,6 +205,7 @@ func Logout(c *fiber.Ctx) error {
 	})
 }
 
+// Function get fetch user now login
 func RefreshToken(c *fiber.Ctx) error {
 	returnObject := fiber.Map{
 		"status": "OK",

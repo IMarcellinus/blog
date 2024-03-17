@@ -4,6 +4,8 @@ package controller
 
 import (
 	"log"
+	"math"
+	"strconv"
 	"time"
 
 	"github.com/IMarcellinus/blog/database"
@@ -42,6 +44,54 @@ func BlogList(c *fiber.Ctx) error {
 
 	c.Status(200)
 	return c.JSON(context)
+}
+
+func BlogListPagination(c *fiber.Ctx) error {
+	currentPage, err := strconv.Atoi(c.Params("currentpage"))
+	if err != nil || currentPage < 1 {
+		return c.Status(400).JSON(fiber.Map{
+			"error": "Invalid current page",
+		})
+	}
+
+	totalPages, err := strconv.Atoi(c.Params("totalpages"))
+	if err != nil || totalPages < 1 {
+		return c.Status(400).JSON(fiber.Map{
+			"error": "Invalid total pages",
+		})
+	}
+
+	db := database.DBConn
+	var totalRecords int64
+	db.Model(&model.Blog{}).Count(&totalRecords)
+
+	// Calculate total pages based on total records and limit (10)
+	totalPages = int(math.Ceil(float64(totalRecords) / 10))
+
+	// Ensure current page does not exceed total pages
+	if currentPage > totalPages {
+		currentPage = totalPages
+	}
+
+	// Calculate offset and limit based on current page
+	limit := 10
+	offset := (currentPage - 1) * limit
+
+	var records []model.Blog
+
+	// Fetch paginated records from the database
+	db.Offset(offset).Limit(limit).Find(&records)
+
+	context := fiber.Map{
+		"blog":        records,
+		"statusText":  "Ok",
+		"msg":         "Blog List",
+		"currentpage": currentPage,
+		"totalpages":  totalPages,
+	}
+
+	return c.Status(200).JSON(context)
+
 }
 
 func BlogListById(c *fiber.Ctx) error {
@@ -83,12 +133,21 @@ func BlogCreate(c *fiber.Ctx) error {
 		"msg":        "Add a Blog List",
 	}
 
+	// var formBlog formBlog
+
 	record := new(model.Blog)
 
 	if err := c.BodyParser(&record); err != nil {
 		log.Println("Error in parsing request.")
 		context["statusText"] = ""
 		context["msg"] = "Something went wrong"
+	}
+
+	// Check if Title and Post are empty
+	if record.Title == "" || record.Post == "" {
+		context["statusText"] = ""
+		context["msg"] = "Title and Post cannot be empty"
+		return c.Status(400).JSON(context)
 	}
 
 	result := database.DBConn.Create(record)
