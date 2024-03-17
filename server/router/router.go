@@ -17,8 +17,8 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("api/login", controller.Login)
 	app.Post("api/register", controller.Register)
 	app.Get("api/logout", controller.Logout)
-	private := app.Group("/api")
 
+	private := app.Group("/api")
 	// Middleware menggunakan cookies jwt
 	private.Use(middleware.Authenticate)
 	// Fetch User
