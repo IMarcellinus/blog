@@ -24,6 +24,17 @@ func BorrowBook(c *fiber.Ctx) error {
 		"msg":        "Add a Book List",
 	}
 
+	// Mendapatkan nilai username dari Local storage
+	username, exists := c.Locals("username").(string)
+	log.Println(username)
+
+	// Memeriksa keberadaan username
+	if !exists {
+		log.Println("username key not found.")
+		context["msg"] = "username not found."
+		return c.Status(fiber.StatusUnauthorized).JSON(context)
+	}
+
 	// Parsing request body JSON
 	var requestBody struct {
 		KodeBuku string `json:"kode_buku"`
@@ -70,7 +81,7 @@ func BorrowBook(c *fiber.Ctx) error {
 	}
 
 	context["msg"] = "Buku Berhasil Dipinjam."
-	context["Nama Mahasiswa"] = user.Username
+	context["Nama Mahasiswa"] = username
 	context["Kode Buku"] = book.KodeBuku
 
 	return c.Status(201).JSON(context)
