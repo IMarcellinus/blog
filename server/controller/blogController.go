@@ -17,7 +17,7 @@ func WelcomeBlog(c *fiber.Ctx) error {
 
 	context := fiber.Map{
 		"statusText": "Ok",
-		"msg":        "Welcome to my CRUD Golang",
+		"msg":        "Welcome to Server SILAPER",
 	}
 
 	c.Status(200)
@@ -41,6 +41,34 @@ func BlogList(c *fiber.Ctx) error {
 	}
 
 	// context["blog_records"] = records
+
+	c.Status(200)
+	return c.JSON(context)
+}
+
+func SearchBlogList(c *fiber.Ctx) error {
+	// Get path parameter 'keyword' for search
+	keyword := c.Params("keyword")
+
+	// Sleep for demonstration purposes
+	time.Sleep(time.Millisecond * 500)
+
+	db := database.DBConn
+
+	var records []model.Blog
+
+	// If there's a keyword, perform search, else fetch all records
+	if keyword != "" {
+		db.Where("title LIKE ? OR post LIKE ?", "%"+keyword+"%", "%"+keyword+"%").Find(&records)
+	} else {
+		db.Find(&records)
+	}
+
+	context := fiber.Map{
+		"blog":       records,
+		"statusText": "Ok",
+		"msg":        "Blog List",
+	}
 
 	c.Status(200)
 	return c.JSON(context)
