@@ -26,6 +26,7 @@ func BorrowBook(c *fiber.Ctx) error {
 
 	// Mendapatkan nilai username dari Local storage
 	username, exists := c.Locals("username").(string)
+	// userid := c.Locals("userid").(uint)
 	log.Println(username)
 
 	// Memeriksa keberadaan username
@@ -56,8 +57,11 @@ func BorrowBook(c *fiber.Ctx) error {
 
 	// Ambil informasi pengguna yang meminjam
 	var user model.User
-	if err := database.DBConn.First(&user).Error; err != nil {
-		return err
+	if err := database.DBConn.First(&user, "username=?", username).Error; err != nil {
+		// Jika terjadi kesalahan saat mencari user
+		log.Println("Error while fetching user:", err)
+		context["msg"] = "Error while fetching user."
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
 	}
 
 	// Periksa apakah buku sudah dipinjam sebelumnya
