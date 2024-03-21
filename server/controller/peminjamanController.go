@@ -9,10 +9,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type Borrower struct {
-	Username string `json:"username"`
-}
-
 type BorrowInfo struct {
 	ID        uint       `json:"id"`
 	BookID    uint       `json:"book_id"`
@@ -24,8 +20,30 @@ type BorrowInfo struct {
 }
 
 func GetBorrowBook(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"statusText": "Ok",
+		"msg":        "Get Borrow Book List",
+	}
+
+	// Mendapatkan nilai username dari Local storage
+	username, exists := c.Locals("username").(string)
+	log.Println(username)
+
+	// Memeriksa keberadaan username
+	if !exists {
+		log.Println("username key not found.")
+		context["msg"] = "username not found."
+		return c.Status(fiber.StatusUnauthorized).JSON(context)
+	}
+
+	// Mendapatkan username pengguna yang sedang login
+	userID, exists := c.Locals("userid").(uint)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "UserID not found in context"})
+	}
+
 	var Peminjaman []model.Peminjaman
-	if err := database.DBConn.Preload("Book").Preload("User").Find(&Peminjaman).Error; err != nil {
+	if err := database.DBConn.Preload("Book").Preload("User").Where("user_id = ?", userID).Find(&Peminjaman).Error; err != nil {
 		return err
 	}
 
@@ -39,13 +57,15 @@ func GetBorrowBook(c *fiber.Ctx) error {
 			BookID:    p.BookID,
 			UserID:    p.UserID,
 			Book:      p.Book,
-			Mahasiswa: p.User.Username,
+			Mahasiswa: username, // Menggunakan username pengguna yang login
 			CreatedAt: p.CreatedAt,
 			IsPinjam:  p.IsPinjam,
 		}
 	}
 
-	return c.JSON(borrowInfoList)
+	context["borrowInfoList"] = borrowInfoList
+
+	return c.JSON(context)
 }
 
 func BorrowBook(c *fiber.Ctx) error {
@@ -56,7 +76,6 @@ func BorrowBook(c *fiber.Ctx) error {
 
 	// Mendapatkan nilai username dari Local storage
 	username, exists := c.Locals("username").(string)
-	// userid := c.Locals("userid").(uint)
 	log.Println(username)
 
 	// Memeriksa keberadaan username
