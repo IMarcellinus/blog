@@ -9,13 +9,43 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type Borrower struct {
+	Username string `json:"username"`
+}
+
+type BorrowInfo struct {
+	ID        uint       `json:"id"`
+	BookID    uint       `json:"book_id"`
+	UserID    uint       `json:"user_id"`
+	Book      model.Book `json:"book"`
+	Mahasiswa string     `json:"mahasiswa"`
+	CreatedAt time.Time  `json:"created_at"`
+	IsPinjam  bool       `json:"is_pinjam"`
+}
+
 func GetBorrowBook(c *fiber.Ctx) error {
 	var Peminjaman []model.Peminjaman
 	if err := database.DBConn.Preload("Book").Preload("User").Find(&Peminjaman).Error; err != nil {
 		return err
 	}
-	return c.JSON(Peminjaman)
 
+	// Buat slice untuk menyimpan informasi peminjaman
+	borrowInfoList := make([]BorrowInfo, len(Peminjaman))
+
+	// Loop melalui setiap objek Peminjaman dan isi informasi peminjaman
+	for i, p := range Peminjaman {
+		borrowInfoList[i] = BorrowInfo{
+			ID:        p.ID,
+			BookID:    p.BookID,
+			UserID:    p.UserID,
+			Book:      p.Book,
+			Mahasiswa: p.User.Username,
+			CreatedAt: p.CreatedAt,
+			IsPinjam:  p.IsPinjam,
+		}
+	}
+
+	return c.JSON(borrowInfoList)
 }
 
 func BorrowBook(c *fiber.Ctx) error {
