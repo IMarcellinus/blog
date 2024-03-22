@@ -9,5 +9,6 @@ type Peminjaman struct {
 	Book      Book      `json:"book" gorm:"foreignKey:BookID"`
 	User      User      `json:"user" gorm:"foreignKey:UserID"`
 	CreatedAt time.Time `json:"created_at" gorm:"column:created_at;autoCreateTime"`
+	ReturnAt  time.Time `json:"return_at" gorm:"column:return_at;"`
 	IsPinjam  bool      `json:"is_pinjam"`
 }

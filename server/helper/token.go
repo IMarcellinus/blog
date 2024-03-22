@@ -18,12 +18,14 @@ type CustomClaims struct {
 var secret string = "secret"
 
 func GenerateToken(user model.User) (string, error) {
+	// Mengatur waktu kadaluarsa 1 jam dari sekarang
+	expirationTime := time.Now().Local().Add(time.Hour)
 
 	claims := CustomClaims{
 		user.Username,
 		user.ID,
 		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Local().Add(time.Minute * 3)),
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
 	}
 
@@ -32,12 +34,11 @@ func GenerateToken(user model.User) (string, error) {
 	t, err := token.SignedString([]byte(secret))
 
 	if err != nil {
-		log.Println("Error in token singing.", err)
+		log.Println("Error in token singing:", err)
 		return "", err
 	}
 
 	return t, nil
-
 }
 
 func ValidateToken(clientToken string) (claims *CustomClaims, msg string) {

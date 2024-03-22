@@ -16,6 +16,7 @@ type BorrowInfo struct {
 	Book      model.Book `json:"book"`
 	Mahasiswa string     `json:"mahasiswa"`
 	CreatedAt time.Time  `json:"created_at"`
+	ReturnAt  time.Time  `json:"return_at"`
 	IsPinjam  bool       `json:"is_pinjam"`
 }
 
@@ -59,6 +60,7 @@ func GetBorrowBook(c *fiber.Ctx) error {
 			Book:      p.Book,
 			Mahasiswa: username, // Menggunakan username pengguna yang login
 			CreatedAt: p.CreatedAt,
+			ReturnAt:  p.ReturnAt,
 			IsPinjam:  p.IsPinjam,
 		}
 	}
@@ -138,4 +140,70 @@ func BorrowBook(c *fiber.Ctx) error {
 	context["Kode Buku"] = book.KodeBuku
 
 	return c.Status(201).JSON(context)
+}
+
+func ReturnBook(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"statusText": "Ok",
+		"msg":        "Return a Book",
+	}
+
+	// Mendapatkan nilai username dari Local storage
+	username, exists := c.Locals("username").(string)
+	log.Println(username)
+
+	// Memeriksa keberadaan username
+	if !exists {
+		log.Println("username key not found.")
+		context["msg"] = "username not found."
+		return c.Status(fiber.StatusUnauthorized).JSON(context)
+	}
+
+	// Mendapatkan ID peminjaman dari parameter
+	peminjamanID := c.Params("id")
+
+	// Ambil informasi peminjaman berdasarkan ID
+	var peminjaman model.Peminjaman
+	if err := database.DBConn.First(&peminjaman, peminjamanID).Error; err != nil {
+		// Jika terjadi kesalahan saat mencari peminjaman
+		log.Println("Error while fetching peminjaman:", err)
+		context["msg"] = "Error while fetching peminjaman."
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	// Ambil informasi pengguna yang mengembalikan
+	var user model.User
+	if err := database.DBConn.First(&user, "username=?", username).Error; err != nil {
+		// Jika terjadi kesalahan saat mencari user
+		log.Println("Error while fetching user:", err)
+		context["msg"] = "Error while fetching user."
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	// Periksa apakah buku sudah dipinjam oleh pengguna yang ingin mengembalikan
+	if peminjaman.UserID != user.ID || !peminjaman.IsPinjam {
+		context["statusText"] = "Error"
+		context["msg"] = "Buku tidak dipinjam oleh pengguna ini atau status peminjaman tidak sesuai"
+		return c.Status(fiber.StatusBadRequest).JSON(context)
+	}
+
+	// Mengupdate status peminjaman menjadi kembali dan mengatur waktu pengembalian
+	if err := database.DBConn.Model(&peminjaman).Updates(map[string]interface{}{"is_pinjam": false, "return_at": time.Now()}).Error; err != nil {
+		return err
+	}
+
+	// Ambil informasi buku yang dikembalikan
+	var book model.Book
+	if err := database.DBConn.First(&book, peminjaman.BookID).Error; err != nil {
+		log.Println("Error while fetching book:", err)
+		context["msg"] = "Error while fetching book."
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	context["msg"] = "Buku Berhasil Dikembalikan."
+	context["Nama Mahasiswa"] = username
+	context["Kode Buku"] = book.KodeBuku
+	context["Returned At"] = peminjaman.ReturnAt
+
+	return c.Status(fiber.StatusOK).JSON(context)
 }

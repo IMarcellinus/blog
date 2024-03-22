@@ -31,6 +31,7 @@ func SetupRoutes(app *fiber.App) {
 	// Borrow Book
 	private.Get("/borrowbook/", controller.GetBorrowBook)
 	private.Post("/borrowbook/", controller.BorrowBook)
+	private.Put("/borrowbook/:id", controller.ReturnBook)
 	// Blog CRUD
 	private.Get("/", controller.WelcomeBlog)
 	private.Get("/blog/:id", controller.BlogListById)
