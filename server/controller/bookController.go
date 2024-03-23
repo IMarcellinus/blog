@@ -62,6 +62,7 @@ func BookCreate(c *fiber.Ctx) error {
 		log.Println("Error in parsing request.")
 		context["statusText"] = ""
 		context["msg"] = "Something went wrong JSON format"
+		return c.Status(400).JSON(context)
 	}
 
 	if record.NamaBuku == "" {
@@ -70,13 +71,27 @@ func BookCreate(c *fiber.Ctx) error {
 		return c.Status(400).JSON(context)
 	}
 
+	// Mengonversi string tanggal pengesahan ke dalam format time.Time
+	tanggalPengesahan, err := time.Parse("02-01-2006", record.TanggalPengesahan)
+	if err != nil {
+		log.Println("Error in parsing tanggal pengesahan:", err)
+		context["statusText"] = ""
+		context["msg"] = "Invalid tanggal pengesahan format. Please use format dd-mm-yyyy"
+		return c.Status(400).JSON(context)
+	}
+
+	record.TanggalPengesahan = tanggalPengesahan.Format("02-01-2006")
+
 	// Mendapatkan kode buku berikutnya
 	record.KodeBuku = getNextBookCode()
 
 	result := database.DBConn.Create(record)
 
 	if result.Error != nil {
-		log.Println("Error in saving data.")
+		log.Println("Error in saving data:", result.Error)
+		context["statusText"] = ""
+		context["msg"] = "Error in saving data"
+		return c.Status(500).JSON(context)
 	}
 
 	// Menginkrementasi nomor buku untuk persiapan buku selanjutnya
@@ -86,7 +101,6 @@ func BookCreate(c *fiber.Ctx) error {
 	context["data"] = record
 
 	return c.Status(201).JSON(context)
-
 }
 
 func BookUpdate(c *fiber.Ctx) error {
