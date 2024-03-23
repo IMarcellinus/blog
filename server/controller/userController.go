@@ -147,9 +147,10 @@ func Register(c *fiber.Ctx) error {
 
 	// Create user in database
 	user := model.User{
-		Username: formData.Username,
-		Password: helper.HashPassword(formData.Password),
-		CodeQr:   codeQr, // Save decoded QR code to CodeQr column
+		Username:  formData.Username,
+		Password:  helper.HashPassword(formData.Password),
+		CodeQr:    codeQr,                          // Save decoded QR code to CodeQr column
+		CreatedAt: time.Now().Format("02-01-2006"), // Set the CreatedAt field with the specified date format
 		// Jika Anda menyimpan QR code dalam database, tambahkan QR code di sini
 	}
 

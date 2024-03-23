@@ -50,6 +50,8 @@ func incrementBookNumber() {
 	lastBookNumber++
 }
 
+// function for BookCreate
+
 func BookCreate(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"statusText": "Ok",
