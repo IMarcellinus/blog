@@ -28,6 +28,8 @@ func SetupRoutes(app *fiber.App) {
 	private.Post("/book", controller.BookCreate)
 	private.Put("/book/:id", controller.BookUpdate)
 	private.Delete("/book/:id", controller.BookDelete)
+	// Search Book
+	private.Get("/book/search/:search", controller.SearchBooks)
 	// Borrow Book
 	private.Get("/borrowbook/", controller.GetBorrowBook)
 	private.Post("/borrowbook/", controller.BorrowBook)

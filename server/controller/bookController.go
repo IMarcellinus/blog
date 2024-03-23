@@ -145,8 +145,8 @@ func BookDelete(c *fiber.Ctx) error {
 	c.Status(400)
 
 	context := fiber.Map{
-		"statusText": "",
-		"msg":        "",
+		"statusText": "Ok",
+		"msg":        "Delete Book",
 	}
 
 	id := c.Params("id")
@@ -175,4 +175,37 @@ func BookDelete(c *fiber.Ctx) error {
 	c.Status(200)
 
 	return c.JSON(context)
+}
+
+func SearchBooks(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"statusText": "Ok",
+		"msg":        "Search Book List",
+	}
+	// Mendapatkan nilai parameter dari URL
+	param := c.Params("search")
+
+	db := database.DBConn
+
+	// Mencari buku berdasarkan parameter yang diberikan
+	var books []model.Book
+	if err := db.Where("nama_buku LIKE ? OR kode_buku LIKE ? OR tanggal_pengesahan LIKE ?", "%"+param+"%", "%"+param+"%", "%"+param+"%").Find(&books).Error; err != nil {
+		// Menangani kesalahan jika terjadi
+		context["statusText"] = "Error"
+		context["msg"] = "Failed to search books"
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	// Mengembalikan daftar buku yang sesuai dengan kriteria pencarian
+	if len(books) == 0 {
+		// Menangani kasus jika tidak ada buku yang ditemukan
+		context["statusText"] = "Not Found"
+		context["msg"] = "No books found for the search query"
+		return c.Status(fiber.StatusNotFound).JSON(context)
+	}
+
+	context["book"] = books
+
+	return c.Status(fiber.StatusOK).JSON(context)
+
 }
