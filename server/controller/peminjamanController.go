@@ -207,3 +207,35 @@ func ReturnBook(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(context)
 }
+
+func SearchPeminjaman(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"statusText": "Ok",
+		"msg":        "Search Peminjaman List",
+	}
+	// Mendapatkan nilai parameter dari URL
+	param := c.Params("search")
+
+	db := database.DBConn
+
+	// Mencari peminjaman berdasarkan parameter yang diberikan
+	var peminjamans []model.Peminjaman
+	if err := db.Where("(Book.kode_buku) LIKE ? OR return_at LIKE ? OR (Book.nama_buku LIKE ?)", "%"+param+"%", "%"+param+"%", "%"+param+"%").Preload("Book").Find(&peminjamans).Error; err != nil {
+		// Menangani kesalahan jika terjadi
+		context["statusText"] = "Error"
+		context["msg"] = "Failed to search peminjaman"
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	// Mengembalikan daftar peminjaman yang sesuai dengan kriteria pencarian
+	if len(peminjamans) == 0 {
+		// Menangani kasus jika tidak ada peminjaman yang ditemukan
+		context["statusText"] = "Not Found"
+		context["msg"] = "No peminjaman found for the search query"
+		return c.Status(fiber.StatusNotFound).JSON(context)
+	}
+
+	context["peminjaman"] = peminjamans
+
+	return c.Status(fiber.StatusOK).JSON(context)
+}

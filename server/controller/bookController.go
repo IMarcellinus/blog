@@ -180,7 +180,7 @@ func BookDelete(c *fiber.Ctx) error {
 func SearchBooks(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"statusText": "Ok",
-		"msg":        "Search Book List",
+		"msg":        "Search Borrow Book List",
 	}
 	// Mendapatkan nilai parameter dari URL
 	param := c.Params("search")
