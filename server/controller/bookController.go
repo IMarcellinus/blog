@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -29,6 +30,26 @@ func BookList(c *fiber.Ctx) error {
 	return c.JSON(context)
 }
 
+// Variable untuk melacak nomor terakhir yang digunakan
+var lastBookNumber int
+
+func init() {
+	// Di sini Anda dapat menambahkan kode untuk mengambil nomor terakhir yang disimpan dari database jika diperlukan.
+	// Untuk keperluan contoh, kita mulai dengan nomor 1.
+	lastBookNumber = 1
+}
+
+func getNextBookCode() string {
+	// Format nomor buku dengan pola "A{nomor}"
+	bookCode := fmt.Sprintf("A%d", lastBookNumber)
+	return bookCode
+}
+
+func incrementBookNumber() {
+	// Menambahkan nomor buku
+	lastBookNumber++
+}
+
 func BookCreate(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"statusText": "Ok",
@@ -43,11 +64,14 @@ func BookCreate(c *fiber.Ctx) error {
 		context["msg"] = "Something went wrong JSON format"
 	}
 
-	if record.NamaBuku == "" || record.KodeBuku == "" {
+	if record.NamaBuku == "" {
 		context["statusText"] = ""
-		context["msg"] = "nama buku and kode buku cannot be empty"
+		context["msg"] = "nama buku cannot be empty"
 		return c.Status(400).JSON(context)
 	}
+
+	// Mendapatkan kode buku berikutnya
+	record.KodeBuku = getNextBookCode()
 
 	result := database.DBConn.Create(record)
 
@@ -55,10 +79,14 @@ func BookCreate(c *fiber.Ctx) error {
 		log.Println("Error in saving data.")
 	}
 
+	// Menginkrementasi nomor buku untuk persiapan buku selanjutnya
+	incrementBookNumber()
+
 	context["msg"] = "Record is saved successfully."
 	context["data"] = record
 
 	return c.Status(201).JSON(context)
+
 }
 
 func BookUpdate(c *fiber.Ctx) error {
