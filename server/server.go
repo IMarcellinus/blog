@@ -1,5 +1,3 @@
-// server.go
-
 package main
 
 import (
@@ -14,29 +12,24 @@ import (
 )
 
 func init() {
-
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal("Error in loading .env file.")
 	}
-
 	database.ConnectDB()
 }
 
 func main() {
-
 	sqlDb, err := database.DBConn.DB()
-
 	if err != nil {
 		panic("Error in sql connection.")
 	}
-
 	defer sqlDb.Close()
 
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization", // Menambahkan Authorization ke AllowHeaders
 	}))
 
 	app.Use(logger.New())

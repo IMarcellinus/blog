@@ -71,7 +71,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	cookie := fiber.Cookie{
-		Name:     "jwt",
+		Name:     "token",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24),
 		HTTPOnly: true,
@@ -182,7 +182,7 @@ func Register(c *fiber.Ctx) error {
 // Function Logout
 func Logout(c *fiber.Ctx) error {
 	// Cek jika JWT sudah kosong
-	if c.Cookies("jwt") == "" {
+	if c.Cookies("token") == "" {
 		return c.Status(401).JSON(fiber.Map{
 			"error": "Already logged out.",
 		})
@@ -190,7 +190,7 @@ func Logout(c *fiber.Ctx) error {
 
 	// Set cookie JWT dengan nilai kosong dan waktu kedaluwarsa yang sudah lewat
 	cookie := fiber.Cookie{
-		Name:     "jwt",
+		Name:     "token",
 		Value:    "",
 		Expires:  time.Now().Add(-time.Hour),
 		HTTPOnly: true,
@@ -251,6 +251,7 @@ func RefreshToken(c *fiber.Ctx) error {
 	// Menyimpan token dan informasi user ke dalam response
 	returnObject["token"] = token
 	returnObject["user"] = user
+	returnObject["status_code"] = "200"
 
 	return c.Status(fiber.StatusOK).JSON(returnObject)
 }
