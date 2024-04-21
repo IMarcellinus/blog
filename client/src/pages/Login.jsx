@@ -38,10 +38,17 @@ function Login() {
     }, 5000); // example timeout, change it to your needs
   };
 
+  useEffect(() => {
+    if (user !== null && isSuccess) {
+      navigate('/');
+      dispatch(reset());
+      dispatch(FetchUser());
+    }
+  }, [user, isSuccess, dispatch, navigate]);
+
   const Auth = (e) => {
     e.preventDefault();
     dispatch(LoginUser({ username, password }));
-    navigate("/");
   };
 
   const handleUsernameChange = (e) => {

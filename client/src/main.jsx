@@ -5,6 +5,7 @@ import "./index.css";
 
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import 'react-tippy/dist/tippy.css'; // Import CSS untuk tampilan default Tippy
 import { store } from "../services/store/Store.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(

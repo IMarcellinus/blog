@@ -1,15 +1,14 @@
 import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { FetchUser } from "../services/store/reducers/Authslice";
 import "./index.css";
-import Header from "./layout/Header";
+import Layout from "./layout/Layout";
 import Add from "./pages/Add";
 import Blog from "./pages/Blog";
+import DashboardPage from "./pages/DashboardPage";
 import Edit from "./pages/Edit";
-import Home from "./pages/Home";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 
@@ -27,30 +26,30 @@ function App() {
 
   useEffect(() => {
     dispatch(FetchUser());
-    if(!token || token === undefined){
-      navigate("/login")
+    if (!token || token === undefined) {
+      navigate("/login");
     }
   }, [dispatch, navigate, token]);
 
   if (authUser === null) {
     return (
       <Routes>
-        <Route path='/login' element={<Login />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     );
   }
 
   return (
-    <>
-      <Routes>
-        <Route path="/*" element={<PageNotFound />} />
-        <Route path="/" element={<Home />} />
+    <Routes>
+      <Route path="/*" element={<PageNotFound />} />
+      <Route path="/" element={<Layout authUser={authUser} />}>
+        {/* Gunakan Outlet untuk menampilkan komponen-komponen di bawahnya */}
+        <Route index element={<DashboardPage />} />
         <Route path="/add" element={<Add />} />
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="/blog/:id" element={<Blog />} />
-        {/* <Route path="/login" element={<Login />} /> */}
-      </Routes>
-    </>
+      </Route>
+    </Routes>
   );
 }
 
