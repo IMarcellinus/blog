@@ -13,6 +13,7 @@ func UserFaker() *model.User {
 		Username:  "admin3",
 		Password:  "$2a$10$TIyWA1kMZmlDUsM8zNvYS.d8sHSjmMIWEWG5G2OwwipxZpUpJ7ZpK",
 		CodeQr:    "-",
+		Role:      "admin",
 		CreatedAt: time.Now().Format("02-01-2006"),
 	}
 }
