@@ -30,12 +30,30 @@ const getToken = async () => {
   return token;
 };
 
+export const LoginAdmin = createAsyncThunk(
+  "auth/loginadmin",
+  async (credentials, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/login",
+        credentials
+      );
+      setTokenToCookie(response.data.token);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "An error occurred"
+      );
+    }
+  }
+);
+
 export const LoginUser = createAsyncThunk(
   "auth/loginuser",
   async (credentials, thunkAPI) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/login",
+        "http://localhost:8080/api/loginuser",
         credentials
       );
       setTokenToCookie(response.data.token);
@@ -110,7 +128,24 @@ export const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Login User
+    // Login Admin
+    builder
+      .addCase(LoginAdmin.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(LoginAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isSuccess = true;
+        state.isLogin = true;
+        state.user = action.payload;
+      })
+      .addCase(LoginAdmin.rejected, (state, action) => {
+        state.loading = false;
+        state.isError = true;
+        state.user = null;
+        state.message = action.payload.msg;
+      });
+    // Login Admin
     builder
       .addCase(LoginUser.pending, (state) => {
         state.loading = true;

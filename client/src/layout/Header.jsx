@@ -16,6 +16,7 @@ const Header = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  console.log("header: " ,authUser.role)
   const LogOut = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -29,7 +30,11 @@ const Header = ({
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(logoutUser());
-        navigate("/login");
+        if (authUser.role === "admin") {
+          navigate("/login");
+        } else {
+          navigate("/loginuser");
+        }
       }
     });
   };
@@ -90,6 +95,7 @@ Header.propTypes = {
   setDropdown: PropTypes.func.isRequired,
   authUser: PropTypes.shape({
     username: PropTypes.string.isRequired,
+    role: PropTypes.string.isRequired,
   }).isRequired,
   dropdownRef: PropTypes.shape({
     current: PropTypes.instanceOf(HTMLDivElement),

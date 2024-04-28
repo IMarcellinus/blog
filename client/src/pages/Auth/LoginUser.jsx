@@ -5,23 +5,23 @@ import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
-  FetchUser,
-  LoginAdmin,
-  reset,
-} from "../../../services/store/reducers/Authslice"; // Ubah dari Authslice menjadi AuthSlice
+    FetchUser,
+    LoginUser,
+    reset,
+} from "../../../services/store/reducers/Authslice";
 import { SilaperLogo } from "../../assets/img";
 
-function Login() {
+function LoginUserPage() {
   const { user, isError, isSuccess, isLoading, message } = useSelector(
     (state) => state.auth
   );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [errorUsername, setErrorUsername] = useState("");
-  const [errorPassword, setErrorPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+
+  const [codeqr, setCodeqr] = useState("");
+  const [showCodeQr, setShowCodeQr] = useState(false);
+  const [errorCodeQr, setErrorCodeQr] = useState("");
 
   const deleteToken = () => {
     Cookies.remove("token");
@@ -46,34 +46,23 @@ function Login() {
 
   useEffect(() => {
     deleteToken();
-    document.body.style.overflow = 'auto';
-  }, [])
-  
+    document.body.style.overflow = "auto";
+  }, []);
 
   const Auth = (e) => {
     e.preventDefault();
-    dispatch(LoginAdmin({ username, password }));
+    dispatch(LoginUser({ codeqr }));
+    console.log(codeqr)
   };
 
-  const handleUsernameChange = (e) => {
+  const handleCodeQrChange = (e) => {
     const inputValue = e.target.value;
-    setUsername(inputValue);
+    setCodeqr(inputValue);
 
     if (inputValue.trim() === "") {
-      setErrorUsername("Required*");
+      setErrorCodeQr("Required*");
     } else {
-      setErrorUsername("");
-    }
-  };
-
-  const handlePasswordChange = (e) => {
-    const inputValue = e.target.value;
-    setPassword(inputValue);
-
-    if (inputValue.trim() === "") {
-      setErrorPassword("Required*");
-    } else {
-      setErrorPassword("");
+      setErrorCodeQr("");
     }
   };
 
@@ -90,56 +79,32 @@ function Login() {
           <p className="text-center text-red-600 font-bold">{message}</p>
         )}
         <form onSubmit={Auth}>
-          {/* Input Username */}
-          <div className="my-2">
-            <label
-              htmlFor="username"
-              className="mb-2 block text-sm font-medium text-gray-900 "
-            >
-              Username
-            </label>
-            <div className="relative ">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <BiUser />
-              </div>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={username}
-                onChange={handleUsernameChange}
-                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-                placeholder="masukkan username"
-                required
-              />
-            </div>
-          </div>
-          {/* Input Password */}
+          {/* Input Kode Qr */}
           <label
             htmlFor="username"
-            className="block text-sm font-medium text-gray-900 "
+            className="block text-sm font-medium text-gray-900 uppercase"
           >
-            Password
+            silahkan input kode qr
           </label>
-          <div className="relative flex rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900">
+          <div className="relative flex rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 mt-2">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
               <BiLock />
             </div>
             <input
-              type={!showPassword ? "password" : "text"}
+              type={!showCodeQr ? "password" : "text"}
               id="password"
               name="password"
-              value={password}
-              onChange={handlePasswordChange}
+              value={codeqr}
+              onChange={handleCodeQrChange}
               className="block w-full p-2.5 pl-10 focus:border-blue-500 focus:ring-blue-500"
               placeholder="********"
               required
             />
             <div
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowCodeQr(!showCodeQr)}
               className="absolute right-0 grid h-full w-10 cursor-pointer place-items-center"
             >
-              {!showPassword ? (
+              {!showCodeQr ? (
                 <BsEyeSlash className="h-5 w-5" />
               ) : (
                 <BsEye className="h-5 w-5" />
@@ -151,11 +116,11 @@ function Login() {
               onSubmit={handleLogin}
               type="submit"
               className={`my-4 w-full items-center rounded-lg ${
-                !username || !password || isLoading
+                !codeqr || isLoading
                   ? "cursor-not-allowed bg-blue-400 text-white dark:bg-blue-500"
                   : "bg-blue-700 text-white hover:bg-blue-800"
               } rounded-lg px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800`}
-              disabled={!username || !password || isLoading}
+              disabled={!codeqr || isLoading}
             >
               {isLoading ? "Loading..." : "Submit"}
             </button>
@@ -166,4 +131,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginUserPage;

@@ -7,6 +7,7 @@ import "./index.css";
 import Layout from "./layout/Layout";
 import Add from "./pages/Add";
 import Login from "./pages/Auth/Login";
+import LoginUserPage from "./pages/Auth/LoginUser";
 import Blog from "./pages/Blog";
 import DashboardPage from "./pages/DashboardPage";
 import Edit from "./pages/Edit";
@@ -23,18 +24,30 @@ function App() {
   const token = Cookies.get("token");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  console.log(authUser);
 
   useEffect(() => {
     dispatch(FetchUser());
-    if (!token || token === undefined) {
-      navigate("/login");
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!token && window.location.pathname !== "/login") {
+      navigate("/loginuser");
     }
-  }, [dispatch, navigate, token]);
+  }, [token, navigate]);
+
+  useEffect(() => {
+    if (!token || token === undefined) {
+      dispatch(FetchUser());
+    }
+  }, [dispatch, token]);
 
   if (authUser === null) {
     return (
       <Routes>
+        <Route path="/loginuser" element={<LoginUserPage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/*" element={<PageNotFound />} />
       </Routes>
     );
   }
