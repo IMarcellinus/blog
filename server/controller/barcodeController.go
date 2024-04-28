@@ -4,8 +4,10 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/IMarcellinus/blog/database"
+	"github.com/IMarcellinus/blog/helper"
 	"github.com/IMarcellinus/blog/model"
 	"github.com/gofiber/fiber/v2"
 	"github.com/skip2/go-qrcode"
@@ -71,6 +73,24 @@ func ScanUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
 	}
 
+	token, err := helper.GenerateToken(*user)
+
+	if err != nil {
+		returnObject["msg"] = "Could not Login."
+		returnObject["status"] = "Error."
+		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
+	}
+
+	cookie := fiber.Cookie{
+		Name:     "token",
+		Value:    token,
+		Expires:  time.Now().Add(time.Hour * 24),
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	returnObject["token"] = token
 	returnObject["user"] = user
 	returnObject["msg"] = "Success Scan Barcode."
 	returnObject["status"] = "Ok."
