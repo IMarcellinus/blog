@@ -17,6 +17,7 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("api/login", controller.Login)
 	app.Post("api/register", controller.Register)
 	app.Get("api/logout", controller.Logout)
+	app.Post("api/loginuser", controller.ScanUser)
 
 	private := app.Group("/api")
 	// Middleware menggunakan cookies jwt
@@ -46,5 +47,4 @@ func SetupRoutes(app *fiber.App) {
 	private.Delete("/blog/:id", controller.BlogDelete)
 	// Barcode
 	private.Get("/:id", controller.GenerateQRCodeFromUser)
-	private.Post("/scanuser", controller.ScanUser)
 }

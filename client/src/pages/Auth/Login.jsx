@@ -9,9 +9,8 @@ import {
   LoginUser,
   reset,
   setMessageAuth,
-} from "../../services/store/reducers/Authslice"; // Ubah dari Authslice menjadi AuthSlice
-import { SilaperLogo } from "../assets/img";
-import CustomButton from "../components/CustomButton";
+} from "../../../services/store/reducers/Authslice"; // Ubah dari Authslice menjadi AuthSlice
+import { SilaperLogo } from "../../assets/img";
 
 function Login() {
   const { user, isError, isSuccess, isLoading, message } = useSelector(

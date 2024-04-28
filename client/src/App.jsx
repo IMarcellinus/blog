@@ -6,10 +6,10 @@ import { FetchUser } from "../services/store/reducers/Authslice";
 import "./index.css";
 import Layout from "./layout/Layout";
 import Add from "./pages/Add";
+import Login from "./pages/Auth/Login";
 import Blog from "./pages/Blog";
 import DashboardPage from "./pages/DashboardPage";
 import Edit from "./pages/Edit";
-import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 
 function App() {
