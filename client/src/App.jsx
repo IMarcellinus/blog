@@ -8,6 +8,7 @@ import Layout from "./layout/Layout";
 import Add from "./pages/Add";
 import Login from "./pages/Auth/Login";
 import LoginUserPage from "./pages/Auth/LoginUser";
+import RegisterUserPage from "./pages/Auth/RegisterUserPage";
 import Blog from "./pages/Blog";
 import DashboardPage from "./pages/DashboardPage";
 import Edit from "./pages/Edit";
@@ -31,7 +32,7 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!token && window.location.pathname !== "/login") {
+    if (!token && window.location.pathname !== "/login" && window.location.pathname !== "/register") {
       navigate("/loginuser");
     }
   }, [token, navigate]);
@@ -46,6 +47,7 @@ function App() {
     return (
       <Routes>
         <Route path="/loginuser" element={<LoginUserPage />} />
+        <Route path="/register" element={<RegisterUserPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<PageNotFound />} />
       </Routes>
@@ -57,7 +59,7 @@ function App() {
       <Route path="/*" element={<PageNotFound />} />
       <Route path="/" element={<Layout authUser={authUser} />}>
         {/* Gunakan Outlet untuk menampilkan komponen-komponen di bawahnya */}
-        <Route index element={<DashboardPage />} />
+        <Route index element={<DashboardPage authUser={authUser} />} />
         <Route path="/add" element={<Add />} />
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="/blog/:id" element={<Blog />} />

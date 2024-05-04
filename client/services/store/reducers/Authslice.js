@@ -66,6 +66,23 @@ export const LoginUser = createAsyncThunk(
   }
 );
 
+export const RegisterUser = createAsyncThunk(
+  "auth/registeruser",
+  async (credentials, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/register",
+        credentials
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "An error occurred"
+      );
+    }
+  }
+);
+
 // Fungsi untuk mengambil data pengguna dari server
 export const FetchUser = createAsyncThunk(
   "auth/fetchUser",
@@ -85,6 +102,24 @@ export const FetchUser = createAsyncThunk(
     }
   }
 );
+
+export const getBarcodeByuser = createAsyncThunk(
+  "auth/getbarcode",
+  async(barcode, thunkAPI) => {
+    const token = await getToken();
+    try {
+      const response = await axios.get(`${BASE_URL}/barcode/${barcode.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("errorFatch", error);
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+)
 
 export const authSlice = createSlice({
   name: "auth",
@@ -162,6 +197,23 @@ export const authSlice = createSlice({
         state.user = null;
         state.message = action.payload.msg;
       });
+    // RegisterUser
+    builder
+      .addCase(RegisterUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(RegisterUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isSuccess = true;
+        state.isLogin = true;
+        state.user = action.payload;
+      })
+      .addCase(RegisterUser.rejected, (state, action) => {
+        state.loading = false;
+        state.isError = true;
+        state.user = null;
+        state.message = action.payload.msg;
+      });
     // Fetch User
     builder
       .addCase(FetchUser.pending, (state) => {
@@ -186,6 +238,25 @@ export const authSlice = createSlice({
         state.authUser = null;
         state.status = action.payload.status_code;
         state.messageFetchUser = action.payload;
+      });
+    // Get Barcode by user
+    builder
+      .addCase(getBarcodeByuser.pending, (state) => {
+        state.isPreload = true;
+        state.loading = true;
+        state.authUser = null;
+      })
+      .addCase(getBarcodeByuser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isPreload = false;
+        state.isSuccess = false;
+        state.isLogin = true;
+      })
+      .addCase(getBarcodeByuser.rejected, (state) => {
+        state.isPreload = false;
+        state.isLoading = false;
+        state.isError = true;
+        state.authUser = null;
       });
   },
 });

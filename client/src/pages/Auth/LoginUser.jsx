@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { BiLock, BiUser } from "react-icons/bi";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
-    FetchUser,
-    LoginUser,
-    reset,
+  FetchUser,
+  LoginUser,
+  reset,
 } from "../../../services/store/reducers/Authslice";
 import { SilaperLogo } from "../../assets/img";
 
@@ -38,7 +38,7 @@ function LoginUserPage() {
 
   useEffect(() => {
     if (user !== null && isSuccess) {
-      navigate('/');
+      navigate("/");
       dispatch(reset());
       dispatch(FetchUser());
     }
@@ -52,7 +52,7 @@ function LoginUserPage() {
   const Auth = (e) => {
     e.preventDefault();
     dispatch(LoginUser({ codeqr }));
-    console.log(codeqr)
+    console.log(codeqr);
   };
 
   const handleCodeQrChange = (e) => {
@@ -124,6 +124,19 @@ function LoginUserPage() {
             >
               {isLoading ? "Loading..." : "Submit"}
             </button>
+          </div>
+          <div className="flex justify-start">
+            <p className="text-black">
+              New Account?{" "}
+              <i>
+                <Link
+                  to="/register"
+                  className="hover:text-sky-900 hover:underline"
+                >
+                  click here
+                </Link>
+              </i>{" "}
+            </p>
           </div>
         </form>
       </div>

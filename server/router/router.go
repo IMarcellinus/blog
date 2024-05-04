@@ -17,8 +17,6 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("api/login", controller.Login)
 	app.Post("api/register", controller.Register)
 	app.Get("api/logout", controller.Logout)
-	// Login User
-
 	// Auth Admin
 	private := app.Group("/api")
 	private.Post("/loginuser", controller.ScanUser)
@@ -48,5 +46,5 @@ func SetupRoutes(app *fiber.App) {
 	private.Put("/blog/:id", controller.BlogUpdate)
 	private.Delete("/blog/:id", controller.BlogDelete)
 	// Barcode
-	private.Get("/:id", controller.GenerateQRCodeFromUser)
+	private.Get("/barcode/:id", controller.GenerateQRCodeFromUser)
 }

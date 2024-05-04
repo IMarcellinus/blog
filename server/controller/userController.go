@@ -181,9 +181,13 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	c.Set("Content-Type", "image/png")
+	fmt.Println("QR code:", qrFromCodeQr)
 
-	fmt.Println(user.Role)
+	// Set Accept header
+	c.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8")
+
+	// Set content type to image/png
+	c.Set("Content-Type", "image/png")
 
 	// Return success response with QR code
 	return c.Status(fiber.StatusOK).Send(qrFromCodeQr)

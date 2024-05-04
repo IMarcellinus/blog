@@ -38,6 +38,9 @@ func GenerateQRCodeFromUser(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).SendString("Error generating QR code")
 	}
 
+	// Set Accept header
+	c.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8")
+
 	// Mengatur header respons
 	c.Set("Content-Type", "image/png")
 
