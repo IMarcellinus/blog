@@ -32,7 +32,7 @@ func ConnectDB() {
 
 	log.Println("Connection Successfull.")
 
-	db.AutoMigrate(new(model.Blog))
+	// db.AutoMigrate(new(model.Blog))
 	db.AutoMigrate(new(model.User))
 	db.AutoMigrate(new(model.Book))
 	db.AutoMigrate(new(model.Peminjaman))

@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -19,6 +20,7 @@ type formData struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	CodeQr   string `json:"codeqr"`
+	Role     string `json:"role"`
 }
 
 // Function Login
@@ -102,6 +104,11 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
+	// Set default value for Role if not provided
+	if formData.Role == "" {
+		formData.Role = "user"
+	}
+
 	// Validate input
 	if formData.Username == "" || formData.Password == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -149,6 +156,7 @@ func Register(c *fiber.Ctx) error {
 	user := model.User{
 		Username:  formData.Username,
 		Password:  helper.HashPassword(formData.Password),
+		Role:      formData.Role,
 		CodeQr:    codeQr,                          // Save decoded QR code to CodeQr column
 		CreatedAt: time.Now().Format("02-01-2006"), // Set the CreatedAt field with the specified date format
 		// Jika Anda menyimpan QR code dalam database, tambahkan QR code di sini
@@ -173,6 +181,12 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
+	fmt.Println("QR code:", qrFromCodeQr)
+
+	// Set Accept header
+	c.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8")
+
+	// Set content type to image/png
 	c.Set("Content-Type", "image/png")
 
 	// Return success response with QR code

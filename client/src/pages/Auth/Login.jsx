@@ -6,12 +6,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   FetchUser,
-  LoginUser,
+  LoginAdmin,
   reset,
-  setMessageAuth,
-} from "../../services/store/reducers/Authslice"; // Ubah dari Authslice menjadi AuthSlice
-import { SilaperLogo } from "../assets/img";
-import CustomButton from "../components/CustomButton";
+} from "../../../services/store/reducers/Authslice"; // Ubah dari Authslice menjadi AuthSlice
+import { SilaperLogo } from "../../assets/img";
 
 function Login() {
   const { user, isError, isSuccess, isLoading, message } = useSelector(
@@ -38,10 +36,23 @@ function Login() {
     }, 5000); // example timeout, change it to your needs
   };
 
+  useEffect(() => {
+    if (user !== null && isSuccess) {
+      navigate('/');
+      dispatch(reset());
+      dispatch(FetchUser());
+    }
+  }, [user, isSuccess, dispatch, navigate]);
+
+  useEffect(() => {
+    deleteToken();
+    document.body.style.overflow = 'auto';
+  }, [])
+  
+
   const Auth = (e) => {
     e.preventDefault();
-    dispatch(LoginUser({ username, password }));
-    navigate("/");
+    dispatch(LoginAdmin({ username, password }));
   };
 
   const handleUsernameChange = (e) => {
