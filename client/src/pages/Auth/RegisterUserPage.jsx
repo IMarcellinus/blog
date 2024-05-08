@@ -17,7 +17,6 @@ function RegisterUserPage() {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const [imageBarcode, setImageBarcode] = useState('');
-  console.log(user);
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -158,7 +157,7 @@ function RegisterUserPage() {
         <div className="flex min-w-max justify-center">
           {imageBarcode && isSuccess && (
             <img
-              src={imageBarcode}
+              src={`data:image/png;base64,${imageBarcode}`}
               alt="QR Code"
               className="h-full"
             />

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"crypto/md5"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -181,16 +182,17 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
+	base64.StdEncoding.EncodeToString(qrFromCodeQr)
+
 	fmt.Println("QR code:", qrFromCodeQr)
 
-	// Set Accept header
-	c.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8")
-
-	// Set content type to image/png
-	c.Set("Content-Type", "image/png")
+	response := &fiber.Map{
+		"status":    "Ok",
+		"baseImage": base64.StdEncoding.EncodeToString(qrFromCodeQr),
+	}
 
 	// Return success response with QR code
-	return c.Status(fiber.StatusOK).Send(qrFromCodeQr)
+	return c.Status(fiber.StatusOK).JSON(response)
 }
 
 // Function Logout

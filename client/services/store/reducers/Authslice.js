@@ -74,7 +74,8 @@ export const RegisterUser = createAsyncThunk(
         "http://localhost:8080/api/register",
         credentials
       );
-      return response.data;
+      console.log(response.data)
+      return response.data.baseImage;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "An error occurred"
