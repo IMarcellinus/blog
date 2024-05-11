@@ -162,6 +162,9 @@ export const authSlice = createSlice({
     setMessageAuth: (state, action) => {
       state.message = action.payload;
     },
+    setResetMessage: (state) => {
+      state.message = null;
+    }
   },
   extraReducers: (builder) => {
     // Login Admin
@@ -262,6 +265,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { reset, logoutUser, passwordFalse, setStatus, setEmail, setNewPassword, setConfirmNewPassword, forgotReset, setResetPassword, setIsLogin, setMessageAuth } = authSlice.actions;
+export const { reset, logoutUser, passwordFalse, setStatus, setEmail, setNewPassword, setConfirmNewPassword, forgotReset, setResetPassword, setIsLogin, setMessageAuth, setResetMessage } = authSlice.actions;
 
 export default authSlice.reducer;

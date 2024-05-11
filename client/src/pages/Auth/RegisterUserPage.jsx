@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { BiLock, BiUser } from "react-icons/bi";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { RegisterUser } from "../../../services/store/reducers/Authslice";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  RegisterUser,
+  setResetMessage,
+} from "../../../services/store/reducers/Authslice";
 import { SilaperLogo } from "../../assets/img";
 
 function RegisterUserPage() {
@@ -16,7 +19,7 @@ function RegisterUserPage() {
   const [errorPassword, setErrorPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const [imageBarcode, setImageBarcode] = useState('');
+  const [imageBarcode, setImageBarcode] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -29,7 +32,19 @@ function RegisterUserPage() {
 
   const Register = (e) => {
     e.preventDefault();
+    dispatch(setResetMessage());
     dispatch(RegisterUser({ username, password }));
+  };
+
+  const handleDownload = () => {
+    // Create an anchor element
+    const link = document.createElement("a");
+    // Set the href attribute to the image data
+    link.href = `data:image/png;base64,${imageBarcode}`;
+    // Set the download attribute to prompt download
+    link.download = "barcode.png";
+    // Simulate click event
+    link.click();
   };
 
   const handleUsernameChange = (e) => {
@@ -59,20 +74,23 @@ function RegisterUserPage() {
       // Jika registrasi berhasil, tampilkan QR code
       setImageBarcode(user);
     }
-  }, [isSuccess, user]);
-
-  useEffect(() => {
-    // Kosongkan QR code setelah muncul
-    if (imageBarcode && isSuccess) {
-      setTimeout(() => {
-        setImageBarcode("");
-      }, 100000); // Setelah 10 detik, kosongkan QR code
+    if (!isError) {
+      dispatch(setResetMessage());
     }
-  }, [imageBarcode, isSuccess]);
+  }, [isSuccess, user, dispatch, isError]);
+
+  // useEffect(() => {
+  //   // Kosongkan QR code setelah muncul
+  //   if (imageBarcode && isSuccess) {
+  //     setTimeout(() => {
+  //       setImageBarcode("");
+  //     }, 100000); // Setelah 10 detik, kosongkan QR code
+  //   }
+  // }, [imageBarcode, isSuccess]);
 
   return (
     <section className="mx-auto max-w-[1280px] relative h-screen flex items-center justify-center">
-      <div className="w-full space-y-6 md:space-y-6 bg-slate-300 rounded-xl shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-4 m-2 lg:m-20 xl:m-24">
+      <div className="w-full space-y-2 md:space-y-6 bg-slate-300 rounded-xl shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-4 m-2 lg:m-20 xl:m-24">
         <div className="flex items-center flex-col">
           <img src={SilaperLogo} className="h-28 sm:h-44 md:h-52"></img>
           <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-white text-center">
@@ -154,13 +172,34 @@ function RegisterUserPage() {
             </button>
           </div>
         </form>
-        <div className="flex min-w-max justify-center">
+        <div className="flex">
           {imageBarcode && isSuccess && (
-            <img
-              src={`data:image/png;base64,${imageBarcode}`}
-              alt="QR Code"
-              className="h-full"
-            />
+            <div className="flex flex-col max-w-full justify-center items-center w-full">
+              <img
+                src={`data:image/png;base64,${imageBarcode}`}
+                alt="QR Code"
+                className="h-full"
+              />
+              <div className="flex justify-start flex-col">
+                <button
+                  onClick={handleDownload}
+                  className="bg-blue-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+                >
+                  Download Barcode
+                </button>
+                <p className="text-black mt-2">
+                  Have a Barcode?{" "}
+                  <i>
+                    <Link
+                      to="/loginuser"
+                      className="hover:text-sky-900 hover:underline"
+                    >
+                      click here
+                    </Link>
+                  </i>{" "}
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>
