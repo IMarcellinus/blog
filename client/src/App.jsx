@@ -26,7 +26,7 @@ function App() {
   const token = Cookies.get("token");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log(authUser);
+  // console.log(authUser);
 
   useEffect(() => {
     dispatch(FetchUser());

@@ -16,20 +16,24 @@ func BookList(c *fiber.Ctx) error {
 
 	time.Sleep(time.Millisecond * 500)
 
+	// Pengaturan koneksi database
 	db := database.DBConn
 
+	// Mengambil semua data buku dari database
 	var records []model.Book
-
 	db.Find(&records)
 
+	// Membuat konteks dengan status code dan pesan
 	context := fiber.Map{
-		"book":       records,
-		"statusText": "Ok",
-		"msg":        "Book List",
+		"status_code": fiber.StatusOK,
+		"msg":         "Book List",
 	}
 
-	c.Status(200)
-	return c.JSON(context)
+	// Menambahkan data buku ke dalam konteks
+	context["book"] = records
+
+	// Mengirimkan respons JSON
+	return c.Status(200).JSON(context)
 }
 
 func BookPagination(c *fiber.Ctx) error {

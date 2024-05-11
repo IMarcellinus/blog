@@ -16,7 +16,7 @@ const Header = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log("header: " ,authUser.role)
+  // console.log("header: " ,authUser.role)
   const LogOut = () => {
     Swal.fire({
       title: "Are you sure?",
