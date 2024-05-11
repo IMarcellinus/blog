@@ -26,6 +26,7 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/user", controller.RefreshToken)
 	// Book CRUD
 	private.Get("/book", controller.BookList)
+	private.Get("/book/:page/:perPage/:keyword", controller.BookPagination)
 	private.Post("/book", controller.BookCreate)
 	private.Put("/book/:id", controller.BookUpdate)
 	private.Delete("/book/:id", controller.BookDelete)

@@ -3,6 +3,8 @@ package controller
 import (
 	"fmt"
 	"log"
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/IMarcellinus/blog/database"
@@ -28,6 +30,83 @@ func BookList(c *fiber.Ctx) error {
 
 	c.Status(200)
 	return c.JSON(context)
+}
+
+func BookPagination(c *fiber.Ctx) error {
+	page := c.Params("page")
+	perPage := c.Params("perPage")
+	keyword := c.Params("keyword")
+
+	numPage, _ := strconv.Atoi(page)
+	numPerPage, _ := strconv.Atoi(perPage)
+
+	if numPerPage <= 0 {
+		context := fiber.Map{
+			"msg":         "error limit cannot less than 1",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
+	time.Sleep(time.Millisecond * 500)
+
+	db := database.DBConn
+
+	var books []model.Book
+
+	query := db
+
+	// Mengecek apakah parameter keyword tidak kosong
+	if keyword != "" {
+		query = query.Where("nama_buku LIKE ? OR kode_buku LIKE ? OR tanggal_pengesahan LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	}
+
+	var totalData int64
+	query.Model(&model.Book{}).Count(&totalData)
+
+	totalPage := int(totalData) / numPerPage
+	if int(totalData)%numPerPage != 0 {
+		totalPage++
+	}
+
+	if totalPage == 0 {
+		context := fiber.Map{
+			"msg":         "no books found",
+			"status_code": http.StatusNotFound,
+		}
+		return c.Status(http.StatusNotFound).JSON(context)
+	}
+
+	offset := (numPage - 1) * numPerPage
+	query = query.Offset(offset).Limit(numPerPage)
+
+	if err := query.Find(&books).Error; err != nil {
+		context := fiber.Map{
+			"msg":         "error retrieving books",
+			"status_code": http.StatusInternalServerError,
+		}
+		return c.Status(http.StatusInternalServerError).JSON(context)
+	}
+
+	if numPage <= 0 || numPage > totalPage {
+		context := fiber.Map{
+			"msg":         "error page number out of range",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
+	context := fiber.Map{
+		"limit":       numPerPage,
+		"books":       books,
+		"status_code": fiber.StatusOK,
+		"message":     "success getting books per page",
+		"total_page":  totalPage,
+		"page_now":    numPage,
+	}
+
+	return c.Status(fiber.StatusOK).JSON(context)
+
 }
 
 func getBookCodeByID(id uint) string {
