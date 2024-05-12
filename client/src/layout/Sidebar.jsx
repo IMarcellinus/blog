@@ -22,7 +22,7 @@ function Sidebar({
   const [isActiveUnit, setIsActiveUnit] = useState(false);
   const [isActiveAttendance, setIsActiveAttendance] = useState(false);
 
-  console.log(authUser.role)
+  // console.log(authUser.role)
 
   const mouseEnter = () => {
     if (window.matchMedia("(min-width: 768px)").matches) {

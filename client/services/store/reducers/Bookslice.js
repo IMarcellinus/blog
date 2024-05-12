@@ -116,6 +116,60 @@ export const createBook = createAsyncThunk(
   }
 );
 
+export const updateBook = createAsyncThunk(
+  "books/updateBook",
+  async (update, thunkAPI) => {
+    const token = await getToken();
+    if (!token) {
+      return thunkAPI.rejectWithValue("No token found");
+    }
+    try {
+      const token = await getToken();
+      const response = await axios.put(
+        `${BASE_URL}/book/${update.id}`,
+        {
+          nama_buku: update.nama_buku,
+          tanggal_pengesahan: update.tanggal_pengesahan
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteBook = createAsyncThunk(
+  "books/deleteBook",
+  async ({id}, thunkAPI) => {
+    const token = await getToken();
+    if (!token) {
+      return thunkAPI.rejectWithValue("No token found");
+    }
+    try {
+      const token = await getToken();
+      const response = await axios.delete(
+        `${BASE_URL}/book/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const BookSlice = createSlice({
   name: "books",
   initialState,
@@ -210,7 +264,6 @@ export const BookSlice = createSlice({
       state.isSubmit = false;
       state.isUpdate = false;
       state.status = null;
-      // state.message = action.payload.message
     });
     builder.addCase(getBook.rejected, (state, action) => {
       state.isLoading = false;
@@ -235,6 +288,41 @@ export const BookSlice = createSlice({
       state.isError = true;
       state.isSuccess = false;
       state.message = action.payload;
+    });
+    
+    // Update Book
+    builder.addCase(updateBook.pending, (state) => {
+      state.isLoading = true;
+      state.isSubmit = false;
+    });
+    builder.addCase(updateBook.fulfilled, (state) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isUpdate = true;
+    });
+    builder.addCase(updateBook.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload;
+    });
+
+    // Delete Book
+    builder.addCase(deleteBook.pending, (state) => {
+      state.isLoading = true;
+      state.isSubmit = false;
+    });
+    builder.addCase(deleteBook.fulfilled, (state) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isDelete = true;
+    });
+    builder.addCase(deleteBook.rejected, (state, action) => {
+      state.isLoading = false;
+      state.deleteFail = true;
+      state.isError = true;
+      state.isSuccess = false;
+      state.message = action.payload.msg;
     });
   },
 });

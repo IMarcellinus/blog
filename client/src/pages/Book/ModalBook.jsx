@@ -1,22 +1,27 @@
 import PropTypes from "prop-types";
 import { FaWindowClose } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { store } from "../../../services/store/Store";
+// import { store } from "../../../services/store/Store";
 import {
-    createBook,
-    setNamaBuku,
-    setTanggalPengesahan,
+  createBook,
+  setNamaBuku,
+  setTanggalPengesahan,
+  updateBook,
 } from "../../../services/store/reducers/Bookslice";
 
 const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
-  const { nama_buku, tanggal_pengesahan, id, message, edit } =
-    useSelector((state) => state.books);
-
+  const { nama_buku, tanggal_pengesahan, id, message, edit } = useSelector(
+    (state) => state.books
+  );
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(createBook({ nama_buku, tanggal_pengesahan }));
+    if (id == null) {
+      dispatch(createBook({ nama_buku, tanggal_pengesahan }));
+    } else {
+      dispatch(updateBook({id, nama_buku, tanggal_pengesahan}))
+    }
   };
 
   return (
@@ -46,7 +51,7 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                     action=""
                   >
                     <div className="flex flex-col">
-                      <label className="font-medium">Book Name</label>
+                      <label className="font-medium">Nama Buku</label>
                       <input
                         required
                         value={nama_buku}
@@ -59,16 +64,15 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                     </div>
                     <div className="flex h-full flex-col">
                       <label className="font-medium">Tanggal Pengesahan</label>
-                      <textarea
+                      <input
+                        name="tanggal_pengesahan"
                         value={tanggal_pengesahan}
                         onChange={(e) => {
                           dispatch(setTanggalPengesahan(e.target.value));
                         }}
-                        className="size-full rounded-md border-2 border-sky-700 p-2 text-sm"
-                        name=""
-                        id=""
-                        rows="3"
-                      ></textarea>
+                        className="rounded-md border border-sky-600 px-2 py-3 text-xs focus:border-[2px] focus:border-sky-500 focus:outline-none sm:py-2 sm:text-base"
+                        type="date"
+                      />
                     </div>
                     <div className="flex flex-row-reverse pt-2">
                       <button

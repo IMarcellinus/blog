@@ -163,7 +163,7 @@ export const authSlice = createSlice({
     },
     setResetMessage: (state) => {
       state.message = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     // Login Admin

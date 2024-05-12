@@ -120,8 +120,9 @@ func getBookCodeByID(id uint) string {
 // function for BookCreate
 func BookCreate(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Add a Book List",
+		"statusText":  "Ok",
+		"status_code": fiber.StatusCreated,
+		"msg":         "Add a Book List",
 	}
 
 	record := new(model.Book)
@@ -140,16 +141,17 @@ func BookCreate(c *fiber.Ctx) error {
 	}
 
 	// Mengonversi string tanggal pengesahan ke dalam format time.Time
-	tanggalPengesahan, err := time.Parse("02-01-2006", record.TanggalPengesahan)
+	tanggalPengesahan, err := time.Parse("2006-01-02", record.TanggalPengesahan)
 	if err != nil {
 		log.Println("Error in parsing tanggal pengesahan:", err)
 		context["statusText"] = ""
-		context["msg"] = "Invalid tanggal pengesahan format. Please use format dd-mm-yyyy"
+		context["status_code"] = fiber.StatusBadRequest // Menggunakan status code 400 Bad Request
+		context["msg"] = "Invalid tanggal pengesahan format. Please use format yyyy/MM/dd"
 		return c.Status(400).JSON(context)
 	}
 
 	// Set TanggalPengesahan field
-	record.TanggalPengesahan = tanggalPengesahan.Format("02-01-2006")
+	record.TanggalPengesahan = tanggalPengesahan.Format("2006-01-02") // Format: tahun-bulan-tanggal
 
 	// Set CreatedAt field
 	record.CreatedAt = time.Now().Format("02-01-2006")
@@ -179,6 +181,7 @@ func BookCreate(c *fiber.Ctx) error {
 	context["data"] = record
 
 	return c.Status(201).JSON(context)
+
 }
 
 func BookUpdate(c *fiber.Ctx) error {
@@ -201,22 +204,51 @@ func BookUpdate(c *fiber.Ctx) error {
 		return c.JSON(context)
 	}
 
-	if err := c.BodyParser(&record); err != nil {
+	// Parsing body request
+	updatedRecord := new(model.Book)
+	if err := c.BodyParser(updatedRecord); err != nil {
 		log.Println("Error in parsing request.")
 		context["statusText"] = ""
 		context["msg"] = "Something went wrong JSON format"
+		return c.Status(400).JSON(context)
 	}
 
+	// Validate if kode_buku is provided
+	if updatedRecord.KodeBuku != "" {
+		log.Println("Error: kode_buku cannot be updated.")
+		context["statusText"] = ""
+		context["msg"] = "Kode Buku cannot be updated."
+		return c.Status(400).JSON(context)
+	}
+
+	// Update only nama_buku and tanggal_pengesahan
+	record.NamaBuku = updatedRecord.NamaBuku
+	record.TanggalPengesahan = updatedRecord.TanggalPengesahan
+
+	// Validating tanggal_pengesahan format
+	_, err := time.Parse("2006-01-02", record.TanggalPengesahan)
+	if err != nil {
+		log.Println("Error in parsing tanggal pengesahan:", err)
+		context["statusText"] = ""
+		context["msg"] = "Invalid tanggal pengesahan format. Please use format yyyy-MM-dd"
+		return c.Status(400).JSON(context)
+	}
+
+	// Save updated record to database
 	result := database.DBConn.Save(record)
 
 	if result.Error != nil {
 		log.Println("Error in update data.")
+		context["statusText"] = ""
+		context["msg"] = "Error in updating data"
+		return c.Status(500).JSON(context)
 	}
 
-	context["msg"] = "Record is update successfully."
+	context["msg"] = "Record is updated successfully."
 	context["data"] = record
 
-	return c.Status(201).JSON(context)
+	return c.Status(200).JSON(context)
+
 }
 
 func BookDelete(c *fiber.Ctx) error {

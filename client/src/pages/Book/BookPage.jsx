@@ -23,7 +23,7 @@ import ModalBook from "./ModalBook";
 import SearchBarBook from "./SearchBarBook";
 
 const BookPage = ({ authUser }) => {
-  console.log(authUser.role);
+  // console.log(authUser.role);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const {
     books,
@@ -69,7 +69,34 @@ const BookPage = ({ authUser }) => {
         dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
       }
     }
-  }, [currentPageBook, dispatch, isSubmit, search])
+    if (isDelete === true) {
+      toast.error('Hapus Berhasil !');
+      if (books.length == 1 && bookSearch.length == 0 && search == '' && currentPageBook > 0) {
+        dispatch(getBook({ currentPageBook }));
+        dispatch(setCurrentPageBook(currentPageBook - 1));
+      } else if (books.length > 1 && bookSearch.length == 0 && search == '') {
+        dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
+      } else if (books.length == 1 && bookSearch.length == 0 && search == '' && currentPageBook == 0) {
+        dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
+      } else if (books.length == 0 && bookSearch.length == 1 && search !== '' && currentPageBook > 0) {
+        dispatch(getAllBook({ currentPageBook, search }));
+        dispatch(setCurrentPageBook(currentPageBook - 1));
+      } else if (books.length == 0 && bookSearch.length > 1 && search !== '') {
+        dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
+      } else if (books.length == 0 && bookSearch.length == 1 && search !== '' && currentPageBook == 0) {
+        dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
+      }
+    }
+    if (isUpdate === true) {
+      handleCloseModal();
+      toast.success('Edit Buku Berhasil!');
+      if (search !== '') {
+        dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
+      } else {
+        dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
+      }
+    }
+  }, [currentPageBook, dispatch, isSubmit, search, isUpdate, isDelete])
 
   useEffect(() => {
     dispatch(setCurrentPageBook(0));

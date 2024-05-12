@@ -1,11 +1,13 @@
 import Tippy from "@tippyjs/react";
 import PropTypes from "prop-types";
+import { useEffect } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { HiTrash } from "react-icons/hi";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setCurrentPageBook } from "../../../services/store/reducers/Bookslice";
+import Swal from 'sweetalert2';
+import { deleteBook, setCurrentPageBook, setDeleteFail, setEdit, setId, setMessage, setNamaBuku, setTanggalPengesahan } from "../../../services/store/reducers/Bookslice";
 
 const BookList = ({
   authUser,
@@ -23,6 +25,43 @@ const BookList = ({
   const changePage = ({ selected }) => {
     dispatch(setCurrentPageBook(selected));
   };
+
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(deleteBook({ id }));
+      }
+    });
+  };
+
+  const handleEdit = (id, nama_buku, tanggal_pengesahan) => {
+    dispatch(setId(id));
+    dispatch(setNamaBuku(nama_buku));
+    dispatch(setTanggalPengesahan(tanggal_pengesahan));
+    dispatch(setEdit(true));
+    setModalIsOpen(true);
+    console.log(tanggal_pengesahan)
+  };
+
+  useEffect(() => {
+    if (deleteFail) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: message,
+      });
+      dispatch(setDeleteFail(false));
+      dispatch(setMessage(''));
+    }
+  }, [deleteFail, dispatch, message]);
 
   return (
     <div className="min-h-[470px]">
@@ -51,13 +90,15 @@ const BookList = ({
                 <td className="p-4 text-left">{book.tanggal_pengesahan}</td>
                 <td className="relative flex h-full gap-3 px-4 py-3">
                   <Tippy content="Delete" followCursor>
-                    <div className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600">
+                    <div className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600" onClick={() => handleDelete(book.id)}>
                       <HiTrash className="size-full" />
                     </div>
                   </Tippy>
                   <Tippy content="Edit" followCursor>
                     <div className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600">
-                      <AiOutlineEdit className="size-full" />
+                      <AiOutlineEdit className="size-full" onClick={() => {
+                        handleEdit(book.id, book.nama_buku, book.tanggal_pengesahan)
+                      }} />
                     </div>
                   </Tippy>
                 </td>
