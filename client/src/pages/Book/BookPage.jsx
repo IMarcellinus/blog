@@ -5,6 +5,7 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import {
   getAllBook,
   getBook,
@@ -60,43 +61,76 @@ const BookPage = ({ authUser }) => {
   };
 
   useEffect(() => {
-    if(isSubmit === true){
+    console.log("token:", token);
+    console.log("role:", authUser.role);
+    if (!token) {
+      let loginRoute = '/login';
+      if (authUser.role === 'user') {
+        loginRoute = '/loginuser';
+      }
+      navigate(loginRoute);
+      Swal.fire({
+        icon: 'error',
+        text: 'Sesi Telah Habis, Silahkan Login Kembali :)',
+      });
+    }
+    if (isSubmit === true) {
       handleCloseModal();
-      toast.success('Tambah Buku Berhasil');
-      if (search !== '') {
+      toast.success("Tambah Buku Berhasil");
+      if (search !== "") {
         dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
       } else {
         dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
       }
     }
     if (isDelete === true) {
-      toast.error('Hapus Berhasil !');
-      if (books.length == 1 && bookSearch.length == 0 && search == '' && currentPageBook > 0) {
+      toast.error("Hapus Berhasil !");
+      if (
+        books.length == 1 &&
+        bookSearch.length == 0 &&
+        search == "" &&
+        currentPageBook > 0
+      ) {
         dispatch(getBook({ currentPageBook }));
         dispatch(setCurrentPageBook(currentPageBook - 1));
-      } else if (books.length > 1 && bookSearch.length == 0 && search == '') {
+      } else if (books.length > 1 && bookSearch.length == 0 && search == "") {
         dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
-      } else if (books.length == 1 && bookSearch.length == 0 && search == '' && currentPageBook == 0) {
+      } else if (
+        books.length == 1 &&
+        bookSearch.length == 0 &&
+        search == "" &&
+        currentPageBook == 0
+      ) {
         dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
-      } else if (books.length == 0 && bookSearch.length == 1 && search !== '' && currentPageBook > 0) {
+      } else if (
+        books.length == 0 &&
+        bookSearch.length == 1 &&
+        search !== "" &&
+        currentPageBook > 0
+      ) {
         dispatch(getAllBook({ currentPageBook, search }));
         dispatch(setCurrentPageBook(currentPageBook - 1));
-      } else if (books.length == 0 && bookSearch.length > 1 && search !== '') {
+      } else if (books.length == 0 && bookSearch.length > 1 && search !== "") {
         dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
-      } else if (books.length == 0 && bookSearch.length == 1 && search !== '' && currentPageBook == 0) {
+      } else if (
+        books.length == 0 &&
+        bookSearch.length == 1 &&
+        search !== "" &&
+        currentPageBook == 0
+      ) {
         dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
       }
     }
     if (isUpdate === true) {
       handleCloseModal();
-      toast.success('Edit Buku Berhasil!');
-      if (search !== '') {
+      toast.success("Edit Buku Berhasil!");
+      if (search !== "") {
         dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
       } else {
         dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
       }
     }
-  }, [currentPageBook, dispatch, isSubmit, search, isUpdate, isDelete])
+  }, [currentPageBook, dispatch, isSubmit, search, isUpdate, isDelete]);
 
   useEffect(() => {
     dispatch(setCurrentPageBook(0));

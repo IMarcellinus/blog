@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import { store } from "../../../services/store/Store";
 import {
   createBook,
+  setMessage,
   setNamaBuku,
   setTanggalPengesahan,
   updateBook,
@@ -17,10 +18,14 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (id == null) {
-      dispatch(createBook({ nama_buku, tanggal_pengesahan }));
+    if (!nama_buku.trim() || !tanggal_pengesahan.trim()) {
+      dispatch(setMessage("Nama buku dan tanggal pengesahan harus diisi."));
     } else {
-      dispatch(updateBook({id, nama_buku, tanggal_pengesahan}))
+      if (id == null) {
+        dispatch(createBook({ nama_buku, tanggal_pengesahan }));
+      } else {
+        dispatch(updateBook({ id, nama_buku, tanggal_pengesahan }));
+      }
     }
   };
 

@@ -6,8 +6,17 @@ import { HiTrash } from "react-icons/hi";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
-import { deleteBook, setCurrentPageBook, setDeleteFail, setEdit, setId, setMessage, setNamaBuku, setTanggalPengesahan } from "../../../services/store/reducers/Bookslice";
+import Swal from "sweetalert2";
+import {
+  deleteBook,
+  setCurrentPageBook,
+  setDeleteFail,
+  setEdit,
+  setId,
+  setMessage,
+  setNamaBuku,
+  setTanggalPengesahan,
+} from "../../../services/store/reducers/Bookslice";
 
 const BookList = ({
   authUser,
@@ -21,20 +30,19 @@ const BookList = ({
   const { search, bookSearch, currentPageBook, deleteFail, message } =
     useSelector((state) => state.books);
   const { role } = authUser;
-
   const changePage = ({ selected }) => {
     dispatch(setCurrentPageBook(selected));
   };
 
   const handleDelete = (id) => {
     Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
         dispatch(deleteBook({ id }));
@@ -48,18 +56,18 @@ const BookList = ({
     dispatch(setTanggalPengesahan(tanggal_pengesahan));
     dispatch(setEdit(true));
     setModalIsOpen(true);
-    console.log(tanggal_pengesahan)
+    console.log(tanggal_pengesahan);
   };
 
   useEffect(() => {
     if (deleteFail) {
       Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
+        icon: "error",
+        title: "Oops...",
         text: message,
       });
       dispatch(setDeleteFail(false));
-      dispatch(setMessage(''));
+      dispatch(setMessage(""));
     }
   }, [deleteFail, dispatch, message]);
 
@@ -72,7 +80,9 @@ const BookList = ({
             <th className="px-4 py-3 text-left">Nama Buku</th>
             <th className="px-4 py-3 text-left">Kode Buku</th>
             <th className="px-4 py-3 text-left">Tanggal Pengesahan</th>
-            <th className="px-4 py-3 text-left">Action</th>
+            {!isLoading && role !== "user" && (
+              <th className="px-4 py-3 text-left">Action</th>
+            )}
           </tr>
         </thead>
         <tbody className="border text-sm font-light">
@@ -88,25 +98,37 @@ const BookList = ({
                 <td className="p-4 text-left">{book.nama_buku}</td>
                 <td className="p-4 text-left">{book.kode_buku}</td>
                 <td className="p-4 text-left">{book.tanggal_pengesahan}</td>
-                <td className="relative flex h-full gap-3 px-4 py-3">
-                  <Tippy content="Delete" followCursor>
-                    <div className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600" onClick={() => handleDelete(book.id)}>
-                      <HiTrash className="size-full" />
-                    </div>
-                  </Tippy>
-                  <Tippy content="Edit" followCursor>
-                    <div className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600">
-                      <AiOutlineEdit className="size-full" onClick={() => {
-                        handleEdit(book.id, book.nama_buku, book.tanggal_pengesahan)
-                      }} />
-                    </div>
-                  </Tippy>
-                </td>
+                {!isLoading && role == "admin" && (
+                  <td className="relative flex h-full gap-3 px-4 py-3">
+                    <Tippy content="Delete" followCursor>
+                      <div
+                        className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
+                        onClick={() => handleDelete(book.id)}
+                      >
+                        <HiTrash className="size-full" />
+                      </div>
+                    </Tippy>
+                    <Tippy content="Edit" followCursor>
+                      <div className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600">
+                        <AiOutlineEdit
+                          className="size-full"
+                          onClick={() => {
+                            handleEdit(
+                              book.id,
+                              book.nama_buku,
+                              book.tanggal_pengesahan
+                            );
+                          }}
+                        />
+                      </div>
+                    </Tippy>
+                  </td>
+                )}
               </tr>
             ))}
         </tbody>
       </table>
-      {!isLoading && (bookSearch == null || books === null) && (
+      {!isLoading && (!bookSearch?.length && !books?.length) && (
         <div className="flex justify-center py-4">
           <p>Data tidak ditemukan</p>
         </div>

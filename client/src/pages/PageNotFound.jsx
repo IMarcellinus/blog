@@ -3,18 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 const PageNotFound = () => {
-  const { user } = useSelector(
-    (state) => state.auth
-  );
-  console.log(user)
-  
   const navigate = useNavigate()
-
-  // useEffect(() => {
-  //   if(user === null) {
-  //     navigate('/loginuser')
-  //   }
-  // })
 
   return (
     <div className='absolute z-[104] flex h-screen w-screen items-center bg-blue-50'>

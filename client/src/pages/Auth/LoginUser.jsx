@@ -52,7 +52,6 @@ function LoginUserPage() {
   const Auth = (e) => {
     e.preventDefault();
     dispatch(LoginUser({ codeqr }));
-    console.log(codeqr);
   };
 
   const handleCodeQrChange = (e) => {
