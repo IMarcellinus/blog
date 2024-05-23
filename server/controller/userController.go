@@ -18,10 +18,14 @@ import (
 )
 
 type formData struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	CodeQr   string `json:"codeqr"`
-	Role     string `json:"role"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	CodeQr       string `json:"codeqr"`
+	Role         string `json:"role"`
+	Nim          string `json:"nim"`
+	Nama         string `json:"nama"`
+	JenisKelamin string `json:"jeniskelamin"`
+	Prodi        string `json:"prodi"`
 }
 
 // Function Login
@@ -105,16 +109,27 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
+	// Log the received formData to verify the input
+	log.Printf("Received formData: %+v\n", formData)
+
 	// Set default value for Role if not provided
 	if formData.Role == "" {
 		formData.Role = "user"
 	}
 
 	// Validate input
-	if formData.Username == "" || formData.Password == "" {
+	if formData.Username == "" || formData.Password == "" || formData.Nim == "" || formData.Nama == "" || formData.JenisKelamin == "" || formData.Prodi == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status": "Error",
-			"msg":    "Username and password cannot be empty",
+			"msg":    "username, password, nim, nama, jenis kelamin, and prodi cannot be empty",
+		})
+	}
+
+	// Validate gender input
+	if formData.JenisKelamin != "laki-laki" && formData.JenisKelamin != "perempuan" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Gender must be either 'laki-laki' or 'perempuan'",
 		})
 	}
 
@@ -145,9 +160,6 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	// Save QR code to database
-	// Simpan QR code di sini ke dalam database, misalnya dalam bentuk byte slice
-
 	// Decode QR code using MD5
 	hasher := md5.New()
 	hasher.Write([]byte(qr))
@@ -155,12 +167,15 @@ func Register(c *fiber.Ctx) error {
 
 	// Create user in database
 	user := model.User{
-		Username:  formData.Username,
-		Password:  helper.HashPassword(formData.Password),
-		Role:      formData.Role,
-		CodeQr:    codeQr,                          // Save decoded QR code to CodeQr column
-		CreatedAt: time.Now().Format("02-01-2006"), // Set the CreatedAt field with the specified date format
-		// Jika Anda menyimpan QR code dalam database, tambahkan QR code di sini
+		Username:     formData.Username,
+		Password:     helper.HashPassword(formData.Password),
+		Nim:          formData.Nim,
+		Nama:         formData.Nama,
+		JenisKelamin: formData.JenisKelamin,
+		Prodi:        formData.Prodi,
+		Role:         formData.Role,
+		CodeQr:       codeQr,                          // Save decoded QR code to CodeQr column
+		CreatedAt:    time.Now().Format("02-01-2006"), // Set the CreatedAt field with the specified date format
 	}
 
 	result := database.DBConn.Create(&user)
