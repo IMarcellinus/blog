@@ -49,4 +49,11 @@ func SetupRoutes(app *fiber.App) {
 	private.Delete("/blog/:id", controller.BlogDelete)
 	// Barcode
 	private.Get("/barcode/:id", controller.GenerateQRCodeFromUser)
+	// User CRUD
+	private.Get("/users", controller.UserList)
+	private.Get("/users/:page/:perPage/:keyword", controller.UserPagination)
+	private.Get("/users/:page/:perPage/", controller.UserPagination)
+	private.Put("/users/:id", controller.UserUpdate)
+	private.Delete("/users/:id", controller.UserDelete)
+
 }

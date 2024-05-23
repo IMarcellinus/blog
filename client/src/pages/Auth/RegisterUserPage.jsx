@@ -79,15 +79,6 @@ function RegisterUserPage() {
     }
   }, [isSuccess, user, dispatch, isError]);
 
-  // useEffect(() => {
-  //   // Kosongkan QR code setelah muncul
-  //   if (imageBarcode && isSuccess) {
-  //     setTimeout(() => {
-  //       setImageBarcode("");
-  //     }, 100000); // Setelah 10 detik, kosongkan QR code
-  //   }
-  // }, [imageBarcode, isSuccess]);
-
   return (
     <section className="mx-auto max-w-[1280px] relative h-screen flex items-center justify-center">
       <div className="w-full space-y-2 md:space-y-6 bg-slate-300 rounded-xl shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-4 m-2 lg:m-20 xl:m-24">

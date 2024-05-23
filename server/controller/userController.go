@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/IMarcellinus/blog/database"
@@ -285,4 +287,209 @@ func RefreshToken(c *fiber.Ctx) error {
 	returnObject["status_code"] = "200"
 
 	return c.Status(fiber.StatusOK).JSON(returnObject)
+}
+
+func UserList(c *fiber.Ctx) error {
+	time.Sleep(time.Millisecond * 500)
+
+	// Pengaturan koneksi database
+	db := database.DBConn
+
+	// Mengambil semua data buku dari database
+	var records []model.User
+	db.Find(&records)
+
+	// Membuat konteks dengan status code dan pesan
+	context := fiber.Map{
+		"status_code": fiber.StatusOK,
+		"msg":         "User List",
+	}
+
+	// Menambahkan data buku ke dalam konteks
+	context["user"] = records
+
+	// Mengirimkan respons JSON
+	return c.Status(200).JSON(context)
+}
+
+func UserPagination(c *fiber.Ctx) error {
+	page := c.Params("page")
+	perPage := c.Params("perPage")
+	keyword := c.Params("keyword")
+
+	numPage, _ := strconv.Atoi(page)
+	numPerPage, _ := strconv.Atoi(perPage)
+
+	if numPerPage <= 0 {
+		context := fiber.Map{
+			"msg":         "error limit cannot less than 1",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
+	time.Sleep(time.Millisecond * 500)
+
+	db := database.DBConn
+
+	var users []model.User
+
+	query := db
+
+	// Mengecek apakah parameter keyword tidak kosong
+	if keyword != "" {
+		query = query.Where("nim LIKE ? OR nama LIKE ? OR jeniskelamin LIKE ? OR prodi LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	}
+
+	var totalData int64
+	query.Model(&model.User{}).Count(&totalData)
+
+	totalPage := int(totalData) / numPerPage
+	if int(totalData)%numPerPage != 0 {
+		totalPage++
+	}
+
+	if totalPage == 0 {
+		context := fiber.Map{
+			"msg":         "no users found",
+			"status_code": http.StatusNotFound,
+		}
+		return c.Status(http.StatusNotFound).JSON(context)
+	}
+
+	offset := (numPage - 1) * numPerPage
+	query = query.Offset(offset).Limit(numPerPage)
+
+	if err := query.Find(&users).Error; err != nil {
+		context := fiber.Map{
+			"msg":         "error retrieving users",
+			"status_code": http.StatusInternalServerError,
+		}
+		return c.Status(http.StatusInternalServerError).JSON(context)
+	}
+
+	if numPage <= 0 || numPage > totalPage {
+		context := fiber.Map{
+			"msg":         "error page number out of range",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
+	context := fiber.Map{
+		"limit":       numPerPage,
+		"users":       users,
+		"status_code": fiber.StatusOK,
+		"message":     "success getting users per page",
+		"total_page":  totalPage,
+		"page_now":    numPage,
+	}
+
+	return c.Status(fiber.StatusOK).JSON(context)
+}
+
+func UserUpdate(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"statusText": "Ok",
+		"msg":        "Update User Details",
+	}
+
+	id := c.Params("id")
+
+	record := new(model.User)
+
+	// Fetch user record by ID
+	database.DBConn.First(&record, id)
+
+	if record.ID == 0 {
+		log.Println("Record not found.")
+		context["statusText"] = ""
+		context["msg"] = "Record not Found."
+		c.Status(400)
+		return c.JSON(context)
+	}
+
+	// Parsing body request
+	updatedRecord := new(formData)
+	if err := c.BodyParser(updatedRecord); err != nil {
+		log.Println("Error in parsing request.")
+		context["statusText"] = ""
+		context["msg"] = "Something went wrong JSON format"
+		return c.Status(400).JSON(context)
+	}
+
+	// Validate input
+	if updatedRecord.Role == "" || updatedRecord.Nim == "" || updatedRecord.Nama == "" || updatedRecord.JenisKelamin == "" || updatedRecord.Prodi == "" {
+		log.Println("Some fields are missing.")
+		context["statusText"] = ""
+		context["msg"] = "All fields are required."
+		return c.Status(400).JSON(context)
+	}
+
+	// Validate gender input
+	if updatedRecord.JenisKelamin != "laki-laki" && updatedRecord.JenisKelamin != "perempuan" {
+		log.Println("Invalid gender input.")
+		context["statusText"] = ""
+		context["msg"] = "Gender must be either 'laki-laki' or 'perempuan'."
+		return c.Status(400).JSON(context)
+	}
+
+	// Update user details
+	record.Role = updatedRecord.Role
+	record.Nim = updatedRecord.Nim
+	record.Nama = updatedRecord.Nama
+	record.JenisKelamin = updatedRecord.JenisKelamin
+	record.Prodi = updatedRecord.Prodi
+
+	// Save updated record to database
+	result := database.DBConn.Save(record)
+
+	if result.Error != nil {
+		log.Println("Error in updating data.")
+		context["statusText"] = ""
+		context["msg"] = "Error in updating data"
+		return c.Status(500).JSON(context)
+	}
+
+	context["msg"] = "Record is updated successfully."
+	context["data"] = record
+
+	return c.Status(200).JSON(context)
+
+}
+
+func UserDelete(c *fiber.Ctx) error {
+	c.Status(400)
+
+	context := fiber.Map{
+		"statusText": "Ok",
+		"msg":        "Delete User",
+	}
+
+	id := c.Params("id")
+
+	var record model.User
+
+	database.DBConn.First(&record, id)
+
+	if record.ID == 0 {
+		log.Println("Record not found.")
+		context["statusText"] = ""
+		context["msg"] = "Record not Found."
+		c.Status(400)
+		return c.JSON(context)
+	}
+
+	result := database.DBConn.Delete(record)
+
+	if result.Error != nil {
+		log.Println("Error in update data.")
+		return c.JSON(context)
+	}
+
+	context["statusText"] = "Ok."
+	context["msg"] = "Record delete success."
+	c.Status(200)
+
+	return c.JSON(context)
 }
