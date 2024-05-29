@@ -1,7 +1,7 @@
 import Tippy from "@tippyjs/react";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { AiOutlineDashboard, AiOutlineTeam } from "react-icons/ai";
+import { AiOutlineDashboard, AiOutlineTeam, AiOutlineUser } from "react-icons/ai";
 import { BsLayoutSidebarInset } from "react-icons/bs";
 import { FaAngleRight, FaBookDead } from "react-icons/fa";
 import { GiBookshelf, GiSpellBook } from "react-icons/gi";
@@ -131,6 +131,29 @@ function Sidebar({
               {!minSidebar && (
                 <div className="text-sm font-medium tracking-wider">
                   Dashboard
+                </div>
+              )}
+            </NavLink>
+            <NavLink
+              to="/user"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                  : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+              }
+            >
+              {!minSidebar ? (
+                <AiOutlineUser className="size-5" />
+              ) : (
+                <Tippy content="User">
+                  <div>
+                    <AiOutlineUser className="size-8" />
+                  </div>
+                </Tippy>
+              )}
+              {!minSidebar && (
+                <div className="text-sm font-medium tracking-wider">
+                  User
                 </div>
               )}
             </NavLink>

@@ -289,15 +289,16 @@ func RefreshToken(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(returnObject)
 }
 
+// Function User List
 func UserList(c *fiber.Ctx) error {
 	time.Sleep(time.Millisecond * 500)
 
 	// Pengaturan koneksi database
 	db := database.DBConn
 
-	// Mengambil semua data buku dari database
+	// Mengambil semua data pengguna dari database yang bukan admin
 	var records []model.User
-	db.Find(&records)
+	db.Where("role != ?", "admin").Find(&records)
 
 	// Membuat konteks dengan status code dan pesan
 	context := fiber.Map{
@@ -305,13 +306,14 @@ func UserList(c *fiber.Ctx) error {
 		"msg":         "User List",
 	}
 
-	// Menambahkan data buku ke dalam konteks
+	// Menambahkan data pengguna ke dalam konteks
 	context["user"] = records
 
 	// Mengirimkan respons JSON
 	return c.Status(200).JSON(context)
 }
 
+// Function User Pagination With Search nim, nama, jenis kelamin, and prodi
 func UserPagination(c *fiber.Ctx) error {
 	page := c.Params("page")
 	perPage := c.Params("perPage")
@@ -340,6 +342,9 @@ func UserPagination(c *fiber.Ctx) error {
 	if keyword != "" {
 		query = query.Where("nim LIKE ? OR nama LIKE ? OR jeniskelamin LIKE ? OR prodi LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
 	}
+
+	// Exclude users with the role 'admin'
+	query = query.Where("role != ?", "admin")
 
 	var totalData int64
 	query.Model(&model.User{}).Count(&totalData)
@@ -388,6 +393,7 @@ func UserPagination(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(context)
 }
 
+// Function User Update by nim, role, nama, jenis kelamin, dan prodi
 func UserUpdate(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"statusText": "Ok",
@@ -458,6 +464,7 @@ func UserUpdate(c *fiber.Ctx) error {
 
 }
 
+// Function User Delete by Id
 func UserDelete(c *fiber.Ctx) error {
 	c.Status(400)
 

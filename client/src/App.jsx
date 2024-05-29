@@ -14,6 +14,7 @@ import BookPage from "./pages/Book/BookPage";
 import DashboardPage from "./pages/DashboardPage";
 import Edit from "./pages/Edit";
 import PageNotFound from "./pages/PageNotFound";
+import UserPage from "./pages/User/UserPage";
 
 function App() {
   const {
@@ -62,6 +63,7 @@ function App() {
         {/* Gunakan Outlet untuk menampilkan komponen-komponen di bawahnya */}
         <Route index element={<DashboardPage authUser={authUser} />} />
         <Route path="/book" element={<BookPage authUser={authUser}/>}/>
+        <Route path="/user" element={<UserPage authUser={authUser}/>}/>
         <Route path="/add" element={<Add />} />
         <Route path="/edit/:id" element={<Edit />} />
         <Route path="/blog/:id" element={<Blog />} />

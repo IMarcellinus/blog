@@ -15,6 +15,10 @@ function RegisterUserPage() {
   );
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [nim, setNim] = useState("");
+  const [jeniskelamin, setJeniskelamin] = useState("");
+  const [nama, setNama] = useState("");
+  const [prodi, setProdi] = useState("");
   const [errorUsername, setErrorUsername] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,7 +37,8 @@ function RegisterUserPage() {
   const Register = (e) => {
     e.preventDefault();
     dispatch(setResetMessage());
-    dispatch(RegisterUser({ username, password }));
+    const userData = { username, password, nim, jeniskelamin, nama, prodi };
+    dispatch(RegisterUser(userData));
   };
 
   const handleDownload = () => {
@@ -68,6 +73,12 @@ function RegisterUserPage() {
       setErrorPassword("");
     }
   };
+
+  // Other input handlers
+  const handleNimChange = (e) => setNim(e.target.value);
+  const handleJeniskelaminChange = (e) => setJeniskelamin(e.target.value);
+  const handleNamaChange = (e) => setNama(e.target.value);
+  const handleProdiChange = (e) => setProdi(e.target.value);
 
   useEffect(() => {
     if (isSuccess) {
@@ -148,16 +159,92 @@ function RegisterUserPage() {
               )}
             </div>
           </div>
+          {/* Input NIM */}
+          <div className="my-2">
+            <label
+              htmlFor="nim"
+              className="mb-2 block text-sm font-medium text-gray-900 "
+            >
+              NIM
+            </label>
+            <input
+              type="text"
+              id="nim"
+              name="nim"
+              value={nim}
+              onChange={handleNimChange}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="masukkan NIM"
+              required
+            />
+          </div>
+          {/* Input Jenis Kelamin */}
+          <div className="my-2">
+            <label
+              htmlFor="jeniskelamin"
+              className="mb-2 block text-sm font-medium text-gray-900 "
+            >
+              Jenis Kelamin
+            </label>
+            <input
+              type="text"
+              id="jeniskelamin"
+              name="jeniskelamin"
+              value={jeniskelamin}
+              onChange={handleJeniskelaminChange}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="masukkan jenis kelamin"
+              required
+            />
+          </div>
+          {/* Input Nama */}
+          <div className="my-2">
+            <label
+              htmlFor="nama"
+              className="mb-2 block text-sm font-medium text-gray-900 "
+            >
+              Nama
+            </label>
+            <input
+              type="text"
+              id="nama"
+              name="nama"
+              value={nama}
+              onChange={handleNamaChange}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="masukkan nama"
+              required
+            />
+          </div>
+          {/* Input Prodi */}
+          <div className="my-2">
+            <label
+              htmlFor="prodi"
+              className="mb-2 block text-sm font-medium text-gray-900 "
+            >
+              Prodi
+            </label>
+            <input
+              type="text"
+              id="prodi"
+              name="prodi"
+              value={prodi}
+              onChange={handleProdiChange}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="masukkan prodi"
+              required
+            />
+          </div>
           <div className="flex">
             <button
               onSubmit={handleRegister}
               type="submit"
               className={`my-4 w-full items-center rounded-lg ${
-                !username || !password || isLoading
+                !username || !password || !nim || !jeniskelamin || !nama || !prodi || isLoading
                   ? "cursor-not-allowed bg-blue-400 text-white dark:bg-blue-500"
                   : "bg-blue-700 text-white hover:bg-blue-800"
               } rounded-lg px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800`}
-              disabled={!username || !password || isLoading}
+              disabled={!username || !password || !nim || !jeniskelamin || !nama || !prodi || isLoading}
             >
               {isLoading ? "Loading..." : "Submit"}
             </button>
