@@ -182,20 +182,24 @@ function RegisterUserPage() {
           <div className="my-2">
             <label
               htmlFor="jeniskelamin"
-              className="mb-2 block text-sm font-medium text-gray-900 "
+              className="mb-2 block text-sm font-medium text-gray-900"
             >
               Jenis Kelamin
             </label>
-            <input
-              type="text"
+            <select
               id="jeniskelamin"
               name="jeniskelamin"
               value={jeniskelamin}
               onChange={handleJeniskelaminChange}
-              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-              placeholder="masukkan jenis kelamin"
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               required
-            />
+            >
+              <option value="" disabled>
+                Pilih jenis kelamin
+              </option>
+              <option value="laki-laki">Laki-laki</option>
+              <option value="perempuan">Perempuan</option>
+            </select>
           </div>
           {/* Input Nama */}
           <div className="my-2">
@@ -240,11 +244,25 @@ function RegisterUserPage() {
               onSubmit={handleRegister}
               type="submit"
               className={`my-4 w-full items-center rounded-lg ${
-                !username || !password || !nim || !jeniskelamin || !nama || !prodi || isLoading
+                !username ||
+                !password ||
+                !nim ||
+                !jeniskelamin ||
+                !nama ||
+                !prodi ||
+                isLoading
                   ? "cursor-not-allowed bg-blue-400 text-white dark:bg-blue-500"
                   : "bg-blue-700 text-white hover:bg-blue-800"
               } rounded-lg px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800`}
-              disabled={!username || !password || !nim || !jeniskelamin || !nama || !prodi || isLoading}
+              disabled={
+                !username ||
+                !password ||
+                !nim ||
+                !jeniskelamin ||
+                !nama ||
+                !prodi ||
+                isLoading
+              }
             >
               {isLoading ? "Loading..." : "Submit"}
             </button>
