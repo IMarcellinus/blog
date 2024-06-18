@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -28,6 +27,12 @@ type formData struct {
 	Nama         string `json:"nama"`
 	JenisKelamin string `json:"jeniskelamin"`
 	Prodi        string `json:"prodi"`
+}
+
+type ChangePasswordRequest struct {
+	OldPassword        string `json:"old_password"`
+	NewPassword        string `json:"new_password"`
+	ConfirmNewPassword string `json:"confirm_new_password"`
 }
 
 // Function Login
@@ -201,11 +206,10 @@ func Register(c *fiber.Ctx) error {
 
 	base64.StdEncoding.EncodeToString(qrFromCodeQr)
 
-	fmt.Println("QR code:", qrFromCodeQr)
-
 	response := &fiber.Map{
 		"status":    "Ok",
 		"baseImage": base64.StdEncoding.EncodeToString(qrFromCodeQr),
+		"users":     user,
 	}
 
 	// Return success response with QR code
@@ -307,7 +311,7 @@ func UserList(c *fiber.Ctx) error {
 	}
 
 	// Menambahkan data pengguna ke dalam konteks
-	context["user"] = records
+	context["users"] = records
 
 	// Mengirimkan respons JSON
 	return c.Status(200).JSON(context)
@@ -391,6 +395,101 @@ func UserPagination(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(context)
+}
+
+// Function Create User
+func UserCreate(c *fiber.Ctx) error {
+	// Collect Form Data
+	var formData formData
+
+	// Parse Json request body
+	if err := c.BodyParser(&formData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Invalid JSON format",
+		})
+	}
+
+	if formData.Username == "" || formData.Password == "" || formData.Nim == "" || formData.Nama == "" || formData.JenisKelamin == "" || formData.Prodi == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "All fields are required",
+		})
+	}
+
+	if formData.JenisKelamin != "laki-laki" && formData.JenisKelamin != "perempuan" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Gender must be either 'laki-laki' atau 'perempuan'",
+		})
+	}
+
+	var existingUser model.User
+	if err := database.DBConn.Where("username = ?", formData.Username).First(&existingUser).Error; err == nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Username already exists",
+		})
+	}
+
+	// Create QR code from user data
+	userData, err := json.Marshal(formData)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate QR code",
+		})
+	}
+
+	qr, err := qrcode.Encode(string(userData), qrcode.Medium, 256)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate QR code",
+		})
+	}
+
+	// Decode QR code using MD5
+	hasher := md5.New()
+	hasher.Write([]byte(qr))
+	codeQr := hex.EncodeToString(hasher.Sum(nil))
+
+	user := model.User{
+		Username:     formData.Username,
+		Password:     helper.HashPassword(formData.Password),
+		Nim:          formData.Nim,
+		Nama:         formData.Nama,
+		JenisKelamin: formData.JenisKelamin,
+		Prodi:        formData.Prodi,
+		Role:         formData.Role,
+		CodeQr:       codeQr, // Save decoded QR code to CodeQr column
+		CreatedAt:    time.Now().Format("02-01-2006"),
+	}
+
+	if err := database.DBConn.Create(&user).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to create user",
+		})
+	}
+
+	// Create QR code from CodeQr column
+	qrFromCodeQr, err := qrcode.Encode(user.CodeQr, qrcode.Medium, 256)
+	if err != nil {
+		log.Println("Error generating QR code from CodeQr:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate QR code from CodeQr",
+		})
+	}
+
+	base64.StdEncoding.EncodeToString(qrFromCodeQr)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": "Success",
+		"msg":    "User created successfully",
+		"users":  user,
+	})
 }
 
 // Function User Update by nim, role, nama, jenis kelamin, dan prodi
@@ -499,4 +598,111 @@ func UserDelete(c *fiber.Ctx) error {
 	c.Status(200)
 
 	return c.JSON(context)
+}
+
+// Function Change Password
+func ChangePassword(c *fiber.Ctx) error {
+	// Get username from context (you might use a middleware to set this)
+	username, exists := c.Locals("username").(string)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Unauthorized",
+		})
+	}
+
+	// Parse JSON request body
+	var req ChangePasswordRequest
+	if err := c.BodyParser(&req); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Invalid JSON format",
+		})
+	}
+
+	// Validate new password and confirmation
+	if req.NewPassword != req.ConfirmNewPassword {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "New password and confirmation do not match",
+		})
+	}
+
+	// Fetch the user from the database
+	var user model.User
+	database.DBConn.First(&user, "username = ?", username)
+	if user.ID == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "User not found",
+		})
+	}
+
+	// Check if the old password is correct
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword)); err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Old password is incorrect",
+		})
+	}
+
+	// Hash the new password
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to hash new password",
+		})
+	}
+
+	// Update the user's password in the database
+	user.Password = string(hashedPassword)
+	if err := database.DBConn.Save(&user).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to update password",
+		})
+	}
+
+	// Return a success response
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": "Success",
+		"msg":    "Password changed successfully",
+	})
+}
+
+// Function Get User By Id
+func GetUserByID(c *fiber.Ctx) error {
+	// Get the ID parameter from the URL
+	id := c.Params("id")
+
+	// Initialize the User struct
+	var user model.User
+
+	// Fetch the user from the database by ID
+	if err := database.DBConn.First(&user, "id = ?", id).Error; err != nil {
+		log.Println("Error fetching user:", err)
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "User not found",
+		})
+	}
+
+	// Create QR code from CodeQr column
+	qrFromCodeQr, err := qrcode.Encode(user.CodeQr, qrcode.Medium, 256)
+	if err != nil {
+		log.Println("Error generating QR code from CodeQr:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate QR code from CodeQr",
+		})
+	}
+
+	encodeBase64 := base64.StdEncoding.EncodeToString(qrFromCodeQr)
+
+	// Return the user details
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":    "Success Get User By Id",
+		"baseImage": encodeBase64,
+	})
 }

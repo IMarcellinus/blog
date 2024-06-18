@@ -8,6 +8,7 @@ import {
   FetchUser,
   LoginAdmin,
   reset,
+  setMessageAuth,
 } from "../../../services/store/reducers/Authslice"; // Ubah dari Authslice menjadi AuthSlice
 import { SilaperLogo } from "../../assets/img";
 
@@ -35,21 +36,7 @@ function Login() {
       isLoading(false);
     }, 5000); // example timeout, change it to your needs
   };
-
-  useEffect(() => {
-    if (user !== null && isSuccess) {
-      navigate('/');
-      dispatch(reset());
-      dispatch(FetchUser());
-    }
-  }, [user, isSuccess, dispatch, navigate]);
-
-  useEffect(() => {
-    deleteToken();
-    document.body.style.overflow = 'auto';
-  }, [])
   
-
   const Auth = (e) => {
     e.preventDefault();
     dispatch(LoginAdmin({ username, password }));
@@ -76,6 +63,23 @@ function Login() {
       setErrorPassword("");
     }
   };
+
+  useEffect(() => {
+    if (user !== null && isSuccess) {
+      navigate('/');
+      dispatch(reset());
+      dispatch(FetchUser());
+    }
+  }, [user, isSuccess, dispatch, navigate]);
+
+  useEffect(() => {
+    deleteToken();
+    document.body.style.overflow = 'auto';
+  }, [])
+
+  useEffect(() => {
+    setMessageAuth('')
+  })
 
   return (
     <section className="mx-auto max-w-[1280px] relative h-screen flex items-center justify-center">

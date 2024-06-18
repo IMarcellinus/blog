@@ -30,6 +30,7 @@ const initialState = {
   fetchBook: false,
   status: null,
   active: false,
+  detailBook: null,
 };
 
 const getToken = async () => {
@@ -208,7 +209,7 @@ export const BookSlice = createSlice({
       state.searchDetail = action.payload;
     },
     setBookDetail: (state, action) => {
-      state.searchDetail = action.payload;
+      state.detailBook = action.payload;
     },
     setBookSearch: (state) => {
       state.bookSearch = [];
@@ -245,7 +246,7 @@ export const BookSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload.message;
+      state.message = action.payload.msg;
       state.status = action.payload.status_code;
     });
 
@@ -269,7 +270,7 @@ export const BookSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload.message;
+      state.message = action.payload.msg;
       state.status = action.payload.status_code;
     });
 

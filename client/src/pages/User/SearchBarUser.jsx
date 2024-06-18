@@ -1,32 +1,28 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getAllBook,
-  setSearch,
-  setSearchDetail,
-} from "../../../services/store/reducers/Bookslice";
+import { getAllUser, setSearch, setSearchDetail } from "../../../services/store/reducers/Userslice";
 
-const SearchBarBook = () => {
-  const { search, searchDetail, currentPageBook } = useSelector(
-    (state) => state.books
-  );
+const SearchBarUser = () => {
   const dispatch = useDispatch();
-  const isBookPage = location.pathname === '/book';
+  const isUserPage = location.pathname === '/user';
+  const { search, searchDetail, currentPageUser } = useSelector(
+    (state) => state.users
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (window.location.pathname == '/book') {
-      dispatch(getAllBook({ search, currentPageBook: currentPageBook + 1 }));
+    if (window.location.pathname == '/user') {
+      dispatch(getAllUser({ search, currentPageUser: currentPageUser + 1 }));
     }
   };
 
   const handleChange = (e) => {
-    if (window.location.pathname == '/book') {
-      dispatch(setSearch(e.target.value));
-    } else {
-      dispatch(setSearchDetail(e.target.value));
-    }
-  };
-
+    if (window.location.pathname == '/user') {
+        dispatch(setSearch(e.target.value));
+      } else {
+        dispatch(setSearchDetail(e.target.value));
+      }
+  }
+    
   return (
     <div>
         <form onSubmit={handleSubmit} className='flex items-center'>
@@ -42,11 +38,11 @@ const SearchBarBook = () => {
             <input
               type='text'
               required
-              value={isBookPage ? search : searchDetail}
+              value={isUserPage ? search : searchDetail}
               onChange={handleChange}
               id='voice-search'
               className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 '
-              placeholder='Search Book'
+              placeholder='Search User'
             />
             {/* <button type='submit' className='absolute inset-y-0 right-0 flex items-center pr-3 '>
               <GrFormFilter className='h-5 w-5' />
@@ -54,7 +50,7 @@ const SearchBarBook = () => {
           </div>
         </form>
     </div>
-  );
-};
+  )
+}
 
-export default SearchBarBook;
+export default SearchBarUser

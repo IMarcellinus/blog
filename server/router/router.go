@@ -32,12 +32,13 @@ func SetupRoutes(app *fiber.App) {
 	private.Put("/book/:id", controller.BookUpdate)
 	private.Delete("/book/:id", controller.BookDelete)
 	// Search Book
-	private.Get("/book/search/:search", controller.SearchBooks)
+	// private.Get("/book/search/:search", controller.SearchBooks)
 	// Borrow Book
-	private.Get("/borrowbook/", controller.GetBorrowBook)
-	private.Post("/borrowbook/", controller.BorrowBook)
+	private.Get("/borrowbook", controller.GetBorrowBook)
+	private.Get("/borrowbook/:page/:perPage", controller.GetBorrowBookPagination)
+	private.Post("/borrowbook", controller.BorrowBook)
 	private.Put("/borrowbook/:id", controller.ReturnBook)
-	private.Get("/borrowbook/search/:search", controller.SearchBooks)
+	private.Get("/borrowbook/:search", controller.SearchBorrowBooks)
 	// Blog CRUD
 	private.Get("/", controller.WelcomeBlog)
 	private.Get("/blog/:id", controller.BlogListById)
@@ -51,9 +52,12 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/barcode/:id", controller.GenerateQRCodeFromUser)
 	// User CRUD
 	private.Get("/users", controller.UserList)
+	private.Get("/getuser/:id", controller.GetUserByID)
 	private.Get("/users/:page/:perPage/:keyword", controller.UserPagination)
 	private.Get("/users/:page/:perPage/", controller.UserPagination)
+	private.Post("/users", controller.UserCreate)
 	private.Put("/users/:id", controller.UserUpdate)
 	private.Delete("/users/:id", controller.UserDelete)
+	private.Put("/change-password", controller.ChangePassword)
 
 }

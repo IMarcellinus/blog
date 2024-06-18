@@ -26,7 +26,6 @@ const BookList = ({
   totalPages,
 }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { search, bookSearch, currentPageBook, deleteFail, message } =
     useSelector((state) => state.books);
   const { role } = authUser;
@@ -56,7 +55,6 @@ const BookList = ({
     dispatch(setTanggalPengesahan(tanggal_pengesahan));
     dispatch(setEdit(true));
     setModalIsOpen(true);
-    console.log(tanggal_pengesahan);
   };
 
   useEffect(() => {

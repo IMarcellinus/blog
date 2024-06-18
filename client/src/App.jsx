@@ -6,11 +6,14 @@ import { FetchUser } from "../services/store/reducers/Authslice";
 import "./index.css";
 import Layout from "./layout/Layout";
 import Add from "./pages/Add";
+import ChangePassword from "./pages/Auth/ChangePassword";
 import Login from "./pages/Auth/Login";
 import LoginUserPage from "./pages/Auth/LoginUser";
 import RegisterUserPage from "./pages/Auth/RegisterUserPage";
 import Blog from "./pages/Blog";
 import BookPage from "./pages/Book/BookPage";
+import PeminjamanPage from "./pages/Book/PeminjamanPage";
+import PengembalianBuku from "./pages/Book/PengembalianBuku";
 import DashboardPage from "./pages/DashboardPage";
 import Edit from "./pages/Edit";
 import PageNotFound from "./pages/PageNotFound";
@@ -64,9 +67,9 @@ function App() {
         <Route index element={<DashboardPage authUser={authUser} />} />
         <Route path="/book" element={<BookPage authUser={authUser}/>}/>
         <Route path="/user" element={<UserPage authUser={authUser}/>}/>
-        <Route path="/add" element={<Add />} />
-        <Route path="/edit/:id" element={<Edit />} />
-        <Route path="/blog/:id" element={<Blog />} />
+        <Route path="/peminjaman" element={<PeminjamanPage authUser={authUser}/>}/>
+        <Route path="/pengembalian" element={<PengembalianBuku authUser={authUser}/>}/>
+        <Route path="/changepassword" element={<ChangePassword />}/>
       </Route>
     </Routes>
   );

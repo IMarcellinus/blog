@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { logoutUser } from "../../services/store/reducers/Authslice";
 import { SilaperLogo } from "../assets/img";
@@ -74,6 +74,14 @@ const Header = ({
           </div>
           {dropdown && (
             <div className="absolute -right-4 top-12 z-50 flex w-52 flex-col gap-1 rounded-xl bg-white p-4 text-black shadow-lg">
+              <NavLink
+                  to='/changepassword'
+                  className={({ isActive }) =>
+                    isActive ? 'flex gap-3 rounded-md items-center group bg-blue-500 cursor-pointer p-2 text-sm text-white active:bg-blue-600 md:gap-4' : 'flex gap-3 rounded-md cursor-pointer p-2 text-sm items-center text-black group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4'
+                  }
+                >
+                  Change Password
+                </NavLink>
               <button
                 className="w-full cursor-pointer rounded p-2 text-left text-sm hover:bg-blue-500 hover:text-white"
                 onClick={LogOut}

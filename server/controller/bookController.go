@@ -287,7 +287,7 @@ func BookDelete(c *fiber.Ctx) error {
 	return c.JSON(context)
 }
 
-func SearchBooks(c *fiber.Ctx) error {
+func SearchBorrowBooks(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"statusText": "Ok",
 		"msg":        "Search Borrow Book List",

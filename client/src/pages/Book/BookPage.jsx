@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -39,9 +38,11 @@ const BookPage = ({ authUser }) => {
     bookSearch,
     idUser,
   } = useSelector((state) => state.books);
+  const {
+    fetchUser,
+  } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const token = Cookies.get("token");
 
   const handleOpenModal = () => {
     setModalIsOpen(true);
@@ -60,74 +61,62 @@ const BookPage = ({ authUser }) => {
     document.body.style.overflow = "auto";
   };
 
+  const handleDeleteLogic = () => {
+    const currentPage = currentPageBook + 1;
+    if (books.length === 1 && bookSearch.length === 0 && !search && currentPageBook > 0) {
+      dispatch(getBook({ currentPageBook }));
+      dispatch(setCurrentPageBook(currentPageBook - 1));
+    } else if (books.length > 1 && bookSearch.length === 0 && !search) {
+      dispatch(getBook({ currentPageBook: currentPage }));
+    } else if (books.length === 1 && bookSearch.length === 0 && !search && currentPageBook === 0) {
+      dispatch(getBook({ currentPageBook: currentPage }));
+    } else if (books.length === 0 && bookSearch.length === 1 && search && currentPageBook > 0) {
+      dispatch(getAllBook({ currentPageBook, search }));
+      dispatch(setCurrentPageBook(currentPageBook - 1));
+    } else if (books.length === 0 && bookSearch.length > 1 && search) {
+      dispatch(getAllBook({ currentPageBook: currentPage, search }));
+    } else if (books.length === 0 && bookSearch.length === 1 && search && currentPageBook === 0) {
+      dispatch(getAllBook({ currentPageBook: currentPage, search }));
+    }
+  };
+
   useEffect(() => {
-    console.log("token:", token);
-    console.log("role:", authUser.role);
-    if (!token) {
-      let loginRoute = '/login';
-      if (authUser.role === 'user') {
-        loginRoute = '/loginuser';
+    if (!fetchUser) {
+      let loginRoute = "/login";
+      if (authUser.role === "user") {
+        loginRoute = "/loginuser";
       }
       navigate(loginRoute);
       Swal.fire({
-        icon: 'error',
-        text: 'Sesi Telah Habis, Silahkan Login Kembali :)',
+        icon: "error",
+        text: "Sesi Telah Habis, Silahkan Login Kembali :)",
       });
     }
-    if (isSubmit === true) {
+
+    if (isSubmit) {
       handleCloseModal();
       toast.success("Tambah Buku Berhasil");
-      if (search !== "") {
-        dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
+      const currentPage = currentPageBook + 1;
+      if (search) {
+        dispatch(getAllBook({ currentPageBook: currentPage, search }));
       } else {
-        dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
+        dispatch(getBook({ currentPageBook: currentPage }));
       }
     }
-    if (isDelete === true) {
+
+    if (isDelete) {
       toast.error("Hapus Berhasil !");
-      if (
-        books.length == 1 &&
-        bookSearch.length == 0 &&
-        search == "" &&
-        currentPageBook > 0
-      ) {
-        dispatch(getBook({ currentPageBook }));
-        dispatch(setCurrentPageBook(currentPageBook - 1));
-      } else if (books.length > 1 && bookSearch.length == 0 && search == "") {
-        dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
-      } else if (
-        books.length == 1 &&
-        bookSearch.length == 0 &&
-        search == "" &&
-        currentPageBook == 0
-      ) {
-        dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
-      } else if (
-        books.length == 0 &&
-        bookSearch.length == 1 &&
-        search !== "" &&
-        currentPageBook > 0
-      ) {
-        dispatch(getAllBook({ currentPageBook, search }));
-        dispatch(setCurrentPageBook(currentPageBook - 1));
-      } else if (books.length == 0 && bookSearch.length > 1 && search !== "") {
-        dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
-      } else if (
-        books.length == 0 &&
-        bookSearch.length == 1 &&
-        search !== "" &&
-        currentPageBook == 0
-      ) {
-        dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
-      }
+      handleDeleteLogic();
     }
-    if (isUpdate === true) {
+
+    if (isUpdate) {
       handleCloseModal();
       toast.success("Edit Buku Berhasil!");
-      if (search !== "") {
-        dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
+      const currentPage = currentPageBook + 1;
+      if (search) {
+        dispatch(getAllBook({ currentPageBook: currentPage, search }));
       } else {
-        dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
+        dispatch(getBook({ currentPageBook: currentPage }));
       }
     }
   }, [currentPageBook, dispatch, isSubmit, search, isUpdate, isDelete]);
@@ -139,45 +128,46 @@ const BookPage = ({ authUser }) => {
 
   useEffect(() => {
     let timeoutId;
-
     const fetchData = () => {
-      if (search !== "") {
-        dispatch(getAllBook({ currentPageBook: 1, search }));
-      } else if (search == "") {
-        dispatch(getBook({ currentPageBook: 1 }));
+      const currentPage = 1;
+      if (search) {
+        dispatch(getAllBook({ currentPageBook: currentPage, search }));
+      } else {
+        dispatch(getBook({ currentPageBook: currentPage }));
       }
       dispatch(setCurrentPageBook(0));
     };
 
     const delayedFetch = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        fetchData();
-      }, 1000);
-      // Menjalankan fetchData setelah jeda 3 detik
+      timeoutId = setTimeout(fetchData, 1000);
     };
 
     delayedFetch();
 
     return () => {
       clearTimeout(timeoutId);
-      // Membersihkan timeout jika komponen unmount sebelum jeda 3 detik selesai
     };
   }, [search, dispatch]);
 
   useEffect(() => {
-    if (!isDelete && search !== "") {
-      dispatch(getAllBook({ currentPageBook: currentPageBook + 1, search }));
-    } else if (!isDelete && search == "") {
-      dispatch(getBook({ currentPageBook: currentPageBook + 1 }));
+    if (!isDelete) {
+      const currentPage = currentPageBook + 1;
+      if (search) {
+        dispatch(getAllBook({ currentPageBook: currentPage, search }));
+      } else {
+        dispatch(getBook({ currentPageBook: currentPage }));
+      }
     }
   }, [currentPageBook, dispatch, isDelete, search]);
 
+  
+  
   return (
     <main className="min-h-screen overflow-x-auto pb-14">
       <div className="inline-block min-w-full pl-4">
         <div className="rounded-b-lg">
-          <div className="grid grid-cols-2 bg-white p-3 text-sm">
+          <div className="grid grid-cols-2 bg-white py-3 text-sm">
             <div>
               <p className="text-lg font-bold">Book List</p>
               <div className="mt-2">
