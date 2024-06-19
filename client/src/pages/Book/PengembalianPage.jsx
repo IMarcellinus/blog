@@ -14,11 +14,10 @@ import {
   setMessage,
   setSearch,
 } from "../../../services/store/reducers/Borrowslice";
-import ModalPeminjaman from "./ModalPeminjaman";
 import PeminjamanList from "./PeminjamanList";
 import SearchBarPeminjaman from "./SearchBarPeminjaman";
 
-const PeminjamanPage = ({ authUser }) => {
+const PengembalianPage = ({authUser}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -106,9 +105,9 @@ const PeminjamanPage = ({ authUser }) => {
       });
     }
 
-    if (isSubmit) {
+    if (isUpdate) {
       handleCloseModal();
-      toast.success("Create Book Berhasil");
+      toast.success("Return Book Berhasil");
       const currentPage = currentPageBookBorrow + 1;
       if (search) {
         dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search }));
@@ -117,30 +116,16 @@ const PeminjamanPage = ({ authUser }) => {
       }
     }
 
-  }, [currentPageBookBorrow, dispatch, isUpdate, isSubmit, search]);
-
+  }, [currentPageBookBorrow, dispatch, isUpdate, search]);
+  
   return (
     <main className="min-h-screen overflow-x-auto pb-14">
       <div className="inline-block min-w-full pl-4">
         <div className="rounded-b-lg">
           <div className="grid grid-cols-2 bg-white py-3 text-sm">
             <div>
-              <p className="text-lg font-bold">Borrow Book List</p>
+              <p className="text-lg font-bold">Return Book List</p>
               <div className="mt-2"><SearchBarPeminjaman /></div>
-            </div>
-            <div className="flex items-end justify-end ">
-              <button
-                onClick={handleOpenModal}
-                className="flex items-center gap-1 rounded-md bg-sky-600 px-3 py-2 text-white"
-              >
-                Add Borrow Book
-                <IoMdAddCircleOutline className="h-6 w-6" />
-              </button>
-              <ModalPeminjaman
-                handleCloseModal={handleCloseModal}
-                modalIsOpen={modalIsOpen}
-                setModalIsOpen={setModalIsOpen}
-              />
             </div>
           </div>
           <div>
@@ -158,15 +143,15 @@ const PeminjamanPage = ({ authUser }) => {
         </div>
       </div>
     </main>
-  );
-};
+  )
+}
 
 const authUserShape = {
   role: PropTypes.string.isRequired,
 };
 
-PeminjamanPage.propTypes = {
+PengembalianPage.propTypes = {
   authUser: PropTypes.shape(authUserShape).isRequired,
 };
 
-export default PeminjamanPage;
+export default PengembalianPage

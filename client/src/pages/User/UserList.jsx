@@ -1,3 +1,4 @@
+// import { delay } from "@reduxjs/toolkit/dist/utils";
 import Tippy from "@tippyjs/react";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
@@ -10,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { deleteUser, getUserById, setCurrentPageUser, setDeleteFail, setEdit, setId, setJenisKelamin, setMessage, setNama, setNim, setProdi, setRole } from "../../../services/store/reducers/Userslice";
+import { delay } from "../../../utils/api";
 
 const UserList = ({
   authUser,
@@ -44,11 +46,11 @@ const UserList = ({
     });
   };
 
-  const handleShowBarcode = (id) => {
-    dispatch(getUserById({id}));
+  const handleShowBarcode = async (id) => {
+    dispatch(getUserById({id})); 
+    await delay(100)
+    dispatch(setEdit(false))
     setModalIsOpen(true);
-    console.log(id)
-    console.log(baseImage)
   };
 
   const handleEdit = (id, nim, jeniskelamin, nama, prodi, role) => {

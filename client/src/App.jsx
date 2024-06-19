@@ -13,7 +13,7 @@ import RegisterUserPage from "./pages/Auth/RegisterUserPage";
 import Blog from "./pages/Blog";
 import BookPage from "./pages/Book/BookPage";
 import PeminjamanPage from "./pages/Book/PeminjamanPage";
-import PengembalianBuku from "./pages/Book/PengembalianBuku";
+import PengembalianPage from "./pages/Book/PengembalianPage";
 import DashboardPage from "./pages/DashboardPage";
 import Edit from "./pages/Edit";
 import PageNotFound from "./pages/PageNotFound";
@@ -30,14 +30,18 @@ function App() {
   const token = Cookies.get("token");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // console.log(authUser);
+  console.log("role:", authUser?.role);
 
   useEffect(() => {
     dispatch(FetchUser());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!token && window.location.pathname !== "/login" && window.location.pathname !== "/register") {
+    if (
+      !token &&
+      window.location.pathname !== "/login" &&
+      window.location.pathname !== "/register"
+    ) {
       navigate("/loginuser");
     }
   }, [token, navigate]);
@@ -64,12 +68,22 @@ function App() {
       <Route path="/*" element={<PageNotFound />} />
       <Route path="/" element={<Layout authUser={authUser} />}>
         {/* Gunakan Outlet untuk menampilkan komponen-komponen di bawahnya */}
-        <Route index element={<DashboardPage authUser={authUser} />} />
-        <Route path="/book" element={<BookPage authUser={authUser}/>}/>
-        <Route path="/user" element={<UserPage authUser={authUser}/>}/>
-        <Route path="/peminjaman" element={<PeminjamanPage authUser={authUser}/>}/>
-        <Route path="/pengembalian" element={<PengembalianBuku authUser={authUser}/>}/>
-        <Route path="/changepassword" element={<ChangePassword />}/>
+        {authUser && authUser.role === "admin" ? (
+          <>
+            <Route path="/user" element={<UserPage authUser={authUser} />} />
+            <Route index element={<DashboardPage authUser={authUser} />} />
+          </>
+        ) : null}
+        <Route path="/book" element={<BookPage authUser={authUser} />} />
+        <Route
+          path="/peminjaman"
+          element={<PeminjamanPage authUser={authUser} />}
+        />
+        <Route
+          path="/pengembalian"
+          element={<PengembalianPage authUser={authUser} />}
+        />
+        <Route path="/changepassword" element={<ChangePassword />} />
       </Route>
     </Routes>
   );

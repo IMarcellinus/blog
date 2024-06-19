@@ -23,10 +23,6 @@ function LoginUserPage() {
   const [showCodeQr, setShowCodeQr] = useState(false);
   const [errorCodeQr, setErrorCodeQr] = useState("");
 
-  const deleteToken = () => {
-    Cookies.remove("token");
-  };
-
   const handleLogin = (e) => {
     e.preventDefault();
     isLoading(true);
@@ -45,7 +41,7 @@ function LoginUserPage() {
   }, [user, isSuccess, dispatch, navigate]);
 
   useEffect(() => {
-    deleteToken();
+    // deleteToken();
     document.body.style.overflow = "auto";
   }, []);
 

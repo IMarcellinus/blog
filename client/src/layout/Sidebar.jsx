@@ -1,7 +1,11 @@
 import Tippy from "@tippyjs/react";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { AiOutlineDashboard, AiOutlineTeam, AiOutlineUser } from "react-icons/ai";
+import {
+  AiOutlineDashboard,
+  AiOutlineTeam,
+  AiOutlineUser,
+} from "react-icons/ai";
 import { BsLayoutSidebarInset } from "react-icons/bs";
 import { FaAngleRight, FaBookDead } from "react-icons/fa";
 import { GiBookshelf, GiSpellBook } from "react-icons/gi";
@@ -21,8 +25,6 @@ function Sidebar({
   const [isOpenAttendance, setIsOpenAttendance] = useState(false);
   const [isActiveUnit, setIsActiveUnit] = useState(false);
   const [isActiveAttendance, setIsActiveAttendance] = useState(false);
-
-  console.log("role::", authUser.role);
 
   const mouseEnter = () => {
     if (window.matchMedia("(min-width: 768px)").matches) {
@@ -111,52 +113,56 @@ function Sidebar({
           } flex max-h-[80vh] flex-col gap-3 overflow-y-auto py-2 md:py-3`}
         >
           <>
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                isActive
-                  ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
-                  : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
-              }
-            >
-              {!minSidebar ? (
-                <AiOutlineDashboard className="size-5" />
-              ) : (
-                <Tippy content="Dashboard">
-                  <div>
-                    <AiOutlineDashboard className="size-8" />
-                  </div>
-                </Tippy>
-              )}
-              {!minSidebar && (
-                <div className="text-sm font-medium tracking-wider">
-                  Dashboard
-                </div>
-              )}
-            </NavLink>
-            <NavLink
-              to="/user"
-              className={({ isActive }) =>
-                isActive
-                  ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
-                  : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
-              }
-            >
-              {!minSidebar ? (
-                <AiOutlineUser className="size-5" />
-              ) : (
-                <Tippy content="User">
-                  <div>
-                    <AiOutlineUser className="size-8" />
-                  </div>
-                </Tippy>
-              )}
-              {!minSidebar && (
-                <div className="text-sm font-medium tracking-wider">
-                  User
-                </div>
-              )}
-            </NavLink>
+            {authUser && authUser.role === "admin" ? (
+              <>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                      : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+                  }
+                >
+                  {!minSidebar ? (
+                    <AiOutlineDashboard className="size-5" />
+                  ) : (
+                    <Tippy content="Dashboard">
+                      <div>
+                        <AiOutlineDashboard className="size-8" />
+                      </div>
+                    </Tippy>
+                  )}
+                  {!minSidebar && (
+                    <div className="text-sm font-medium tracking-wider">
+                      Dashboard
+                    </div>
+                  )}
+                </NavLink>
+                <NavLink
+                  to="/user"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                      : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+                  }
+                >
+                  {!minSidebar ? (
+                    <AiOutlineUser className="size-5" />
+                  ) : (
+                    <Tippy content="User">
+                      <div>
+                        <AiOutlineUser className="size-8" />
+                      </div>
+                    </Tippy>
+                  )}
+                  {!minSidebar && (
+                    <div className="text-sm font-medium tracking-wider">
+                      User
+                    </div>
+                  )}
+                </NavLink>
+              </>
+            ) : null}
             <NavLink
               to="/book"
               className={({ isActive }) =>

@@ -15,7 +15,7 @@ const ChangePassword = () => {
   const { authUser, passwordChanged, message } = useSelector((states) => states.auth);
   const id = authUser.id;
   const dispatch = useDispatch();
-  console.log(id)
+  // console.log(id)
 
   const handleOldPasswordChange = (event) => {
     const value = event.target.value;
@@ -71,7 +71,6 @@ const ChangePassword = () => {
   
   return (
     <div className='bg-white shadow-sm'>
-      <ToastContainer />
       <div className='block bg-blue-500 p-4 text-center text-xl uppercase text-white'>
         <h1>Change Password</h1>
       </div>

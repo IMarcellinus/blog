@@ -36,7 +36,7 @@ const UserPage = ({ authUser }) => {
     fetchUser,
   } = useSelector((state) => state.auth);
 
-  console.log("users:", users);
+  // console.log("users:", users);
 
   const handleOpenModal = () => {
     setModalIsOpen(true);

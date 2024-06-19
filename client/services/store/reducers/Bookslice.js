@@ -226,7 +226,7 @@ export const BookSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // Get Squad using pagination
+    // Get Book using pagination
     builder.addCase(getAllBook.pending, (state) => {
       state.isLoading = true;
     });
@@ -250,7 +250,7 @@ export const BookSlice = createSlice({
       state.status = action.payload.status_code;
     });
 
-    // Get Squad Default
+    // Get Book Default
     builder.addCase(getBook.pending, (state) => {
       state.isLoading = true;
     });

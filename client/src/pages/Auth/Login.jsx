@@ -65,7 +65,7 @@ function Login() {
   };
 
   useEffect(() => {
-    if (user !== null && isSuccess) {
+    if (user !== null || isSuccess) {
       navigate('/');
       dispatch(reset());
       dispatch(FetchUser());
@@ -73,7 +73,7 @@ function Login() {
   }, [user, isSuccess, dispatch, navigate]);
 
   useEffect(() => {
-    deleteToken();
+    // deleteToken();
     document.body.style.overflow = 'auto';
   }, [])
 
