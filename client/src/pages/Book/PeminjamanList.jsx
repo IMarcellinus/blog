@@ -24,6 +24,7 @@ const PeminjamanList = ({
   const changePage = ({ selected }) => {
     dispatch(setCurrentPageBookBorrow(selected));
   };
+  console.log(authUser.role);
 
   const isPengembalianPage = location.pathname === "/pengembalian";
 
@@ -43,6 +44,17 @@ const PeminjamanList = ({
     });
   };
 
+  // Filter booksBorrows to only include those with is_pinjam set to true
+  // Apply filter only if authUser.role is admin
+  const filteredBooksBorrows =
+    authUser.role !== "admin"
+      ? (search === "" ? booksBorrows : bookBorrowSearch)?.filter(
+          (booksBorrow) => booksBorrow.is_pinjam
+        )
+      : search === ""
+      ? booksBorrows
+      : bookBorrowSearch;
+
   return (
     <div className="min-h-[470px]">
       <table className="w-full table-auto border-blue-500 ">
@@ -60,49 +72,41 @@ const PeminjamanList = ({
         </thead>
         <tbody className="border text-sm font-light">
           {!isLoading &&
-            (search === "" ? booksBorrows : bookBorrowSearch)?.map(
-              (booksBorrow, index) => (
-                <tr
-                  key={booksBorrow.id}
-                  className={`cursor-pointer border-b border-gray-200 hover:bg-blue-100 ${
-                    index % 2 === 0 ? "bg-slate-100" : "bg-white"
-                  }`}
-                >
-                  <td className="p-4 text-left">{index + 1}</td>
-                  <td className="p-4 text-left">
-                    {booksBorrow.book?.nama_buku}
+            filteredBooksBorrows?.map((booksBorrow, index) => (
+              <tr
+                key={booksBorrow.id}
+                className={`cursor-pointer border-b border-gray-200 hover:bg-blue-100 ${
+                  index % 2 === 0 ? "bg-slate-100" : "bg-white"
+                }`}
+              >
+                <td className="p-4 text-left">{index + 1}</td>
+                <td className="p-4 text-left">{booksBorrow.book?.nama_buku}</td>
+                <td className="p-4 text-left">{booksBorrow.book?.kode_buku}</td>
+                <td className="p-4 text-left">
+                  {booksBorrow.book?.tanggal_pengesahan}
+                </td>
+                <td className="p-4 text-left">
+                  {booksBorrow.is_pinjam ? "sedang dipinjam" : "tidak dipinjam"}
+                </td>
+                {isPengembalianPage && (
+                  <td className="relative flex h-full gap-3 px-4 py-3">
+                    <Tippy content="Delete" followCursor>
+                      <div
+                        className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
+                        onClick={() =>
+                          handleReturnBook(
+                            booksBorrow.id,
+                            booksBorrow.book.kode_buku
+                          )
+                        }
+                      >
+                        <TbBooksOff className="size-full" />
+                      </div>
+                    </Tippy>
                   </td>
-                  <td className="p-4 text-left">
-                    {booksBorrow.book?.kode_buku}
-                  </td>
-                  <td className="p-4 text-left">
-                    {booksBorrow.book?.tanggal_pengesahan}
-                  </td>
-                  <td className="p-4 text-left">
-                    {booksBorrow.is_pinjam
-                      ? "sedang dipinjam"
-                      : "tidak dipinjam"}
-                  </td>
-                  {isPengembalianPage && (
-                    <td className="relative flex h-full gap-3 px-4 py-3">
-                      <Tippy content="Delete" followCursor>
-                        <div
-                          className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
-                          onClick={() =>
-                            handleReturnBook(
-                              booksBorrow.id,
-                              booksBorrow.book.kode_buku
-                            )
-                          }
-                        >
-                          <TbBooksOff className="size-full" />
-                        </div>
-                      </Tippy>
-                    </td>
-                  )}
-                </tr>
-              )
-            )}
+                )}
+              </tr>
+            ))}
         </tbody>
       </table>
       {!isLoading && !bookBorrowSearch?.length && !booksBorrows?.length && (

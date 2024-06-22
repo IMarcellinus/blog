@@ -197,8 +197,8 @@ func GetBorrowBook(c *fiber.Ctx) error {
 
 func BorrowBook(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Add a Book List",
+		"status_code": "200",
+		"msg":         "Add a Book List",
 	}
 
 	// Mendapatkan nilai username dari Local storage
@@ -220,15 +220,26 @@ func BorrowBook(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&requestBody); err != nil {
 		log.Println("Error in parsing request.")
-		context["statusText"] = ""
+		context["statusText"] = "Error"
 		context["msg"] = "Something went wrong JSON format"
+		return c.Status(fiber.StatusBadRequest).JSON(context)
+	}
+
+	// Memeriksa keberadaan kode_buku
+	if requestBody.KodeBuku == "" {
+		log.Println("kode_buku is required.")
+		context["statusText"] = "Error"
+		context["msg"] = "kode_buku is required."
 		return c.Status(fiber.StatusBadRequest).JSON(context)
 	}
 
 	// Cari buku berdasarkan kode buku
 	var book model.Book
 	if err := database.DBConn.Where("kode_buku = ?", requestBody.KodeBuku).First(&book).Error; err != nil {
-		return err
+		log.Println("Book not found:", err)
+		context["statusText"] = "Error"
+		context["msg"] = "Book not found."
+		return c.Status(fiber.StatusNotFound).JSON(context)
 	}
 
 	// Ambil informasi pengguna yang meminjam
@@ -236,6 +247,7 @@ func BorrowBook(c *fiber.Ctx) error {
 	if err := database.DBConn.First(&user, "username=?", username).Error; err != nil {
 		// Jika terjadi kesalahan saat mencari user
 		log.Println("Error while fetching user:", err)
+		context["statusText"] = "Error"
 		context["msg"] = "Error while fetching user."
 		return c.Status(fiber.StatusInternalServerError).JSON(context)
 	}
@@ -258,14 +270,17 @@ func BorrowBook(c *fiber.Ctx) error {
 	}
 
 	if err := database.DBConn.Create(&peminjaman).Error; err != nil {
-		return err
+		log.Println("Error while saving peminjaman:", err)
+		context["statusText"] = "Error"
+		context["msg"] = "Failed to save peminjaman."
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
 	}
 
 	context["msg"] = "Buku Berhasil Dipinjam."
 	context["Nama Mahasiswa"] = username
 	context["Kode Buku"] = book.KodeBuku
 
-	return c.Status(201).JSON(context)
+	return c.Status(fiber.StatusCreated).JSON(context)
 }
 
 func ReturnBook(c *fiber.Ctx) error {
