@@ -1,18 +1,17 @@
-FROM nginx:alpine
+FROM golang:1.22.2-alpine
 
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf 
+WORKDIR /app
 
-WORKDIR /blog
+COPY go.mod go.sum ./
 
-COPY ./client/dist /var/www/html
+RUN go mod tidy
 
-COPY ./server/.env.prod .
+COPY . .
 
-COPY ./server/build/server .
+RUN go build -o server ./server.go
 
-COPY ./startup.sh .
+RUN chmod +x main
 
-EXPOSE 80
-EXPOSE 8000
+EXPOSE 8080
 
-ENTRYPOINT [ "/bin/sh", "startup.sh" ]
+CMD [ "./server" ]
