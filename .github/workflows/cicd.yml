@@ -1,41 +1,31 @@
 name: Deploy SILAPER Application
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Source
-        uses: actions/checkout@v4
-
-      - name: Create .env file
-        run: echo "PORT=${{ secrets.PORT }}" >> .env
-
-      - name: Login to Docker HUB
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Build docker image
-        run: docker build -t marcellinus123/silaper-app .
-
-      - name: Push image to docker hub
-        run: docker push marcellinus123/silaper-app:latest
-
-  deploy:
-    needs: build
-    runs-on: self-hosted
-    steps:
-      - name: Pull docker image
-        run: docker pull marcellinus123/silaper-app:latest
-
-      - name: Delete old container
-        run: |
-          if [ $(docker ps -q -f name=silaper-app-container) ]; then
-            docker rm -f silaper-app-container
-          fi
-
-      - name: Run docker container
-        run: docker run -d -p 8080:8080 --name silaper-app-container marcellinus123/silaper-app:latest
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Source
+              uses: actions/checkout@v4
+            - name: Create .env file
+              run: echo "PORT=${{ secrets.PORT }}" >> .env
+            - name: Login to Docker HUB
+              run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            - name: Build docker image
+              run: docker build -t marcellinus123/silaper-app .
+            - name: Push image to docker hub
+              run: docker push marcellinus123/silaper-app:latest
+    deploy:
+      needs: build
+      runs-on: self-hosted
+      steps:
+        - name: Pull docker image
+          run: docker pull marcellinus123/silaper-app:latest
+        - name: Delete old container
+          run: docker rm -f silaper-app-container  
+        - name: Run docker container          
+          run: docker run -d -p 8080:8080 --name silaper-app-container marcellinus123/silaper-app
