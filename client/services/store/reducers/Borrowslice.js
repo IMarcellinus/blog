@@ -219,7 +219,7 @@ export const BorrowSlice = createSlice({
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
-      state.booksBorrows = action.payload?.data;
+      state.booksBorrows = action.payload?.data.filter((val) => val.is_pinjam);
       state.bookBorrowSearch = [];
       state.totalPagesBookBorrow = action.payload?.total_page;
       state.isDelete = false;
