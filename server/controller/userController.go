@@ -35,11 +35,20 @@ type ChangePasswordRequest struct {
 	ConfirmNewPassword string `json:"confirm_new_password"`
 }
 
+func WelcomeApi(c *fiber.Ctx) error {
+	returnObject := fiber.Map{
+		"status_code": "200",
+		"msg":         "Welcome To SILAPER API",
+	}
+
+	return c.Status(200).JSON(returnObject)
+}
+
 // Function Login
 func Login(c *fiber.Ctx) error {
 	returnObject := fiber.Map{
-		"status": "Ok",
-		"msg":    "Something went wrong.",
+		"status_code": "200",
+		"msg":         "Something went wrong.",
 	}
 
 	// Check user for the given credentials

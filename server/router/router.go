@@ -14,6 +14,7 @@ func SetupRoutes(app *fiber.App) {
 	// delete => delete
 
 	// Auth
+	app.Get("/", controller.WelcomeApi)
 	app.Post("api/login", controller.Login)
 	app.Post("api/register", controller.Register)
 	app.Get("api/logout", controller.Logout)
