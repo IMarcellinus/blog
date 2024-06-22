@@ -6,21 +6,10 @@ import {
   AiOutlineTeam,
   AiOutlineUser,
 } from "react-icons/ai";
-import { BsBuilding, BsLayoutSidebarInset } from "react-icons/bs";
-import {
-  FaAngleDown,
-  FaAngleRight,
-  FaCalendarAlt,
-  FaClock,
-  FaGraduationCap,
-  FaHistory,
-} from "react-icons/fa";
-import { GiOrganigram } from "react-icons/gi";
-import { ImLocation2, ImOffice } from "react-icons/im";
-import { MdOutlineWork } from "react-icons/md";
-import { RiBuilding2Line } from "react-icons/ri";
+import { BsLayoutSidebarInset } from "react-icons/bs";
+import { FaAngleRight, FaBookDead } from "react-icons/fa";
+import { GiBookshelf, GiSpellBook } from "react-icons/gi";
 import { SiBookstack } from "react-icons/si";
-import { VscOrganization } from "react-icons/vsc";
 import { NavLink } from "react-router-dom";
 
 function Sidebar({
@@ -87,9 +76,9 @@ function Sidebar({
       >
         {!minSidebar && (
           <div className="top-0 flex w-full justify-end bg-white p-2">
-            <Tippy content='Minimize Sidebar'>
+            <Tippy content="Minimize Sidebar">
               <button
-                type='button'
+                type="button"
                 onClick={() => {
                   setMinSidebar(true);
                   setIsOpenUnit(false);
@@ -100,7 +89,7 @@ function Sidebar({
                 }}
                 className={`hidden rounded-full bg-white/80 md:block`}
               >
-                <BsLayoutSidebarInset className='size-6' />
+                <BsLayoutSidebarInset className="size-6" />
               </button>
             </Tippy>
           </div>
@@ -124,8 +113,58 @@ function Sidebar({
           } flex max-h-[80vh] flex-col gap-3 overflow-y-auto py-2 md:py-3`}
         >
           <>
+            {authUser && authUser.role === "admin" ? (
+              <>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                      : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+                  }
+                >
+                  {!minSidebar ? (
+                    <AiOutlineDashboard className="size-5" />
+                  ) : (
+                    <Tippy content="Dashboard">
+                      <div>
+                        <AiOutlineDashboard className="size-8" />
+                      </div>
+                    </Tippy>
+                  )}
+                  {!minSidebar && (
+                    <div className="text-sm font-medium tracking-wider">
+                      Dashboard
+                    </div>
+                  )}
+                </NavLink>
+                <NavLink
+                  to="/user"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                      : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+                  }
+                >
+                  {!minSidebar ? (
+                    <AiOutlineUser className="size-5" />
+                  ) : (
+                    <Tippy content="User">
+                      <div>
+                        <AiOutlineUser className="size-8" />
+                      </div>
+                    </Tippy>
+                  )}
+                  {!minSidebar && (
+                    <div className="text-sm font-medium tracking-wider">
+                      User
+                    </div>
+                  )}
+                </NavLink>
+              </>
+            ) : null}
             <NavLink
-              to="/"
+              to="/book"
               className={({ isActive }) =>
                 isActive
                   ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
@@ -133,17 +172,63 @@ function Sidebar({
               }
             >
               {!minSidebar ? (
-                <AiOutlineDashboard className="size-5" />
+                <GiBookshelf className="size-5" />
               ) : (
-                <Tippy content="Dashboard">
+                <Tippy content="Management Book">
                   <div>
-                    <AiOutlineDashboard className="size-8" />
+                    <GiBookshelf className="size-8" />
                   </div>
                 </Tippy>
               )}
               {!minSidebar && (
                 <div className="text-sm font-medium tracking-wider">
-                  Dashboard
+                  {authUser.role === "user" ? "Pengumpulan Buku" : "Book"}
+                </div>
+              )}
+            </NavLink>
+            <NavLink
+              to="/peminjaman"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                  : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+              }
+            >
+              {!minSidebar ? (
+                <GiSpellBook className="size-5" />
+              ) : (
+                <Tippy content="Management Book">
+                  <div>
+                    <GiSpellBook className="size-8" />
+                  </div>
+                </Tippy>
+              )}
+              {!minSidebar && (
+                <div className="text-sm font-medium tracking-wider">
+                  Peminjaman Buku
+                </div>
+              )}
+            </NavLink>
+            <NavLink
+              to="/pengembalian"
+              className={({ isActive }) =>
+                isActive
+                  ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                  : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+              }
+            >
+              {!minSidebar ? (
+                <SiBookstack className="size-5" />
+              ) : (
+                <Tippy content="Management Book">
+                  <div>
+                    <SiBookstack className="size-8" />
+                  </div>
+                </Tippy>
+              )}
+              {!minSidebar && (
+                <div className="text-sm font-medium tracking-wider">
+                  Pengembalian Buku
                 </div>
               )}
             </NavLink>
@@ -169,6 +254,9 @@ Sidebar.propTypes = {
   btnOpenSidebar: PropTypes.bool.isRequired,
   setBtnOpenSidebar: PropTypes.func.isRequired,
   setSidebar: PropTypes.func.isRequired,
+  authUser: PropTypes.shape({
+    role: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default Sidebar;

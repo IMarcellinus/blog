@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { BiLock, BiUser } from "react-icons/bi";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { RegisterUser } from "../../../services/store/reducers/Authslice";
+import { Link } from "react-router-dom";
+import {
+  RegisterUser,
+  setResetMessage,
+} from "../../../services/store/reducers/Authslice";
 import { SilaperLogo } from "../../assets/img";
 
 function RegisterUserPage() {
@@ -12,12 +15,15 @@ function RegisterUserPage() {
   );
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [nim, setNim] = useState("");
+  const [jeniskelamin, setJeniskelamin] = useState("");
+  const [nama, setNama] = useState("");
+  const [prodi, setProdi] = useState("");
   const [errorUsername, setErrorUsername] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const [imageBarcode, setImageBarcode] = useState('');
-  console.log(user);
+  const [imageBarcode, setImageBarcode] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -30,7 +36,20 @@ function RegisterUserPage() {
 
   const Register = (e) => {
     e.preventDefault();
-    dispatch(RegisterUser({ username, password }));
+    dispatch(setResetMessage());
+    const userData = { username, password, nim, jeniskelamin, nama, prodi };
+    dispatch(RegisterUser(userData));
+  };
+
+  const handleDownload = () => {
+    // Create an anchor element
+    const link = document.createElement("a");
+    // Set the href attribute to the image data
+    link.href = `data:image/png;base64,${imageBarcode}`;
+    // Set the download attribute to prompt download
+    link.download = "barcode.png";
+    // Simulate click event
+    link.click();
   };
 
   const handleUsernameChange = (e) => {
@@ -55,25 +74,25 @@ function RegisterUserPage() {
     }
   };
 
+  // Other input handlers
+  const handleNimChange = (e) => setNim(e.target.value);
+  const handleJeniskelaminChange = (e) => setJeniskelamin(e.target.value);
+  const handleNamaChange = (e) => setNama(e.target.value);
+  const handleProdiChange = (e) => setProdi(e.target.value);
+
   useEffect(() => {
     if (isSuccess) {
       // Jika registrasi berhasil, tampilkan QR code
       setImageBarcode(user);
     }
-  }, [isSuccess, user]);
-
-  useEffect(() => {
-    // Kosongkan QR code setelah muncul
-    if (imageBarcode && isSuccess) {
-      setTimeout(() => {
-        setImageBarcode("");
-      }, 100000); // Setelah 10 detik, kosongkan QR code
+    if (!isError) {
+      dispatch(setResetMessage());
     }
-  }, [imageBarcode, isSuccess]);
+  }, [isSuccess, user, dispatch, isError]);
 
   return (
     <section className="mx-auto max-w-[1280px] relative h-screen flex items-center justify-center">
-      <div className="w-full space-y-6 md:space-y-6 bg-slate-300 rounded-xl shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-4 m-2 lg:m-20 xl:m-24">
+      <div className="w-full space-y-2 md:space-y-6 bg-slate-300 rounded-xl shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-4 m-2 lg:m-20 xl:m-24">
         <div className="flex items-center flex-col">
           <img src={SilaperLogo} className="h-28 sm:h-44 md:h-52"></img>
           <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-white text-center">
@@ -140,28 +159,143 @@ function RegisterUserPage() {
               )}
             </div>
           </div>
+          {/* Input NIM */}
+          <div className="my-2">
+            <label
+              htmlFor="nim"
+              className="mb-2 block text-sm font-medium text-gray-900 "
+            >
+              NIM
+            </label>
+            <input
+              type="text"
+              id="nim"
+              name="nim"
+              value={nim}
+              onChange={handleNimChange}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="masukkan NIM"
+              required
+            />
+          </div>
+          {/* Input Jenis Kelamin */}
+          <div className="my-2">
+            <label
+              htmlFor="jeniskelamin"
+              className="mb-2 block text-sm font-medium text-gray-900"
+            >
+              Jenis Kelamin
+            </label>
+            <select
+              id="jeniskelamin"
+              name="jeniskelamin"
+              value={jeniskelamin}
+              onChange={handleJeniskelaminChange}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+              required
+            >
+              <option value="" disabled>
+                Pilih jenis kelamin
+              </option>
+              <option value="laki-laki">Laki-laki</option>
+              <option value="perempuan">Perempuan</option>
+            </select>
+          </div>
+          {/* Input Nama */}
+          <div className="my-2">
+            <label
+              htmlFor="nama"
+              className="mb-2 block text-sm font-medium text-gray-900 "
+            >
+              Nama
+            </label>
+            <input
+              type="text"
+              id="nama"
+              name="nama"
+              value={nama}
+              onChange={handleNamaChange}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="masukkan nama"
+              required
+            />
+          </div>
+          {/* Input Prodi */}
+          <div className="my-2">
+            <label
+              htmlFor="prodi"
+              className="mb-2 block text-sm font-medium text-gray-900 "
+            >
+              Prodi
+            </label>
+            <input
+              type="text"
+              id="prodi"
+              name="prodi"
+              value={prodi}
+              onChange={handleProdiChange}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
+              placeholder="masukkan prodi"
+              required
+            />
+          </div>
           <div className="flex">
             <button
               onSubmit={handleRegister}
               type="submit"
               className={`my-4 w-full items-center rounded-lg ${
-                !username || !password || isLoading
+                !username ||
+                !password ||
+                !nim ||
+                !jeniskelamin ||
+                !nama ||
+                !prodi ||
+                isLoading
                   ? "cursor-not-allowed bg-blue-400 text-white dark:bg-blue-500"
                   : "bg-blue-700 text-white hover:bg-blue-800"
               } rounded-lg px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800`}
-              disabled={!username || !password || isLoading}
+              disabled={
+                !username ||
+                !password ||
+                !nim ||
+                !jeniskelamin ||
+                !nama ||
+                !prodi ||
+                isLoading
+              }
             >
               {isLoading ? "Loading..." : "Submit"}
             </button>
           </div>
         </form>
-        <div className="flex min-w-max justify-center">
+        <div className="flex">
           {imageBarcode && isSuccess && (
-            <img
-              src={imageBarcode}
-              alt="QR Code"
-              className="h-full"
-            />
+            <div className="flex flex-col max-w-full justify-center items-center w-full">
+              <img
+                src={`data:image/png;base64,${imageBarcode}`}
+                alt="QR Code"
+                className="h-full"
+              />
+              <div className="flex justify-start flex-col">
+                <button
+                  onClick={handleDownload}
+                  className="bg-blue-700 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+                >
+                  Download Barcode
+                </button>
+                <p className="text-black mt-2">
+                  Have a Barcode?{" "}
+                  <i>
+                    <Link
+                      to="/loginuser"
+                      className="hover:text-sky-900 hover:underline"
+                    >
+                      click here
+                    </Link>
+                  </i>{" "}
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>

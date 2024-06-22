@@ -19,6 +19,10 @@ const initialState = {
   tokenReset: null,
   resetSuccess: false,
   authUser: null,
+  fetchUser: false,
+  passwordChanged: false,
+  newPassword: "",
+  confirmNewPassword: "",
 };
 
 const setTokenToCookie = (token) => {
@@ -74,7 +78,7 @@ export const RegisterUser = createAsyncThunk(
         "http://localhost:8080/api/register",
         credentials
       );
-      return response.data;
+      return response.data.baseImage;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data || "An error occurred"
@@ -105,7 +109,7 @@ export const FetchUser = createAsyncThunk(
 
 export const getBarcodeByuser = createAsyncThunk(
   "auth/getbarcode",
-  async(barcode, thunkAPI) => {
+  async (barcode, thunkAPI) => {
     const token = await getToken();
     try {
       const response = await axios.get(`${BASE_URL}/barcode/${barcode.id}`, {
@@ -119,7 +123,38 @@ export const getBarcodeByuser = createAsyncThunk(
       return thunkAPI.rejectWithValue(error.response.data);
     }
   }
-)
+);
+
+export const changePassword = createAsyncThunk(
+  "auth/changePassword",
+  async (password, { rejectWithValue }) => {
+    const token = await getToken();
+    if (!token) {
+      return rejectWithValue("No token found");
+    }
+    try {
+      const token = await getToken();
+      const response = await axios.put(
+        `${BASE_URL}/change-password`,
+        {
+          old_password: password.oldPassword,
+          new_password: password.newPassword,
+          confirm_new_password: password.confirmNewPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      const message = error.response.data.msg;
+      console.log(message)
+      return rejectWithValue(message);
+    }
+  }
+);
 
 export const authSlice = createSlice({
   name: "auth",
@@ -131,9 +166,6 @@ export const authSlice = createSlice({
       state.authUser = null;
     },
     reset: () => initialState,
-    passwordFalse: (state) => {
-      state.passwordChanged = false;
-    },
     setStatus: (state) => {
       state.status = null;
     },
@@ -160,6 +192,15 @@ export const authSlice = createSlice({
     },
     setMessageAuth: (state, action) => {
       state.message = action.payload;
+    },
+    setResetMessage: (state) => {
+      state.message = null;
+    },
+    setFetchUser: (state, action) => {
+      state.fetchUser = action.payload;
+    },
+    setPasswordFalse: (state) => {
+      state.passwordChanged = false;
     },
   },
   extraReducers: (builder) => {
@@ -230,6 +271,7 @@ export const authSlice = createSlice({
         state.messageFetchUser = action.payload.msg;
         state.status = action.payload.status_code;
         state.username = action.payload.user.username;
+        state.fetchUser = true;
       })
       .addCase(FetchUser.rejected, (state, action) => {
         state.isPreload = false;
@@ -258,9 +300,40 @@ export const authSlice = createSlice({
         state.isError = true;
         state.authUser = null;
       });
+    // changepassword
+    builder.addCase(changePassword.pending, (state) => {
+      state.isLoading = true;
+      state.isError = null;
+    });
+    builder.addCase(changePassword.fulfilled, (state,action) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.passwordChanged = true;
+      state.message = action.payload.msg;
+    });
+    builder.addCase(changePassword.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+      state.passwordChanged = false;
+    });
   },
 });
 
-export const { reset, logoutUser, passwordFalse, setStatus, setEmail, setNewPassword, setConfirmNewPassword, forgotReset, setResetPassword, setIsLogin, setMessageAuth } = authSlice.actions;
+export const {
+  reset,
+  logoutUser,
+  passwordFalse,
+  setStatus,
+  setEmail,
+  setNewPassword,
+  setConfirmNewPassword,
+  forgotReset,
+  setResetPassword,
+  setIsLogin,
+  setMessageAuth,
+  setResetMessage,
+  setPasswordFalse
+} = authSlice.actions;
 
 export default authSlice.reducer;

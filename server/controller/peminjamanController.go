@@ -2,6 +2,8 @@ package controller
 
 import (
 	"log"
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/IMarcellinus/blog/database"
@@ -18,6 +20,117 @@ type BorrowInfo struct {
 	CreatedAt time.Time  `json:"created_at"`
 	ReturnAt  time.Time  `json:"return_at"`
 	IsPinjam  bool       `json:"is_pinjam"`
+}
+
+func GetBorrowBookPagination(c *fiber.Ctx) error {
+	page := c.Params("page")
+	perPage := c.Params("perPage")
+	keyword := c.Params("keyword") // Get keyword from URL path parameters
+
+	numPage, err := strconv.Atoi(page)
+	if err != nil || numPage <= 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Invalid page number",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	numPerPage, err := strconv.Atoi(perPage)
+	if err != nil || numPerPage <= 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Invalid perPage number",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	context := fiber.Map{
+		"status_code": "200",
+		"msg":         "Get Borrow Book List",
+	}
+
+	// Mendapatkan nilai username dari Local storage
+	username, exists := c.Locals("username").(string)
+	log.Println(username)
+
+	// Memeriksa keberadaan username
+	if !exists {
+		log.Println("username key not found.")
+		context["msg"] = "username not found."
+		return c.Status(fiber.StatusUnauthorized).JSON(context)
+	}
+
+	// Mendapatkan userID pengguna yang sedang login
+	userID, exists := c.Locals("userid").(uint)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "UserID not found in context"})
+	}
+
+	db := database.DBConn
+
+	var totalData int64
+	query := db.Model(&model.Peminjaman{}).Where("user_id = ?", userID)
+
+	// Apply keyword filter if provided
+	if keyword != "" {
+		query = query.Joins("JOIN books ON books.id = peminjamans.book_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	}
+
+	query.Count(&totalData)
+
+	totalPage := int(totalData) / numPerPage
+	if int(totalData)%numPerPage != 0 {
+		totalPage++
+	}
+
+	if totalPage == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"msg":         "No borrow records found",
+			"status_code": http.StatusNotFound,
+		})
+	}
+
+	if numPage > totalPage {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Page number out of range",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	offset := (numPage - 1) * numPerPage
+
+	var Peminjaman []model.Peminjaman
+	if err := query.Preload("Book").Preload("User").Offset(offset).Limit(numPerPage).Find(&Peminjaman).Error; err != nil {
+		return err
+	}
+
+	// Buat slice untuk menyimpan informasi peminjaman
+	borrowInfoList := make([]BorrowInfo, len(Peminjaman))
+
+	// Loop melalui setiap objek Peminjaman dan isi informasi peminjaman
+	for i, p := range Peminjaman {
+		var returnAt time.Time
+		if p.ReturnAt != nil {
+			returnAt = *p.ReturnAt
+		}
+		borrowInfoList[i] = BorrowInfo{
+			ID:        p.ID,
+			BookID:    p.BookID,
+			UserID:    p.UserID,
+			Book:      p.Book,
+			Mahasiswa: username, // Menggunakan username pengguna yang login
+			CreatedAt: p.CreatedAt,
+			ReturnAt:  returnAt,
+			IsPinjam:  p.IsPinjam,
+		}
+	}
+
+	context["data"] = borrowInfoList
+	context["total_page"] = totalPage
+	context["page_now"] = numPage
+	context["limit"] = numPerPage
+
+	return c.JSON(context)
 }
 
 func GetBorrowBook(c *fiber.Ctx) error {
@@ -37,7 +150,7 @@ func GetBorrowBook(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(context)
 	}
 
-	// Mendapatkan username pengguna yang sedang login
+	// Mendapatkan userID pengguna yang sedang login
 	userID, exists := c.Locals("userid").(uint)
 	if !exists {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "UserID not found in context"})
@@ -49,23 +162,35 @@ func GetBorrowBook(c *fiber.Ctx) error {
 	}
 
 	// Buat slice untuk menyimpan informasi peminjaman
-	borrowInfoList := make([]BorrowInfo, len(Peminjaman))
+	borrowInfoList := []BorrowInfo{}
 
 	// Loop melalui setiap objek Peminjaman dan isi informasi peminjaman
-	for i, p := range Peminjaman {
-		borrowInfoList[i] = BorrowInfo{
+	for _, p := range Peminjaman {
+		var returnAt time.Time
+		if p.ReturnAt != nil {
+			returnAt = *p.ReturnAt
+		}
+		borrowInfoList = append(borrowInfoList, BorrowInfo{
 			ID:        p.ID,
 			BookID:    p.BookID,
 			UserID:    p.UserID,
 			Book:      p.Book,
 			Mahasiswa: username, // Menggunakan username pengguna yang login
 			CreatedAt: p.CreatedAt,
-			ReturnAt:  p.ReturnAt,
+			ReturnAt:  returnAt,
 			IsPinjam:  p.IsPinjam,
-		}
+		})
 	}
 
-	context["borrowInfoList"] = borrowInfoList
+	// Periksa apakah borrowInfoList kosong
+	if len(borrowInfoList) == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"msg":         "No borrow records found",
+			"status_code": http.StatusNotFound,
+		})
+	}
+
+	context["data"] = borrowInfoList
 
 	return c.JSON(context)
 }
@@ -128,6 +253,7 @@ func BorrowBook(c *fiber.Ctx) error {
 		BookID:    book.ID,
 		UserID:    user.ID,
 		CreatedAt: time.Now(),
+		ReturnAt:  nil, // Ensure ReturnAt is nil if no return date is set
 		IsPinjam:  true,
 	}
 
