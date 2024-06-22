@@ -83,10 +83,10 @@ function Login() {
 
   return (
     <section className="mx-auto max-w-[1280px] relative h-screen flex items-center justify-center">
-      <div className="w-full space-y-6 md:space-y-6 bg-slate-300 rounded-xl shadow dark:border dark:bg-gray-800 dark:border-gray-700 p-4 m-2 lg:m-20 xl:m-24">
+      <div className="w-full space-y-6 md:space-y-6 bg-slate-300 rounded-xl shadow dark:border dark:bg-gray-800 dark:border-gray-700 dark:bg-white p-4 m-2 lg:m-20 xl:m-24">
         <div className="flex items-center flex-col">
           <img src={SilaperLogo} className="h-28 sm:h-44 md:h-52"></img>
-          <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-white text-center">
+          <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-black text-center">
             Sistem Pelayanan Perpustakaan (SILAPER)
           </h1>
         </div>
