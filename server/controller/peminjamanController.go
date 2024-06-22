@@ -72,7 +72,7 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 
 	// Apply keyword filter if provided
 	if keyword != "" {
-		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
+		query = query.Joins("JOIN books ON books.id = peminjamans.book_id").
 			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
 	}
 
@@ -109,6 +109,10 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 
 	// Loop melalui setiap objek Peminjaman dan isi informasi peminjaman
 	for i, p := range Peminjaman {
+		var returnAt time.Time
+		if p.ReturnAt != nil {
+			returnAt = *p.ReturnAt
+		}
 		borrowInfoList[i] = BorrowInfo{
 			ID:        p.ID,
 			BookID:    p.BookID,
@@ -116,7 +120,7 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 			Book:      p.Book,
 			Mahasiswa: username, // Menggunakan username pengguna yang login
 			CreatedAt: p.CreatedAt,
-			ReturnAt:  p.ReturnAt,
+			ReturnAt:  returnAt,
 			IsPinjam:  p.IsPinjam,
 		}
 	}
@@ -162,6 +166,10 @@ func GetBorrowBook(c *fiber.Ctx) error {
 
 	// Loop melalui setiap objek Peminjaman dan isi informasi peminjaman
 	for _, p := range Peminjaman {
+		var returnAt time.Time
+		if p.ReturnAt != nil {
+			returnAt = *p.ReturnAt
+		}
 		borrowInfoList = append(borrowInfoList, BorrowInfo{
 			ID:        p.ID,
 			BookID:    p.BookID,
@@ -169,7 +177,7 @@ func GetBorrowBook(c *fiber.Ctx) error {
 			Book:      p.Book,
 			Mahasiswa: username, // Menggunakan username pengguna yang login
 			CreatedAt: p.CreatedAt,
-			ReturnAt:  p.ReturnAt,
+			ReturnAt:  returnAt,
 			IsPinjam:  p.IsPinjam,
 		})
 	}
@@ -245,6 +253,7 @@ func BorrowBook(c *fiber.Ctx) error {
 		BookID:    book.ID,
 		UserID:    user.ID,
 		CreatedAt: time.Now(),
+		ReturnAt:  nil, // Ensure ReturnAt is nil if no return date is set
 		IsPinjam:  true,
 	}
 
