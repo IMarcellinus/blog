@@ -19,7 +19,7 @@ jobs:
               run: docker build -t marcellinus123/silaper-app .
             - name: Push image to docker hub
               run: docker push marcellinus123/silaper-app:latest
-    deploy:
+    deploy: 
       needs: build
       runs-on: self-hosted
       steps:
