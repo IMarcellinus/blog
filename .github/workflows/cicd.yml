@@ -28,4 +28,4 @@ jobs:
         - name: Delete old container
           run: docker rm -f silaper-app-container  
         - name: Run docker container          
-          run: docker run -d -p 8080:8080 --name silaper-app-container marcellinus123/silaper-app
+          run: docker run -d -p 4040:4040 --name silaper-app-container marcellinus123/silaper-app

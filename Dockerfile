@@ -11,6 +11,6 @@ RUN go build -o server ./server.go
 # Ensure the built application is executable
 RUN chmod +x server
 # Expose the application port
-EXPOSE 8080
+EXPOSE 4040
 # Command to run the application
 CMD ["./server"]
