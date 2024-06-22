@@ -22,6 +22,7 @@ func init() {
 }
 
 func main() {
+	port := os.Getenv("PORT")
 	sqlDb, err := database.DBConn.DB()
 	if err != nil {
 		panic("Error in sql connection.")
@@ -65,5 +66,5 @@ func main() {
 
 	router.SetupRoutes(app)
 
-	app.Listen(":8080")
+	app.Listen(port)
 }
