@@ -16,12 +16,15 @@ var DBConn *gorm.DB
 
 func ConnectDB() {
 
-	user := os.Getenv("db_user")
-	password := os.Getenv("db_pass")
-	dbname := os.Getenv("db_name")
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASS")
+	dbname := os.Getenv("DB_NAME")
+	dbhost := os.Getenv("DB_HOST")
+	dbport := os.Getenv("DB_PORT")
+	dbcharset := os.Getenv("DB_CHARSET")
+	dbloc := os.Getenv("DB_LOC")
 
-	dsn := user + ":" + password + "@tcp(localhost:3306)/" + dbname + "?charset=utf8mb4&parseTime=True&loc=Local"
-	// dsn := "root:root123@tcp(localhost)/fiber_blog?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := user + ":" + password + "@tcp(" + dbhost + ":" + dbport + ")/" + dbname + "?charset=" + dbcharset + "&parseTime=True&loc=" + dbloc
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Error),
 	})

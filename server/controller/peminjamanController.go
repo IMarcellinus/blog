@@ -48,31 +48,43 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 		"msg":         "Get Borrow Book List",
 	}
 
-	// Mendapatkan nilai username dari Local storage
+	// Get the username from Local storage
 	username, exists := c.Locals("username").(string)
 	log.Println(username)
 
-	// Memeriksa keberadaan username
+	// Check if username exists
 	if !exists {
 		log.Println("username key not found.")
 		context["msg"] = "username not found."
 		return c.Status(fiber.StatusUnauthorized).JSON(context)
 	}
 
-	// Mendapatkan userID pengguna yang sedang login
+	// Get the userID of the logged-in user
 	userID, exists := c.Locals("userid").(uint)
 	if !exists {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "UserID not found in context"})
 	}
 
+	// Get the role from Local storage
+	role, exists := c.Locals("role").(string)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Role not found in context"})
+	}
+
 	db := database.DBConn
 
 	var totalData int64
-	query := db.Model(&model.Peminjaman{}).Where("user_id = ?", userID)
+	query := db.Model(&model.Peminjaman{})
+
+	if role == "user" {
+		query = query.Where("user_id = ?", userID)
+	} else if role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Unauthorized role"})
+	}
 
 	// Apply keyword filter if provided
 	if keyword != "" {
-		query = query.Joins("JOIN books ON books.id = peminjamans.book_id").
+		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
 			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
 	}
 
@@ -104,25 +116,41 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 		return err
 	}
 
-	// Buat slice untuk menyimpan informasi peminjaman
-	borrowInfoList := make([]BorrowInfo, len(Peminjaman))
+	// Create a slice to store borrowing information
+	borrowInfoList := []BorrowInfo{}
 
-	// Loop melalui setiap objek Peminjaman dan isi informasi peminjaman
-	for i, p := range Peminjaman {
+	// Loop through each Peminjaman object and fill in the borrowing information
+	for _, p := range Peminjaman {
 		var returnAt time.Time
 		if p.ReturnAt != nil {
 			returnAt = *p.ReturnAt
 		}
-		borrowInfoList[i] = BorrowInfo{
+		borrowInfo := BorrowInfo{
 			ID:        p.ID,
 			BookID:    p.BookID,
 			UserID:    p.UserID,
 			Book:      p.Book,
-			Mahasiswa: username, // Menggunakan username pengguna yang login
+			Mahasiswa: username, // Use the username of the logged-in user
 			CreatedAt: p.CreatedAt,
 			ReturnAt:  returnAt,
 			IsPinjam:  p.IsPinjam,
 		}
+
+		// If the role is admin, include all details from the Peminjaman model and the user's username
+		if role == "admin" {
+			borrowInfo = BorrowInfo{
+				ID:        p.ID,
+				BookID:    p.BookID,
+				UserID:    p.UserID,
+				Book:      p.Book,
+				Mahasiswa: p.User.Username, // Use the username from p.User
+				CreatedAt: p.CreatedAt,
+				ReturnAt:  returnAt,
+				IsPinjam:  p.IsPinjam,
+			}
+		}
+
+		borrowInfoList = append(borrowInfoList, borrowInfo)
 	}
 
 	context["data"] = borrowInfoList
@@ -139,50 +167,80 @@ func GetBorrowBook(c *fiber.Ctx) error {
 		"msg":        "Get Borrow Book List",
 	}
 
-	// Mendapatkan nilai username dari Local storage
+	// Get the username from Local storage
 	username, exists := c.Locals("username").(string)
 	log.Println(username)
 
-	// Memeriksa keberadaan username
+	// Check if username exists
 	if !exists {
 		log.Println("username key not found.")
 		context["msg"] = "username not found."
 		return c.Status(fiber.StatusUnauthorized).JSON(context)
 	}
 
-	// Mendapatkan userID pengguna yang sedang login
+	// Get the userID of the logged-in user
 	userID, exists := c.Locals("userid").(uint)
 	if !exists {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "UserID not found in context"})
 	}
 
-	var Peminjaman []model.Peminjaman
-	if err := database.DBConn.Preload("Book").Preload("User").Where("user_id = ?", userID).Find(&Peminjaman).Error; err != nil {
-		return err
+	// Get the role from Local storage
+	role, exists := c.Locals("role").(string)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Role not found in context"})
 	}
 
-	// Buat slice untuk menyimpan informasi peminjaman
+	var Peminjaman []model.Peminjaman
+	if role == "user" {
+		if err := database.DBConn.Preload("Book").Preload("User").Where("user_id = ?", userID).Find(&Peminjaman).Error; err != nil {
+			return err
+		}
+	} else if role == "admin" {
+		if err := database.DBConn.Preload("Book").Preload("User").Find(&Peminjaman).Error; err != nil {
+			return err
+		}
+	} else {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Unauthorized role"})
+	}
+
+	// Create a slice to store borrowing information
 	borrowInfoList := []BorrowInfo{}
 
-	// Loop melalui setiap objek Peminjaman dan isi informasi peminjaman
+	// Loop through each Peminjaman object and fill in the borrowing information
 	for _, p := range Peminjaman {
 		var returnAt time.Time
 		if p.ReturnAt != nil {
 			returnAt = *p.ReturnAt
 		}
-		borrowInfoList = append(borrowInfoList, BorrowInfo{
+		borrowInfo := BorrowInfo{
 			ID:        p.ID,
 			BookID:    p.BookID,
 			UserID:    p.UserID,
 			Book:      p.Book,
-			Mahasiswa: username, // Menggunakan username pengguna yang login
+			Mahasiswa: username, // Use the username of the logged-in user
 			CreatedAt: p.CreatedAt,
 			ReturnAt:  returnAt,
 			IsPinjam:  p.IsPinjam,
-		})
+		}
+
+		// If the role is admin, include all details from the Peminjaman model and the user's username
+		if role == "admin" {
+			borrowInfo = BorrowInfo{
+				ID:        p.ID,
+				BookID:    p.BookID,
+				UserID:    p.UserID,
+				Book:      p.Book,
+				Mahasiswa: p.User.Username, // Use the username from p.User
+				CreatedAt: p.CreatedAt,
+				ReturnAt:  returnAt,
+				IsPinjam:  p.IsPinjam,
+			}
+		}
+
+		borrowInfoList = append(borrowInfoList, borrowInfo)
 	}
 
-	// Periksa apakah borrowInfoList kosong
+	// Check if borrowInfoList is empty
 	if len(borrowInfoList) == 0 {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
 			"msg":         "No borrow records found",
@@ -221,6 +279,7 @@ func BorrowBook(c *fiber.Ctx) error {
 	if err := c.BodyParser(&requestBody); err != nil {
 		log.Println("Error in parsing request.")
 		context["statusText"] = "Error"
+		context["status_code"] = "400"
 		context["msg"] = "Something went wrong JSON format"
 		return c.Status(fiber.StatusBadRequest).JSON(context)
 	}
@@ -229,6 +288,7 @@ func BorrowBook(c *fiber.Ctx) error {
 	if requestBody.KodeBuku == "" {
 		log.Println("kode_buku is required.")
 		context["statusText"] = "Error"
+		context["status_code"] = "400"
 		context["msg"] = "kode_buku is required."
 		return c.Status(fiber.StatusBadRequest).JSON(context)
 	}
@@ -236,10 +296,10 @@ func BorrowBook(c *fiber.Ctx) error {
 	// Cari buku berdasarkan kode buku
 	var book model.Book
 	if err := database.DBConn.Where("kode_buku = ?", requestBody.KodeBuku).First(&book).Error; err != nil {
-		log.Println("Book not found:", err)
 		context["statusText"] = "Error"
-		context["msg"] = "Book not found."
-		return c.Status(fiber.StatusNotFound).JSON(context)
+		context["msg"] = "Kode Buku not found."
+		context["status_code"] = "404"                      // Corrected to 404
+		return c.Status(fiber.StatusNotFound).JSON(context) // Return 404 Not Found
 	}
 
 	// Ambil informasi pengguna yang meminjam
@@ -249,6 +309,7 @@ func BorrowBook(c *fiber.Ctx) error {
 		log.Println("Error while fetching user:", err)
 		context["statusText"] = "Error"
 		context["msg"] = "Error while fetching user."
+		context["status_code"] = "500"
 		return c.Status(fiber.StatusInternalServerError).JSON(context)
 	}
 
@@ -257,6 +318,7 @@ func BorrowBook(c *fiber.Ctx) error {
 	if err := database.DBConn.Where("book_id = ? AND is_pinjam = ?", book.ID, true).First(&existingPeminjaman).Error; err == nil {
 		context["statusText"] = "Error"
 		context["msg"] = "Buku sedang dipinjam"
+		context["status_code"] = "409"
 		return c.Status(fiber.StatusConflict).JSON(context)
 	}
 
@@ -273,6 +335,7 @@ func BorrowBook(c *fiber.Ctx) error {
 		log.Println("Error while saving peminjaman:", err)
 		context["statusText"] = "Error"
 		context["msg"] = "Failed to save peminjaman."
+		context["status_code"] = "500"
 		return c.Status(fiber.StatusInternalServerError).JSON(context)
 	}
 

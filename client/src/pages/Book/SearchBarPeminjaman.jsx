@@ -62,7 +62,7 @@ const SearchBarPeminjaman = () => {
             onChange={handleChange}
             id="voice-search"
             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
-            placeholder="Search Borrow Book"
+            placeholder={isPeminjamanPage ? "Search Borrow Book" : "Search Return Book"}
           />
         </div>
       </form>

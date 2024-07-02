@@ -24,7 +24,7 @@ const PeminjamanList = ({
   const changePage = ({ selected }) => {
     dispatch(setCurrentPageBookBorrow(selected));
   };
-  console.log(authUser.role);
+  // console.log(booksBorrows);
 
   const isPengembalianPage = location.pathname === "/pengembalian";
 
@@ -55,6 +55,8 @@ const PeminjamanList = ({
       ? booksBorrows
       : bookBorrowSearch;
 
+  const noBooksBorrowed = !isLoading && filteredBooksBorrows.length === 0;
+
   return (
     <div className="min-h-[470px]">
       <table className="w-full table-auto border-blue-500 ">
@@ -64,6 +66,7 @@ const PeminjamanList = ({
             <th className="px-4 py-3 text-left">Nama Buku</th>
             <th className="px-4 py-3 text-left">Kode Buku</th>
             <th className="px-4 py-3 text-left">Tanggal Pengesahan</th>
+            <th className="px-4 py-3 text-left">Mahasiswa</th>
             <th className="px-4 py-3 text-left">Status</th>
             {isPengembalianPage && (
               <th className="px-4 py-3 text-left">Action</th>
@@ -86,11 +89,14 @@ const PeminjamanList = ({
                   {booksBorrow.book?.tanggal_pengesahan}
                 </td>
                 <td className="p-4 text-left">
+                  {booksBorrow.mahasiswa}
+                </td>
+                <td className="p-4 text-left">
                   {booksBorrow.is_pinjam ? "sedang dipinjam" : "tidak dipinjam"}
                 </td>
-                {isPengembalianPage && (
+                {isPengembalianPage && booksBorrow.is_pinjam && (
                   <td className="relative flex h-full gap-3 px-4 py-3">
-                    <Tippy content="Delete" followCursor>
+                    <Tippy content="Return Book" followCursor>
                       <div
                         className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
                         onClick={() =>
@@ -109,7 +115,7 @@ const PeminjamanList = ({
             ))}
         </tbody>
       </table>
-      {!isLoading && !bookBorrowSearch?.length && !booksBorrows?.length && (
+      {noBooksBorrowed && (
         <div className="flex justify-center py-4">
           <p>Data tidak ditemukan</p>
         </div>

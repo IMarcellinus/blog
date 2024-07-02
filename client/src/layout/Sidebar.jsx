@@ -174,7 +174,7 @@ function Sidebar({
               {!minSidebar ? (
                 <GiBookshelf className="size-5" />
               ) : (
-                <Tippy content="Management Book">
+                <Tippy content={authUser.role === "user" ? "Pengumpulan Buku" : "Book"}>
                   <div>
                     <GiBookshelf className="size-8" />
                   </div>
@@ -197,7 +197,7 @@ function Sidebar({
               {!minSidebar ? (
                 <GiSpellBook className="size-5" />
               ) : (
-                <Tippy content="Management Book">
+                <Tippy content="Peminjaman Buku">
                   <div>
                     <GiSpellBook className="size-8" />
                   </div>
@@ -220,7 +220,7 @@ function Sidebar({
               {!minSidebar ? (
                 <SiBookstack className="size-5" />
               ) : (
-                <Tippy content="Management Book">
+                <Tippy content="Pengembalian Buku">
                   <div>
                     <SiBookstack className="size-8" />
                   </div>

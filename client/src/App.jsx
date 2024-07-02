@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, NavLink } from "react-router-dom";
 import { FetchUser } from "../services/store/reducers/Authslice";
 import "./index.css";
 import Layout from "./layout/Layout";
@@ -64,28 +64,30 @@ function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/*" element={<PageNotFound />} />
-      <Route path="/" element={<Layout authUser={authUser} />}>
-        {/* Gunakan Outlet untuk menampilkan komponen-komponen di bawahnya */}
-        {authUser && authUser.role === "admin" ? (
-          <>
-            <Route path="/user" element={<UserPage authUser={authUser} />} />
-            <Route index element={<DashboardPage authUser={authUser} />} />
-          </>
-        ) : null}
-        <Route path="/book" element={<BookPage authUser={authUser} />} />
-        <Route
-          path="/peminjaman"
-          element={<PeminjamanPage authUser={authUser} />}
-        />
-        <Route
-          path="/pengembalian"
-          element={<PengembalianPage authUser={authUser} />}
-        />
-        <Route path="/changepassword" element={<ChangePassword />} />
-      </Route>
-    </Routes>
+    <div>
+      <Routes>
+        <Route path="/*" element={<PageNotFound />} />
+        <Route path="/" element={<Layout authUser={authUser} />}>
+          {/* Gunakan Outlet untuk menampilkan komponen-komponen di bawahnya */}
+          {authUser && authUser.role === "admin" && (
+            <>
+              <Route path="/user" element={<UserPage authUser={authUser} />} />
+              <Route index element={<DashboardPage authUser={authUser} />} />
+            </>
+          )}
+          <Route path="/book" element={<BookPage authUser={authUser} />} />
+          <Route
+            path="/peminjaman"
+            element={<PeminjamanPage authUser={authUser} />}
+          />
+          <Route
+            path="/pengembalian"
+            element={<PengembalianPage authUser={authUser} />}
+          />
+          <Route path="/changepassword" element={<ChangePassword />} />
+        </Route>
+      </Routes>
+    </div>
   );
 }
 

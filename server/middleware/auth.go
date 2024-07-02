@@ -27,6 +27,7 @@ func Authenticate(c *fiber.Ctx) error {
 
 	// Menetapkan username ke dalam lokal context
 	c.Locals("username", claims.Username)
+	c.Locals("role", claims.Role)
 	c.Locals("userid", claims.UserId)
 
 	return c.Next()

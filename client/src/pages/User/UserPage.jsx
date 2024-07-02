@@ -95,7 +95,7 @@ const UserPage = ({ authUser }) => {
 
     if (isSubmit) {
       handleCloseModal();
-      toast.success("Tambah Buku Berhasil");
+      toast.success("Tambah User Berhasil");
       const currentPage = currentPageUser + 1;
       if (search) {
         dispatch(getAllUser({ currentPageUser: currentPage, search }));
@@ -111,7 +111,7 @@ const UserPage = ({ authUser }) => {
 
     if (isUpdate) {
       handleCloseModal();
-      toast.success("Edit Buku Berhasil!");
+      toast.success("Update User Berhasil!");
       const currentPage = currentPageUser + 1;
       if (search) {
         dispatch(getAllUser({ currentPageUser: currentPage, search }));
