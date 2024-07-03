@@ -73,7 +73,6 @@ function Login() {
   }, [user, isSuccess, dispatch, navigate]);
 
   useEffect(() => {
-    // deleteToken();
     document.body.style.overflow = 'auto';
   }, [])
 

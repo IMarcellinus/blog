@@ -31,6 +31,8 @@ const initialState = {
   status: null,
   active: false,
   detailBook: null,
+  fetchBook: false,
+  fetchBookSearch: false,
 };
 
 const getToken = async () => {
@@ -101,7 +103,7 @@ export const createBook = createAsyncThunk(
         `${BASE_URL}/book`,
         {
           nama_buku: create.nama_buku,
-          tanggal_pengesahan: create.tanggal_pengesahan
+          tanggal_pengesahan: create.tanggal_pengesahan,
         },
         {
           headers: {
@@ -130,7 +132,7 @@ export const updateBook = createAsyncThunk(
         `${BASE_URL}/book/${update.id}`,
         {
           nama_buku: update.nama_buku,
-          tanggal_pengesahan: update.tanggal_pengesahan
+          tanggal_pengesahan: update.tanggal_pengesahan,
         },
         {
           headers: {
@@ -148,21 +150,18 @@ export const updateBook = createAsyncThunk(
 
 export const deleteBook = createAsyncThunk(
   "books/deleteBook",
-  async ({id}, thunkAPI) => {
+  async ({ id }, thunkAPI) => {
     const token = await getToken();
     if (!token) {
       return thunkAPI.rejectWithValue("No token found");
     }
     try {
       const token = await getToken();
-      const response = await axios.delete(
-        `${BASE_URL}/book/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.delete(`${BASE_URL}/book/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       console.log(error);
@@ -224,6 +223,15 @@ export const BookSlice = createSlice({
     setActive: (state, action) => {
       state.active = action.payload;
     },
+    setFetchBook: (state, action) => {
+      state.fetchBook = action.payload;
+    },
+    setFetchBookSearch: (state, action) => {
+      state.fetchBookSearch = action.payload;
+    },
+    setIsLoadingBook: (state, action) => {
+      state.isLoading = action.payload;
+    },
   },
   extraReducers: (builder) => {
     // Get Book using pagination
@@ -241,6 +249,8 @@ export const BookSlice = createSlice({
       state.isUpdate = false;
       state.status = null;
       state.books = [];
+      state.fetchBookSearch = true;
+      state.fetchBook = false;
     });
     builder.addCase(getAllBook.rejected, (state, action) => {
       state.isLoading = false;
@@ -265,6 +275,8 @@ export const BookSlice = createSlice({
       state.isSubmit = false;
       state.isUpdate = false;
       state.status = null;
+      state.fetchBookSearch = false;
+      state.fetchBook = true;
     });
     builder.addCase(getBook.rejected, (state, action) => {
       state.isLoading = false;
@@ -290,7 +302,7 @@ export const BookSlice = createSlice({
       state.isSuccess = false;
       state.message = action.payload;
     });
-    
+
     // Update Book
     builder.addCase(updateBook.pending, (state) => {
       state.isLoading = true;
@@ -335,6 +347,8 @@ export const {
   setKodeBuku,
   setTanggalPengesahan,
   setCurrentPageBook,
+  setFetchBook,
+  setFetchBookSearch,
   setMessage,
   setStatus,
   setEdit,
@@ -343,8 +357,9 @@ export const {
   setBookDetail,
   setBookSearch,
   setIdUser,
+  setIsLoadingBook,
   setDeleteFail,
-  setActive
+  setActive,
 } = BookSlice.actions;
 
 export default BookSlice.reducer;

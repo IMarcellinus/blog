@@ -1,0 +1,67 @@
+import Cookies from "js-cookie";
+import axios from "axios";
+import { BASE_URL } from "../../../utils/api";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+
+const initialState = {
+  dataGrowthUser: [],
+  currentStartDate: "",
+  currentEndDate: "",
+  dataTotalManagement: [],
+  isError: false,
+  isSuccess: false,
+  status: null,
+  isLoading: false,
+  totalSquad: 0,
+  totalUser: 0,
+  message: "",
+};
+
+export const actionCreatorGetDataManagement = createAsyncThunk(
+  "dashboard/getDataManagement",
+  async (_, thunkAPI) => {
+    const token = await Cookies.get("token");
+    if (!token) {
+      return thunkAPI.rejectWithValue({ message: "No token found" });
+    }
+    try {
+      const response = await axios.get(`${BASE_URL}/dashboard-all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.response?.data);
+    }
+  }
+);
+
+export const dashboardSlice = createSlice({
+  name: "dashboard",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(actionCreatorGetDataManagement.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(actionCreatorGetDataManagement.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.dataTotalManagement = action.payload.data;
+      })
+      .addCase(actionCreatorGetDataManagement.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = action.payload?.message || "An error occurred";
+        state.status = action.payload?.status_code || 500;
+      });
+  },
+});
+
+export default dashboardSlice.reducer;

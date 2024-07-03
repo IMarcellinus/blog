@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@reduxjs/toolkit':
         specifier: ^2.2.1
-        version: 2.2.1(react-redux@9.1.0)(react@18.2.0)
+        version: 2.2.1(react-redux@9.1.0(@types/react@18.2.56)(react@18.2.0)(redux@5.0.1))(react@18.2.0)
       '@tippyjs/react':
         specifier: ^4.2.6
-        version: 4.2.6(react-dom@18.2.0)(react@18.2.0)
+        version: 4.2.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       axios:
         specifier: ^1.6.7
         version: 1.6.7
@@ -29,6 +29,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.2.0
+      react-bottom-scroll-listener:
+        specifier: ^5.1.0
+        version: 5.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-dom:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
@@ -46,13 +49,13 @@ importers:
         version: 9.1.0(@types/react@18.2.56)(react@18.2.0)(redux@5.0.1)
       react-router-dom:
         specifier: ^6.22.1
-        version: 6.22.1(react-dom@18.2.0)(react@18.2.0)
+        version: 6.22.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-tippy:
         specifier: ^1.4.0
         version: 1.4.0
       react-toastify:
         specifier: ^10.0.5
-        version: 10.0.5(react-dom@18.2.0)(react@18.2.0)
+        version: 10.0.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       sweetalert2:
         specifier: ^11.10.8
         version: 11.10.8
@@ -1222,6 +1225,9 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
+  lodash.debounce@4.0.8:
+    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
+
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
@@ -1436,6 +1442,13 @@ packages:
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
+
+  react-bottom-scroll-listener@5.1.0:
+    resolution: {integrity: sha512-HI4qRKLbQ0Ox8xwIgYtLMk+1zETTaLtGBrhcTUFVRLL3OjVzfnyPPiXPGDnAPY6sGQh4KFH7Flp1dddnSmG33A==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: ^16.0.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
 
   react-dom@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
@@ -2092,14 +2105,15 @@ snapshots:
 
   '@popperjs/core@2.11.8': {}
 
-  '@reduxjs/toolkit@2.2.1(react-redux@9.1.0)(react@18.2.0)':
+  '@reduxjs/toolkit@2.2.1(react-redux@9.1.0(@types/react@18.2.56)(react@18.2.0)(redux@5.0.1))(react@18.2.0)':
     dependencies:
       immer: 10.0.3
-      react: 18.2.0
-      react-redux: 9.1.0(@types/react@18.2.56)(react@18.2.0)(redux@5.0.1)
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
       reselect: 5.1.0
+    optionalDependencies:
+      react: 18.2.0
+      react-redux: 9.1.0(@types/react@18.2.56)(react@18.2.0)(redux@5.0.1)
 
   '@remix-run/router@1.15.1': {}
 
@@ -2142,7 +2156,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.12.0':
     optional: true
 
-  '@tippyjs/react@4.2.6(react-dom@18.2.0)(react@18.2.0)':
+  '@tippyjs/react@4.2.6(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -2994,6 +3008,8 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
+  lodash.debounce@4.0.8: {}
+
   lodash.merge@4.6.2: {}
 
   loose-envify@1.4.0:
@@ -3148,8 +3164,9 @@ snapshots:
   postcss-load-config@4.0.2(postcss@8.4.35):
     dependencies:
       lilconfig: 3.1.0
-      postcss: 8.4.35
       yaml: 2.3.4
+    optionalDependencies:
+      postcss: 8.4.35
 
   postcss-nested@6.0.1(postcss@8.4.35):
     dependencies:
@@ -3183,6 +3200,12 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
+  react-bottom-scroll-listener@5.1.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      lodash.debounce: 4.0.8
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
   react-dom@18.2.0(react@18.2.0):
     dependencies:
       loose-envify: 1.4.0
@@ -3206,15 +3229,16 @@ snapshots:
 
   react-redux@9.1.0(@types/react@18.2.56)(react@18.2.0)(redux@5.0.1):
     dependencies:
-      '@types/react': 18.2.56
       '@types/use-sync-external-store': 0.0.3
       react: 18.2.0
-      redux: 5.0.1
       use-sync-external-store: 1.2.0(react@18.2.0)
+    optionalDependencies:
+      '@types/react': 18.2.56
+      redux: 5.0.1
 
   react-refresh@0.14.0: {}
 
-  react-router-dom@6.22.1(react-dom@18.2.0)(react@18.2.0):
+  react-router-dom@6.22.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       '@remix-run/router': 1.15.1
       react: 18.2.0
@@ -3230,7 +3254,7 @@ snapshots:
     dependencies:
       popper.js: 1.16.1
 
-  react-toastify@10.0.5(react-dom@18.2.0)(react@18.2.0):
+  react-toastify@10.0.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
     dependencies:
       clsx: 2.1.0
       react: 18.2.0

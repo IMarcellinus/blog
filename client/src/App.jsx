@@ -18,6 +18,7 @@ import DashboardPage from "./pages/DashboardPage";
 import Edit from "./pages/Edit";
 import PageNotFound from "./pages/PageNotFound";
 import UserPage from "./pages/User/UserPage";
+import Swal from "sweetalert2";
 
 function App() {
   const {
@@ -30,7 +31,6 @@ function App() {
   const token = Cookies.get("token");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  console.log("role:", authUser?.role);
 
   useEffect(() => {
     dispatch(FetchUser());
@@ -38,13 +38,18 @@ function App() {
 
   useEffect(() => {
     if (
-      !token &&
       window.location.pathname !== "/login" &&
       window.location.pathname !== "/register"
     ) {
-      navigate("/loginuser");
+      if(status == 401){
+        navigate("/loginuser");
+        Swal.fire({
+          icon: 'error',
+          text: 'Sesi Telah Habis, Silahkan Login Kembali :)',
+        });
+      }
     }
-  }, [token, navigate]);
+  }, [navigate,status]);
 
   useEffect(() => {
     if (!token || token === undefined) {
