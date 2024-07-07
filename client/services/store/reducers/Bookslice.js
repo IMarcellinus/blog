@@ -22,6 +22,7 @@ const initialState = {
   nama_buku: "",
   kodeBuku: "",
   tanggal_pengesahan: "",
+  kategori_buku: "",
   search: "",
   searchDetail: "",
   listBookDetail: [],
@@ -104,6 +105,7 @@ export const createBook = createAsyncThunk(
         {
           nama_buku: create.nama_buku,
           tanggal_pengesahan: create.tanggal_pengesahan,
+          kategori_buku: create.kategori_buku,
         },
         {
           headers: {
@@ -133,6 +135,7 @@ export const updateBook = createAsyncThunk(
         {
           nama_buku: update.nama_buku,
           tanggal_pengesahan: update.tanggal_pengesahan,
+          kategori_buku: update.kategori_buku,
         },
         {
           headers: {
@@ -174,6 +177,9 @@ export const BookSlice = createSlice({
   name: "books",
   initialState,
   reducers: {
+    resetStateBook: (state) => {
+      state = initialState
+    },
     setId: (state, action) => {
       state.id = action.payload;
     },
@@ -188,6 +194,9 @@ export const BookSlice = createSlice({
     },
     setTanggalPengesahan: (state, action) => {
       state.tanggal_pengesahan = action.payload;
+    },
+    setKategoriBuku: (state, action) => {
+      state.kategori_buku = action.payload;
     },
     setCurrentPageBook: (state, action) => {
       state.currentPageBook = action.payload;
@@ -243,12 +252,12 @@ export const BookSlice = createSlice({
       state.isError = false;
       state.isSuccess = true;
       state.totalPagesBook = action.payload?.total_page;
-      state.bookSearch = action.payload?.books;
+      // state.bookSearch = action.payload?.books;
       state.isDelete = false;
       state.isSubmit = false;
       state.isUpdate = false;
       state.status = null;
-      state.books = [];
+      state.books = action.payload?.books;
       state.fetchBookSearch = true;
       state.fetchBook = false;
     });
@@ -360,6 +369,8 @@ export const {
   setIsLoadingBook,
   setDeleteFail,
   setActive,
+  resetStateBook,
+  setKategoriBuku
 } = BookSlice.actions;
 
 export default BookSlice.reducer;

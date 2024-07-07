@@ -274,6 +274,9 @@ export const UserSlice = createSlice({
     },
     setIsSucess: (state, action) => {
       state.isSuccess = action.payload;
+    },
+    setIsDelete: (state, action) => {
+      state.isDelete = action.payload
     }
   },
   extraReducers: (builder) => {
@@ -394,6 +397,6 @@ export const UserSlice = createSlice({
   },
 });
 
-export const {setId, setBarcode,setIsSucess, setFetchUser, setUrlBarcode, setUserId, setUsername, setPassword, setNim, setJenisKelamin, setNama, setProdi, setRole, setCurrentPageUser, setMessage, setStatus, setEdit, setSearch, setSearchDetail, setUserDetail, setUserSearch, setIdUser,setDeleteFail, setActive} = UserSlice.actions;
+export const {setId, setBarcode,setIsSucess,setIsDelete, setFetchUser, setUrlBarcode, setUserId, setUsername, setPassword, setNim, setJenisKelamin, setNama, setProdi, setRole, setCurrentPageUser, setMessage, setStatus, setEdit, setSearch, setSearchDetail, setUserDetail, setUserSearch, setIdUser,setDeleteFail, setActive} = UserSlice.actions;
 
 export default UserSlice.reducer;

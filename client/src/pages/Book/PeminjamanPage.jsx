@@ -40,6 +40,8 @@ const PeminjamanPage = ({ authUser }) => {
     fetchUser,
   } = useSelector((state) => state.auth);
 
+  // console.log("peminjaman page:",authUser.role)
+
   const handleOpenModal = () => {
     setModalIsOpen(true);
     document.body.style.overflow = "hidden";
@@ -64,10 +66,10 @@ const PeminjamanPage = ({ authUser }) => {
       const currentPage = 1;
       if (search) {
         dispatch(
-          getAllBookBorrow({ currentPageBookBorrow: currentPage, search })
+          getAllBookBorrow({ currentPageBookBorrow: currentPage, search, role: authUser.role })
         );
       } else {
-        dispatch(getBorrowBook({ currentPageBookBorrow: currentPage }));
+        dispatch(getBorrowBook({ currentPageBookBorrow: currentPage, role: authUser.role }));
       }
       dispatch(setCurrentPageBookBorrow(0));
     };
@@ -87,33 +89,22 @@ const PeminjamanPage = ({ authUser }) => {
   useEffect(() => {
     const currentPage = currentPageBookBorrow + 1;
     if (search) {
-      dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search }));
+      dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search, role: authUser.role }));
     } else {
-      dispatch(getBorrowBook({ currentPageBookBorrow: currentPage }));
+      dispatch(getBorrowBook({ currentPageBookBorrow: currentPage, role: authUser.role }));
     }
   }, [currentPageBookBorrow, dispatch, search]);
 
   useEffect(() => {
-    if (!fetchUser) {
-      let loginRoute = "/login";
-      if (authUser.role === "user") {
-        loginRoute = "/loginuser";
-      }
-      navigate(loginRoute);
-      Swal.fire({
-        icon: "error",
-        text: "Sesi Telah Habis, Silahkan Login Kembali :)",
-      });
-    }
 
     if (isSubmit) {
       handleCloseModal();
       toast.success("Create Book Berhasil");
       const currentPage = currentPageBookBorrow + 1;
       if (search) {
-        dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search }));
+        dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search, role: authUser.role }));
       } else {
-        dispatch(getBorrowBook({ currentPageBookBorrow: currentPage }));
+        dispatch(getBorrowBook({ currentPageBookBorrow: currentPage, role: authUser.role }));
       }
     }
 

@@ -13,9 +13,29 @@ func DataManagementList(c *fiber.Ctx) error {
 	var totalBook int64
 	var totalUser int64
 
-	db.Model(&model.Peminjaman{}).Count(&totalPeminjaman)
-	db.Model(&model.Book{}).Count(&totalBook)
-	db.Model(&model.User{}).Count(&totalUser)
+	// Count total number of peminjaman
+	if err := db.Model(&model.Peminjaman{}).Count(&totalPeminjaman).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status_code": fiber.StatusInternalServerError,
+			"message":     "failed to get total peminjaman",
+		})
+	}
+
+	// Count total number of books
+	if err := db.Model(&model.Book{}).Count(&totalBook).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status_code": fiber.StatusInternalServerError,
+			"message":     "failed to get total books",
+		})
+	}
+
+	// Count total number of users with role 'user'
+	if err := db.Model(&model.User{}).Where("role = ?", "user").Count(&totalUser).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status_code": fiber.StatusInternalServerError,
+			"message":     "failed to get total users",
+		})
+	}
 
 	data := []fiber.Map{
 		{"name": "peminjaman", "total": totalPeminjaman},

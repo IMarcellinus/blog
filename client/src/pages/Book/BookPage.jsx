@@ -13,6 +13,7 @@ import {
   setCurrentPageBook,
   setEdit,
   setId,
+  setKategoriBuku,
   setKodeBuku,
   setMessage,
   setNamaBuku,
@@ -33,10 +34,8 @@ const BookPage = ({ authUser }) => {
     isUpdate,
     isDelete,
     currentPageBook,
-    status,
     search,
     bookSearch,
-    idUser,
   } = useSelector((state) => state.books);
   const {
     fetchUser,
@@ -56,6 +55,7 @@ const BookPage = ({ authUser }) => {
     dispatch(setActive(false));
     dispatch(setKodeBuku(""));
     dispatch(setTanggalPengesahan(""));
+    dispatch(setKategoriBuku(""));
     dispatch(setMessage(""));
     dispatch(setEdit(""));
     document.body.style.overflow = "auto";
@@ -81,18 +81,6 @@ const BookPage = ({ authUser }) => {
   };
 
   useEffect(() => {
-    if (!fetchUser) {
-      let loginRoute = "/login";
-      if (authUser.role === "user") {
-        loginRoute = "/loginuser";
-      }
-      navigate(loginRoute);
-      Swal.fire({
-        icon: "error",
-        text: "Sesi Telah Habis, Silahkan Login Kembali :)",
-      });
-    }
-
     if (isSubmit) {
       handleCloseModal();
       toast.success("Tambah Buku Berhasil");
@@ -105,8 +93,8 @@ const BookPage = ({ authUser }) => {
     }
 
     if (isDelete) {
-      toast.error("Hapus Berhasil !");
       handleDeleteLogic();
+      toast.error("Hapus Buku Berhasil !");
     }
 
     if (isUpdate) {
@@ -161,8 +149,6 @@ const BookPage = ({ authUser }) => {
     }
   }, [currentPageBook, dispatch, isDelete, search]);
 
-  
-  
   return (
     <main className="min-h-screen overflow-x-auto pb-14">
       <div className="inline-block min-w-full pl-4">

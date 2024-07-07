@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/IMarcellinus/blog/database"
@@ -44,7 +45,6 @@ func WelcomeApi(c *fiber.Ctx) error {
 	return c.Status(200).JSON(returnObject)
 }
 
-// Function Login
 func Login(c *fiber.Ctx) error {
 	returnObject := fiber.Map{
 		"status_code": "200",
@@ -52,7 +52,6 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Check user for the given credentials
-
 	var formData formData
 
 	// Parse JSON request body
@@ -66,13 +65,12 @@ func Login(c *fiber.Ctx) error {
 
 	// Add formdata to model
 	user := new(model.User)
-	// var user model.User
 
 	database.DBConn.First(&user, "username = ?", formData.Username)
 
 	if user.ID == 0 {
 		returnObject["msg"] = "User not found."
-		returnObject["status"] = "Error."
+		returnObject["status_code"] = "400"
 		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
 	}
 
@@ -81,7 +79,7 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		log.Println("Invalid Password.")
 		returnObject["msg"] = "Invalid Password."
-		returnObject["status"] = "Error."
+		returnObject["status_code"] = "401"
 		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
 	}
 
@@ -89,8 +87,17 @@ func Login(c *fiber.Ctx) error {
 
 	if err != nil {
 		returnObject["msg"] = "Could not Login."
-		returnObject["status"] = "Error."
+		returnObject["status_code"] = "401"
 		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
+	}
+
+	// Update IsActive to true
+	user.IsActive = true
+	if err := database.DBConn.Save(&user).Error; err != nil {
+		log.Println("Error updating user active status:", err)
+		returnObject["msg"] = "Could not update user status."
+		returnObject["status_code"] = "500"
+		return c.Status(fiber.StatusInternalServerError).JSON(returnObject)
 	}
 
 	cookie := fiber.Cookie{
@@ -226,14 +233,39 @@ func Register(c *fiber.Ctx) error {
 
 // Function Logout
 func Logout(c *fiber.Ctx) error {
-	// Cek jika JWT sudah kosong
-	if c.Cookies("token") == "" {
-		return c.Status(401).JSON(fiber.Map{
-			"error": "Already logged out.",
+	authHeader := c.Get("Authorization")
+	// Check if the Authorization header exists and is in the format "Bearer token"
+	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+		return c.Status(401).JSON(fiber.Map{"error": "Unauthorized: Bearer token missing", "status_code": 401})
+	}
+	// Get the token from the header
+	token := strings.Split(authHeader, " ")[1]
+
+	// Validate the token
+	claims, msg := helper.ValidateToken(token)
+	if msg != "" {
+		return c.Status(401).JSON(fiber.Map{"error": msg, "status_code": 401})
+	}
+
+	// Fetch the user from the database
+	var user model.User
+	if err := database.DBConn.First(&user, claims.UserId).Error; err != nil {
+		log.Println("Error fetching user:", err)
+		return c.Status(500).JSON(fiber.Map{
+			"error": "User not found.",
 		})
 	}
 
-	// Set cookie JWT dengan nilai kosong dan waktu kedaluwarsa yang sudah lewat
+	// Update IsActive to false
+	user.IsActive = false
+	if err := database.DBConn.Save(&user).Error; err != nil {
+		log.Println("Error updating user active status:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Could not update user status.",
+		})
+	}
+
+	// Set cookie JWT with an empty value and expired time
 	cookie := fiber.Cookie{
 		Name:     "token",
 		Value:    "",
@@ -241,13 +273,13 @@ func Logout(c *fiber.Ctx) error {
 		HTTPOnly: true,
 	}
 
-	// Menetapkan cookie
+	// Set the cookie
 	c.Cookie(&cookie)
 
-	// Respons berhasil
+	// Successful response
 	return c.Status(200).JSON(fiber.Map{
-		"status": "Ok",
-		"msg":    "Success Logout",
+		"status_code": 200,
+		"msg":         "Successfully logged out",
 	})
 }
 
@@ -503,8 +535,8 @@ func UserCreate(c *fiber.Ctx) error {
 // Function User Update by nim, role, nama, jenis kelamin, dan prodi
 func UserUpdate(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Update User Details",
+		"status_code": "200",
+		"msg":         "Update User Details",
 	}
 
 	id := c.Params("id")
@@ -516,7 +548,7 @@ func UserUpdate(c *fiber.Ctx) error {
 
 	if record.ID == 0 {
 		log.Println("Record not found.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Record not Found."
 		c.Status(400)
 		return c.JSON(context)
@@ -526,7 +558,7 @@ func UserUpdate(c *fiber.Ctx) error {
 	updatedRecord := new(formData)
 	if err := c.BodyParser(updatedRecord); err != nil {
 		log.Println("Error in parsing request.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Something went wrong JSON format"
 		return c.Status(400).JSON(context)
 	}
@@ -534,7 +566,7 @@ func UserUpdate(c *fiber.Ctx) error {
 	// Validate input
 	if updatedRecord.Role == "" || updatedRecord.Nim == "" || updatedRecord.Nama == "" || updatedRecord.JenisKelamin == "" || updatedRecord.Prodi == "" {
 		log.Println("Some fields are missing.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "All fields are required."
 		return c.Status(400).JSON(context)
 	}
@@ -542,7 +574,7 @@ func UserUpdate(c *fiber.Ctx) error {
 	// Validate gender input
 	if updatedRecord.JenisKelamin != "laki-laki" && updatedRecord.JenisKelamin != "perempuan" {
 		log.Println("Invalid gender input.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Gender must be either 'laki-laki' or 'perempuan'."
 		return c.Status(400).JSON(context)
 	}
@@ -559,7 +591,7 @@ func UserUpdate(c *fiber.Ctx) error {
 
 	if result.Error != nil {
 		log.Println("Error in updating data.")
-		context["statusText"] = ""
+		context["status_code"] = ""
 		context["msg"] = "Error in updating data"
 		return c.Status(500).JSON(context)
 	}
@@ -576,8 +608,8 @@ func UserDelete(c *fiber.Ctx) error {
 	c.Status(400)
 
 	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Delete User",
+		"status_code": "200",
+		"msg":         "Delete User",
 	}
 
 	id := c.Params("id")
@@ -588,7 +620,7 @@ func UserDelete(c *fiber.Ctx) error {
 
 	if record.ID == 0 {
 		log.Println("Record not found.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Record not Found."
 		c.Status(400)
 		return c.JSON(context)
@@ -601,7 +633,7 @@ func UserDelete(c *fiber.Ctx) error {
 		return c.JSON(context)
 	}
 
-	context["statusText"] = "Ok."
+	context["status_code"] = "200"
 	context["msg"] = "Record delete success."
 	c.Status(200)
 
@@ -713,4 +745,35 @@ func GetUserByID(c *fiber.Ctx) error {
 		"status":    "Success Get User By Id",
 		"baseImage": encodeBase64,
 	})
+}
+
+func GetActiveUsersCount(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"status_code": 200,
+		"message":     "success getting total active users",
+	}
+
+	db := database.DBConn
+	var total int64
+
+	// Count total number of users where IsActive is true
+	if err := db.Model(&model.User{}).Where("is_active = ?", true).Count(&total).Error; err != nil {
+		context["status_code"] = http.StatusInternalServerError
+		context["message"] = "failed to get total active users"
+		return c.Status(http.StatusInternalServerError).JSON(context)
+	}
+
+	if total == 0 {
+		context["status_code"] = http.StatusNotFound
+		context["message"] = "no active users"
+		return c.Status(http.StatusNotFound).JSON(context)
+	}
+
+	context["data"] = []fiber.Map{
+		{
+			"account_active": total,
+		},
+	}
+
+	return c.JSON(context)
 }

@@ -37,7 +37,7 @@ const getToken = async () => {
 
 export const getAllBookBorrow = createAsyncThunk(
   "borrowbooks/getAllBookBorrow",
-  async ({ currentPageBookBorrow, search }, thunkAPI) => {
+  async ({ currentPageBookBorrow, search, role }, thunkAPI) => {
     const token = await getToken();
     if (!token) {
       return thunkAPI.rejectWithValue("No token found");
@@ -45,7 +45,9 @@ export const getAllBookBorrow = createAsyncThunk(
     try {
       const token = await getToken();
       const response = await axios.get(
-        `${BASE_URL}/borrowbook/${currentPageBookBorrow}/8/${search}`,
+        `${BASE_URL}/${
+          role !== "user" ? "borrowbook" : "borrowbookuser"
+        }/${currentPageBookBorrow}/8/${search}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +64,7 @@ export const getAllBookBorrow = createAsyncThunk(
 
 export const getBorrowBook = createAsyncThunk(
   "borrowbooks/getBorrowBook",
-  async ({ currentPageBookBorrow }, thunkAPI) => {
+  async ({ currentPageBookBorrow, role }, thunkAPI) => {
     const token = await getToken();
     if (!token) {
       return thunkAPI.rejectWithValue("No token found");
@@ -70,7 +72,9 @@ export const getBorrowBook = createAsyncThunk(
     try {
       const token = await getToken();
       const response = await axios.get(
-        `${BASE_URL}/borrowbook/${currentPageBookBorrow}/8`,
+        `${BASE_URL}/${
+          role !== "user" ? "borrowbook" : "borrowbookuser"
+        }/${currentPageBookBorrow}/8`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -145,6 +149,9 @@ export const BorrowSlice = createSlice({
   name: "borrowbooks",
   initialState,
   reducers: {
+    resetStateBorrow: () => {
+      return initialState
+    },
     setId: (state, action) => {
       state.id = action.payload;
     },
@@ -216,6 +223,7 @@ export const BorrowSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(getBorrowBook.fulfilled, (state, action) => {
+      // console.log("getborrowbook:", action.payload);
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
@@ -268,11 +276,24 @@ export const BorrowSlice = createSlice({
       state.isSuccess = false;
       state.message = action.payload;
     });
-  }
-})
+  },
+});
 
 export const {
-  setActive, setBookBorrowId, setBookBorrowSearch, setCurrentPageBookBorrow, setDeleteFail,setDetailBookBorrow, setId, setIdUser, setKodeBuku, setMessage, setSearch, setSearchDetail, setStatus
-} = BorrowSlice.actions
+  setActive,
+  setBookBorrowId,
+  setBookBorrowSearch,
+  setCurrentPageBookBorrow,
+  setDeleteFail,
+  setDetailBookBorrow,
+  setId,
+  setIdUser,
+  setKodeBuku,
+  setMessage,
+  setSearch,
+  setSearchDetail,
+  setStatus,
+  resetStateBorrow
+} = BorrowSlice.actions;
 
 export default BorrowSlice.reducer;

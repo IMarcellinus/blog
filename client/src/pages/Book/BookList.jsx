@@ -13,6 +13,7 @@ import {
   setDeleteFail,
   setEdit,
   setId,
+  setKategoriBuku,
   setMessage,
   setNamaBuku,
   setTanggalPengesahan,
@@ -49,10 +50,12 @@ const BookList = ({
     });
   };
 
-  const handleEdit = (id, nama_buku, tanggal_pengesahan) => {
+  const handleEdit = (id, nama_buku, tanggal_pengesahan, kategori_buku) => {
     dispatch(setId(id));
     dispatch(setNamaBuku(nama_buku));
     dispatch(setTanggalPengesahan(tanggal_pengesahan));
+    dispatch(setKategoriBuku(kategori_buku));
+    console.log(kategori_buku)
     dispatch(setEdit(true));
     setModalIsOpen(true);
   };
@@ -77,6 +80,7 @@ const BookList = ({
             <th className="px-4 py-3 text-left">No</th>
             <th className="px-4 py-3 text-left">Nama Buku</th>
             <th className="px-4 py-3 text-left">Kode Buku</th>
+            <th className="px-4 py-3 text-left">Kategori Buku</th>
             <th className="px-4 py-3 text-left">Tanggal Pengesahan</th>
             {!isLoading && role !== "user" && (
               <th className="px-4 py-3 text-left">Action</th>
@@ -95,17 +99,10 @@ const BookList = ({
                 <td className="p-4 text-left">{index + 1}</td>
                 <td className="p-4 text-left">{book.nama_buku}</td>
                 <td className="p-4 text-left">{book.kode_buku}</td>
+                <td className="p-4 text-left">{book.kategori_buku}</td>
                 <td className="p-4 text-left">{book.tanggal_pengesahan}</td>
                 {!isLoading && role == "admin" && (
                   <td className="relative flex h-full gap-3 px-4 py-3">
-                    <Tippy content="Delete" followCursor>
-                      <div
-                        className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
-                        onClick={() => handleDelete(book.id)}
-                      >
-                        <HiTrash className="size-full" />
-                      </div>
-                    </Tippy>
                     <Tippy content="Edit" followCursor>
                       <div className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600">
                         <AiOutlineEdit
@@ -114,10 +111,19 @@ const BookList = ({
                             handleEdit(
                               book.id,
                               book.nama_buku,
-                              book.tanggal_pengesahan
+                              book.tanggal_pengesahan,
+                              book.kategori_buku
                             );
                           }}
                         />
+                      </div>
+                    </Tippy>
+                    <Tippy content="Delete" followCursor>
+                      <div
+                        className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
+                        onClick={() => handleDelete(book.id)}
+                      >
+                        <HiTrash className="size-full" />
                       </div>
                     </Tippy>
                   </td>
@@ -126,7 +132,7 @@ const BookList = ({
             ))}
         </tbody>
       </table>
-      {!isLoading && (!bookSearch?.length && !books?.length) && (
+      {!isLoading && !bookSearch?.length && !books?.length && (
         <div className="flex justify-center py-4">
           <p>Data tidak ditemukan</p>
         </div>

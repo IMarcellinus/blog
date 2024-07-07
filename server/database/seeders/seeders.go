@@ -18,6 +18,7 @@ func UserFaker() *model.User {
 		Nim:          "-",
 		Nama:         "admin",
 		Role:         "admin",
+		IsActive:     false,
 		CreatedAt:    time.Now().Format("02-01-2006"),
 	}
 }

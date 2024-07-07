@@ -48,6 +48,9 @@ function App() {
           text: 'Sesi Telah Habis, Silahkan Login Kembali :)',
         });
       }
+      if(status == 401){
+        Cookies.remove("token")
+      }
     }
   }, [navigate,status]);
 

@@ -24,10 +24,6 @@ function Login() {
   const [errorPassword, setErrorPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const deleteToken = () => {
-    Cookies.remove("token");
-  };
-
   const handleLogin = (e) => {
     e.preventDefault();
     isLoading(true);

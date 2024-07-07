@@ -209,6 +209,8 @@ function Sidebar({
                 </div>
               )}
             </NavLink>
+            {authUser && authUser.role === 'admin' ? (
+              <>
             <NavLink
               to="/pengembalian"
               className={({ isActive }) =>
@@ -232,6 +234,9 @@ function Sidebar({
                 </div>
               )}
             </NavLink>
+
+              </>
+            ) : null}
           </>
         </nav>
       </aside>

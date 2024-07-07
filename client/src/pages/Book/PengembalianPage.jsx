@@ -93,17 +93,6 @@ const PengembalianPage = ({authUser}) => {
   }, [currentPageBookBorrow, dispatch, search]);
 
   useEffect(() => {
-    if (!fetchUser) {
-      let loginRoute = "/login";
-      if (authUser.role === "user") {
-        loginRoute = "/loginuser";
-      }
-      navigate(loginRoute);
-      Swal.fire({
-        icon: "error",
-        text: "Sesi Telah Habis, Silahkan Login Kembali :)",
-      });
-    }
 
     if (isUpdate) {
       handleCloseModal();

@@ -70,6 +70,26 @@ export const LoginUser = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async (_, thunkAPI) => {
+    const token = await getToken();
+    try {
+      const response = await axios.get("http://localhost:8080/api/logout", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      Cookies.remove("token");  // Clear the token from cookies after successful logout
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || "Failed to logout"
+      );
+    }
+  }
+);
+
 export const RegisterUser = createAsyncThunk(
   "auth/registeruser",
   async (credentials, thunkAPI) => {
@@ -150,7 +170,6 @@ export const changePassword = createAsyncThunk(
       return response.data;
     } catch (error) {
       const message = error.response.data.msg;
-      console.log(message)
       return rejectWithValue(message);
     }
   }
@@ -160,11 +179,11 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logoutUser: (state) => {
-      Cookies.remove("token");
-      state.user = null;
-      state.authUser = null;
-    },
+    // logoutUser: (state) => {
+    //   Cookies.remove("token");
+    //   state.user = null;
+    //   state.authUser = null;
+    // },
     reset: () => initialState,
     setStatus: (state) => {
       state.status = null;
@@ -281,6 +300,19 @@ export const authSlice = createSlice({
         state.status = action.payload.status_code;
         state.messageFetchUser = action.payload;
       });
+    // Logout User
+    builder
+      .addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.isLogin = false;
+        state.isLoading = false;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.message = action.payload.error;
+      });
     // Get Barcode by user
     builder
       .addCase(getBarcodeByuser.pending, (state) => {
@@ -305,7 +337,7 @@ export const authSlice = createSlice({
       state.isLoading = true;
       state.isError = null;
     });
-    builder.addCase(changePassword.fulfilled, (state,action) => {
+    builder.addCase(changePassword.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isSuccess = true;
       state.passwordChanged = true;
@@ -322,7 +354,7 @@ export const authSlice = createSlice({
 
 export const {
   reset,
-  logoutUser,
+  // logoutUser,
   passwordFalse,
   setStatus,
   setEmail,
@@ -333,7 +365,7 @@ export const {
   setIsLogin,
   setMessageAuth,
   setResetMessage,
-  setPasswordFalse
+  setPasswordFalse,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,8 +1,7 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { actionCreatorGetDataManagement } from "../../services/store/reducers/Dashboardslice";
+import { useSelector } from "react-redux";
 
 const ChartTotalDataManagement = () => {
   const [options, setOptions] = useState({
@@ -54,11 +53,6 @@ const ChartTotalDataManagement = () => {
   });
 
   const { dataTotalManagement } = useSelector(state => state.dashboard)
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(actionCreatorGetDataManagement())
-  }, [dispatch]);
 
   useEffect(() => {
     function capitalizeFirstLetter(string) {

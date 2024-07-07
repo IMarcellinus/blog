@@ -11,4 +11,5 @@ type User struct {
 	CodeQr       string `json:"codeqr" gorm:"column:codeqr;"`
 	Role         string `json:"role" gorm:"column:role;"`
 	CreatedAt    string `json:"created_at" gorm:"column:created_at;"`
+	IsActive     bool   `json:"is_active" gorm:"column:is_active;"`
 }

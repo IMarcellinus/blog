@@ -5,19 +5,36 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import { getAllUser, getUser, setActive, setBarcode, setCurrentPageUser, setEdit, setId, setIsSucess, setJenisKelamin, setMessage, setNama, setNim, setPassword, setProdi, setRole, setUserSearch, setUsername } from "../../../services/store/reducers/Userslice";
-import SearchBarBook from "../Book/SearchBarBook";
-import ModalUser from "./ModalUser";
+import {
+  getAllUser,
+  getUser,
+  setActive,
+  setBarcode,
+  setCurrentPageUser,
+  setEdit,
+  setId,
+  setIsDelete,
+  setIsSucess,
+  setJenisKelamin,
+  setMessage,
+  setNama,
+  setNim,
+  setPassword,
+  setProdi,
+  setRole,
+  setUserSearch,
+  setUsername,
+} from "../../../services/store/reducers/Userslice";
 import SearchBarUser from "./SearchBarUser";
+import ModalUser from "./ModalUser";
 import UserList from "./UserList";
 
 const UserPage = ({ authUser }) => {
-  // console.log(authUser);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const token = Cookies.get("token");
+
   const {
     users,
     isLoading,
@@ -26,17 +43,9 @@ const UserPage = ({ authUser }) => {
     isUpdate,
     isDelete,
     currentPageUser,
-    status,
     search,
     userSearch,
-    idUser,
   } = useSelector((state) => state.users);
-
-  const {
-    fetchUser,
-  } = useSelector((state) => state.auth);
-
-  // console.log("users:", users);
 
   const handleOpenModal = () => {
     setModalIsOpen(true);
@@ -56,43 +65,57 @@ const UserPage = ({ authUser }) => {
     dispatch(setNim(""));
     dispatch(setMessage(""));
     dispatch(setEdit(false));
-    dispatch(setBarcode(false))
-    dispatch(setIsSucess(false))
+    dispatch(setBarcode(false));
+    dispatch(setIsSucess(false));
+    dispatch(setIsDelete(false));
     document.body.style.overflow = "auto";
   };
 
   const handleDeleteLogic = () => {
     const currentPage = currentPageUser + 1;
-    if (users.length === 1 && userSearch.length === 0 && !search && currentPageUser > 0) {
+  
+    if (
+      users.length === 1 &&
+      userSearch.length === 0 &&
+      !search &&
+      currentPageUser > 0
+    ) {
       dispatch(getUser({ currentPageUser }));
       dispatch(setCurrentPageUser(currentPageUser - 1));
     } else if (users.length > 1 && userSearch.length === 0 && !search) {
       dispatch(getUser({ currentPageUser: currentPage }));
-    } else if (users.length === 1 && userSearch.length === 0 && !search && currentPageUser === 0) {
+    } else if (
+      users.length === 1 &&
+      userSearch.length === 0 &&
+      !search &&
+      currentPageUser === 0
+    ) {
       dispatch(getUser({ currentPageUser: currentPage }));
-    } else if (users.length === 0 && userSearch.length === 1 && search && currentPageUser > 0) {
+    } else if (
+      users.length === 0 &&
+      userSearch.length === 1 &&
+      search &&
+      currentPageUser > 0
+    ) {
       dispatch(getAllUser({ currentPageUser, search }));
       dispatch(setCurrentPageUser(currentPageUser - 1));
     } else if (users.length === 0 && userSearch.length > 1 && search) {
       dispatch(getAllUser({ currentPageUser: currentPage, search }));
-    } else if (users.length === 0 && userSearch.length === 1 && search && currentPageUser === 0) {
+    } else if (
+      users.length === 0 &&
+      userSearch.length === 1 &&
+      search &&
+      currentPageUser === 0
+    ) {
       dispatch(getAllUser({ currentPageUser: currentPage, search }));
+    } else if (users.length === 0 && userSearch.length === 0 && !search) {
+      // Jika tidak ada pengguna, tidak ada pencarian, dan tidak ada kata kunci pencarian
+      // Tambahkan logika yang diperlukan di sini, misalnya:
+      dispatch(getUser({ currentPageUser: currentPage }));
     }
   };
-
+  
   useEffect(() => {
-    if (!fetchUser) {
-      let loginRoute = "/login";
-      if (authUser.role === "user") {
-        loginRoute = "/loginuser";
-      }
-      navigate(loginRoute);
-      Swal.fire({
-        icon: "error",
-        text: "Sesi Telah Habis, Silahkan Login Kembali :)",
-      });
-    }
-
     if (isSubmit) {
       handleCloseModal();
       toast.success("Tambah User Berhasil");
@@ -105,8 +128,9 @@ const UserPage = ({ authUser }) => {
     }
 
     if (isDelete) {
-      toast.error("Hapus Berhasil !");
       handleDeleteLogic();
+      toast.error("Hapus User Berhasil !");
+      dispatch(setIsDelete(false));
     }
 
     if (isUpdate) {
@@ -119,7 +143,7 @@ const UserPage = ({ authUser }) => {
         dispatch(getUser({ currentPageUser: currentPage }));
       }
     }
-  }, [currentPageUser, dispatch, isSubmit, search, isDelete, isUpdate]);
+  }, [currentPageUser, dispatch, isSubmit, isDelete, search, isUpdate]);
 
   useEffect(() => {
     dispatch(setCurrentPageUser(0));
@@ -168,7 +192,9 @@ const UserPage = ({ authUser }) => {
           <div className="grid grid-cols-2 bg-white py-3 text-sm">
             <div>
               <p className="text-lg font-bold">User List</p>
-              <div className="mt-2"><SearchBarUser /></div>
+              <div className="mt-2">
+                <SearchBarUser />
+              </div>
             </div>
             <div className="flex items-end justify-end ">
               <button
