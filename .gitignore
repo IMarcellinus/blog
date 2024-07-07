@@ -1,2 +1,1 @@
-server/.env.example
-client/package-lock.json
+server/.env
