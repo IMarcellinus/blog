@@ -1,5 +1,3 @@
-// database.go
-
 package database
 
 import (
@@ -23,17 +21,26 @@ func ConnectDB() {
 	dbport := os.Getenv("DB_PORT")
 	dbcharset := os.Getenv("DB_CHARSET")
 	dbloc := os.Getenv("DB_LOC")
+	log.Println(dbport)
 
+	// Check for missing environment variables
+	if user == "" || dbname == "" || dbhost == "" || dbport == "" || dbcharset == "" || dbloc == "" {
+		log.Fatal("Missing one or more required environment variables")
+	}
+
+	// Use environment variables in DSN
 	dsn := user + ":" + password + "@tcp(" + dbhost + ":" + dbport + ")/" + dbname + "?charset=" + dbcharset + "&parseTime=True&loc=" + dbloc
+	log.Println("DSN:", dsn) // Log the DSN for debugging purposes
+
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Error),
 	})
 
 	if err != nil {
-		panic("Database connection failed")
+		log.Fatalf("Database connection failed: %v", err)
 	}
 
-	log.Println("Connection Successfull.")
+	log.Println("Connection Successful.")
 
 	// db.AutoMigrate(new(model.Blog))
 	db.AutoMigrate(new(model.User))
