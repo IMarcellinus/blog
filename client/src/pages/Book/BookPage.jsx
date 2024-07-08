@@ -22,6 +22,7 @@ import {
 import BookList from "./BookList";
 import ModalBook from "./ModalBook";
 import SearchBarBook from "./SearchBarBook";
+import { setIsDelete } from "../../../services/store/reducers/Bookslice";
 
 const BookPage = ({ authUser }) => {
   // console.log(authUser.role);
@@ -77,6 +78,8 @@ const BookPage = ({ authUser }) => {
       dispatch(getAllBook({ currentPageBook: currentPage, search }));
     } else if (books.length === 0 && bookSearch.length === 1 && search && currentPageBook === 0) {
       dispatch(getAllBook({ currentPageBook: currentPage, search }));
+    } else if (books.length === 0 && bookSearch.length === 0 && !search) {
+      dispatch(getBook({currentPageBook}))
     }
   };
 
@@ -95,6 +98,7 @@ const BookPage = ({ authUser }) => {
     if (isDelete) {
       handleDeleteLogic();
       toast.error("Hapus Buku Berhasil !");
+      dispatch(setIsDelete(false))
     }
 
     if (isUpdate) {

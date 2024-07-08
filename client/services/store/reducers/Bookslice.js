@@ -241,6 +241,9 @@ export const BookSlice = createSlice({
     setIsLoadingBook: (state, action) => {
       state.isLoading = action.payload;
     },
+    setIsDelete: (state, action) => {
+      state.isDelete = action.payload;
+    }
   },
   extraReducers: (builder) => {
     // Get Book using pagination
@@ -370,7 +373,8 @@ export const {
   setDeleteFail,
   setActive,
   resetStateBook,
-  setKategoriBuku
+  setKategoriBuku,
+  setIsDelete
 } = BookSlice.actions;
 
 export default BookSlice.reducer;
