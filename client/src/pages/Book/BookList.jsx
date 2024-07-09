@@ -55,7 +55,7 @@ const BookList = ({
     dispatch(setNamaBuku(nama_buku));
     dispatch(setTanggalPengesahan(tanggal_pengesahan));
     dispatch(setKategoriBuku(kategori_buku));
-    console.log(kategori_buku)
+    // console.log(kategori_buku)
     dispatch(setEdit(true));
     setModalIsOpen(true);
   };

@@ -52,25 +52,25 @@ const ChartTotalDataManagement = () => {
     ],
   });
 
-  const { dataTotalManagement } = useSelector(state => state.dashboard)
+  const { dataAvailabelBooks } = useSelector((state) => state.dashboard);
 
   useEffect(() => {
     function capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
-    if (dataTotalManagement.length) {
+    if (dataAvailabelBooks.length) {
       setOptions((prevOptions) => ({
         ...prevOptions,
-        series: dataTotalManagement?.map((data) => data.total),
-        labels: dataTotalManagement?.map((data) => capitalizeFirstLetter(data.name)),
+        series: dataAvailabelBooks?.map((data) => data.total),
+        labels: dataAvailabelBooks?.map((data) => capitalizeFirstLetter(data.name)),
       }));
     }
-  }, [dataTotalManagement]);
+  }, [dataAvailabelBooks]);
 
   return (
     <div className="col-span-2 h-[550px] w-full rounded-lg bg-white p-2 text-sm shadow-md lg:col-span-1 lg:row-span-1">
       <h1 className="my-3 text-center text-base font-semibold text-black selection:font-semibold lg:text-lg">
-        Total Data Management
+        Data Management Book
       </h1>
       <ReactApexChart
         options={options}

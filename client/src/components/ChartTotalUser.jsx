@@ -5,7 +5,7 @@ import { TbUserCode } from "react-icons/tb";
 const ChartTotalUser = () => {
   const { totalUser } = useSelector((state) => state.dashboard);
 
-  console.log(totalUser);
+  // console.log(totalUser);
 
   return (
     <div className="w-full h-full rounded-md flex flex-col items-center p-4 justify-center shadow-md">

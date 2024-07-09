@@ -8,7 +8,8 @@ const initialState = {
   currentStartDate: "",
   currentEndDate: "",
   dataTotalManagement: [],
-  dataAvailabelBooks: null,
+  dataAvailabelBooks: [],
+  availabelBooks: null,
   isError: false,
   isSuccess: false,
   status: null,
@@ -30,7 +31,7 @@ export const actionCreatorGetDataManagement = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+    });
       return response.data;
     } catch (error) {
       console.log(error);
@@ -52,8 +53,7 @@ export const GetDataAvailableBooks = createAsyncThunk(
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data)
-      return response.data.available_book;
+      return response.data;
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(error.response?.data);
@@ -96,13 +96,14 @@ export const dashboardSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.dataAvailabelBooks = action.payload;
+        state.dataAvailabelBooks = action.payload.data;
+        state.availabelBooks = action.payload.data[0].total;
       })
       .addCase(GetDataAvailableBooks.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
-        state.dataAvailabelBooks = action.payload.available_book;
+        state.dataAvailabelBooks = action.payload;
         state.message = action.payload?.message || "An error occurred";
         state.status = action.payload?.status_code || 500;
       });

@@ -655,6 +655,7 @@ func GetTotalAvailableBooks(c *fiber.Ctx) error {
 	db := database.DBConn
 	var totalBooks int64
 	var borrowedBooks int64
+	var borrowedNotReturned int64
 
 	// Count total number of books
 	if err := db.Model(&model.Book{}).Count(&totalBooks).Error; err != nil {
@@ -670,16 +671,25 @@ func GetTotalAvailableBooks(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(context)
 	}
 
-	availableBooks := totalBooks - borrowedBooks
-
-	if availableBooks == 0 {
-		context["status_code"] = http.StatusNotFound
-		context["message"] = "no available books"
-		context["available_book"] = 0
-		return c.Status(http.StatusNotFound).JSON(context)
+	// Count total number of books borrowed and not returned
+	if err := db.Model(&model.Peminjaman{}).Where("is_pinjam = ? AND return_at IS NULL", true).Count(&borrowedNotReturned).Error; err != nil {
+		context["status_code"] = http.StatusInternalServerError
+		context["message"] = "failed to get total borrowed books (not returned)"
+		return c.Status(http.StatusInternalServerError).JSON(context)
 	}
 
-	context["available_book"] = availableBooks
+	availableBooks := totalBooks - borrowedBooks
 
-	return c.JSON(context)
+	// Prepare data to return
+	data := []fiber.Map{
+		{"name": "available_book", "total": availableBooks},
+		{"name": "not_available_book", "total": borrowedNotReturned},
+	}
+
+	// Add data to context
+	context["data"] = data
+
+	// Return JSON response
+	return c.Status(fiber.StatusOK).JSON(context)
 }
+

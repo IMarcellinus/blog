@@ -9,12 +9,14 @@ import ChartTotalDataManagement from "../components/ChartTotalDataManagement";
 import ChartTotalPeminjaman from "../components/ChartTotalPeminjaman";
 import ChartTotalUser from "../components/ChartTotalUser";
 import { actionCreatorGetDataManagement } from "../../services/store/reducers/Dashboardslice";
+import { GetDataAvailableBooks } from "../../services/store/reducers/Dashboardslice";
 
 function DashboardPage({ authUser }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(actionCreatorGetDataManagement());
+    dispatch(GetDataAvailableBooks());
   }, [dispatch]);
 
   return (
