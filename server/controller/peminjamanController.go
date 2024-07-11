@@ -818,8 +818,8 @@ func GetTotalAvailableBooks(c *fiber.Ctx) error {
 
 	// Prepare data to return
 	data := []fiber.Map{
-		{"name": "available_book", "total": availableBooks},
-		{"name": "not_available_book", "total": borrowedNotReturned},
+		{"name": "Buku tersedia", "total": availableBooks},
+		{"name": "Buku tidak tersedia (sedang dipinjam)", "total": borrowedNotReturned},
 	}
 
 	// Add data to context

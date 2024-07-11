@@ -12,7 +12,7 @@ const ChartTotalDataManagement = () => {
     labels: [],
     legend: {
       position: "bottom",
-      fontSize: "16px",
+      fontSize: "17px",
       markers: {
         radius: 8,
       },
@@ -37,8 +37,8 @@ const ChartTotalDataManagement = () => {
         return val.toFixed(0) + "%";
       },
       style: {
-        fontSize: "12px",
-        colors: ["#333"],
+        fontSize: "18px",
+        colors: ["#FFFFFF"],
       },
     },
     colors: [
@@ -69,8 +69,8 @@ const ChartTotalDataManagement = () => {
 
   return (
     <div className="col-span-2 h-[550px] w-full rounded-lg bg-white p-2 text-sm shadow-md lg:col-span-1 lg:row-span-1">
-      <h1 className="my-3 text-center text-base font-semibold text-black selection:font-semibold lg:text-lg">
-        Data Management Book
+      <h1 className="my-3 text-center text-2xl font-bold text-black selection:font-semibold 2xl:text-2xl">
+        DATA MANAGEMENT BUKU
       </h1>
       <ReactApexChart
         options={options}
