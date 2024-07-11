@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -382,9 +383,21 @@ func UserPagination(c *fiber.Ctx) error {
 
 	query := db
 
-	// Mengecek apakah parameter keyword tidak kosong
-	if keyword != "" {
-		query = query.Where("nim LIKE ? OR nama LIKE ? OR jeniskelamin LIKE ? OR prodi LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	// Decode the keyword to handle spaces
+	decodedKeyword, err := url.QueryUnescape(keyword)
+	if err != nil {
+		context := fiber.Map{
+			"msg":         "error decoding keyword",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
+	// Check if the keyword parameter is not empty
+	if decodedKeyword != "" {
+		// Ensure the keyword is correctly parsed and spaces are handled
+		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
+		query = query.Where("nim LIKE ? OR nama LIKE ? OR jeniskelamin LIKE ? OR prodi LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	// Exclude users with the role 'admin'

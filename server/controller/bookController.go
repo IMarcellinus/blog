@@ -62,7 +62,7 @@ func BookPagination(c *fiber.Ctx) error {
 
 	// Mengecek apakah parameter keyword tidak kosong
 	if keyword != "" {
-		query = query.Where("nama_buku LIKE ? OR kode_buku LIKE ? OR tanggal_pengesahan LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+		query = query.Where("nama_buku LIKE ? OR kode_buku LIKE ? OR tanggal_pengesahan LIKE ? OR kategori_buku LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
 	}
 
 	var totalData int64
@@ -110,7 +110,6 @@ func BookPagination(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(context)
-
 }
 
 func getBookCodeByID(id uint) string {
