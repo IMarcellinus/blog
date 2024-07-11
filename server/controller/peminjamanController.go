@@ -12,14 +12,16 @@ import (
 )
 
 type BorrowInfo struct {
-	ID        uint       `json:"id"`
-	BookID    uint       `json:"book_id"` // Changed to *uint
-	UserID    uint       `json:"user_id"`
-	Book      model.Book `json:"book"`
-	Mahasiswa string     `json:"mahasiswa"`
-	CreatedAt time.Time  `json:"created_at"`
-	ReturnAt  *time.Time `json:"return_at"` // Changed to *time.Time
-	IsPinjam  bool       `json:"is_pinjam"`
+	ID            uint       `json:"id"`
+	BookID        uint       `json:"book_id"` // Changed to *uint
+	UserID        uint       `json:"user_id"`
+	Book          model.Book `json:"book"`
+	Mahasiswa     string     `json:"mahasiswa"`
+	CreatedAt     time.Time  `json:"created_at"`
+	ReturnAt      *time.Time `json:"return_at"` // Changed to *time.Time
+	ExpiredAt     *time.Time `json:"ExpiredAt"` // Changed to *time.Time
+	IsPinjam      bool       `json:"is_pinjam"`
+	IsReservation bool       `json:"is_reservation"`
 }
 
 func GetBorrowBookPagination(c *fiber.Ctx) error {
@@ -123,14 +125,15 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 	for _, p := range Peminjaman {
 		// Handle pointer dereferencing
 		borrowInfo := BorrowInfo{
-			ID:        p.ID,
-			BookID:    p.BookID, // BookID is now a pointer
-			UserID:    p.UserID,
-			Book:      p.Book,
-			Mahasiswa: username, // Use the username of the logged-in user
-			CreatedAt: p.CreatedAt,
-			ReturnAt:  p.ReturnAt, // ReturnAt is now a pointer
-			IsPinjam:  p.IsPinjam,
+			ID:            p.ID,
+			BookID:        p.BookID, // BookID is now a pointer
+			UserID:        p.UserID,
+			Book:          p.Book,
+			Mahasiswa:     username, // Use the username of the logged-in user
+			CreatedAt:     p.CreatedAt,
+			ReturnAt:      p.ReturnAt, // ReturnAt is now a pointer
+			IsPinjam:      p.IsPinjam,
+			IsReservation: p.IsReservation,
 		}
 
 		// If the role is admin, include all details from the Peminjaman model and the user's username
@@ -197,14 +200,16 @@ func GetBorrowBook(c *fiber.Ctx) error {
 	// Loop through each Peminjaman object and fill in the borrowing information
 	for _, p := range Peminjaman {
 		borrowInfo := BorrowInfo{
-			ID:        p.ID,
-			BookID:    p.BookID, // BookID is now a pointer
-			UserID:    p.UserID,
-			Book:      p.Book,
-			Mahasiswa: username, // Use the username of the logged-in user
-			CreatedAt: p.CreatedAt,
-			ReturnAt:  p.ReturnAt, // ReturnAt is now a pointer
-			IsPinjam:  p.IsPinjam,
+			ID:            p.ID,
+			BookID:        p.BookID, // BookID is now a pointer
+			UserID:        p.UserID,
+			Book:          p.Book,
+			Mahasiswa:     username, // Use the username of the logged-in user
+			CreatedAt:     p.CreatedAt,
+			ReturnAt:      p.ReturnAt, // ReturnAt is now a pointer
+			IsPinjam:      p.IsPinjam,
+			IsReservation: p.IsReservation,
+			ExpiredAt:     p.ExpiredAt,
 		}
 
 		// If the role is admin, include all details from the Peminjaman model and the user's username
@@ -328,14 +333,15 @@ func GetBorrowBookPaginationByUser(c *fiber.Ctx) error {
 	// Loop through each Peminjaman object and fill in the borrowing information
 	for _, p := range Peminjaman {
 		borrowInfo := BorrowInfo{
-			ID:        p.ID,
-			BookID:    p.BookID, // BookID is now a pointer
-			UserID:    p.UserID,
-			Book:      p.Book,
-			Mahasiswa: username, // Use the username of the logged-in user
-			CreatedAt: p.CreatedAt,
-			ReturnAt:  p.ReturnAt, // ReturnAt is now a pointer
-			IsPinjam:  p.IsPinjam,
+			ID:            p.ID,
+			BookID:        p.BookID, // BookID is now a pointer
+			UserID:        p.UserID,
+			Book:          p.Book,
+			Mahasiswa:     username, // Use the username of the logged-in user
+			CreatedAt:     p.CreatedAt,
+			ReturnAt:      p.ReturnAt, // ReturnAt is now a pointer
+			IsPinjam:      p.IsPinjam,
+			IsReservation: p.IsReservation,
 		}
 
 		// If the role is admin, include all details from the Peminjaman model and the user's username
@@ -417,14 +423,15 @@ func GetBorrowBookByUser(c *fiber.Ctx) error {
 		}
 
 		borrowInfo := BorrowInfo{
-			ID:        p.ID,
-			BookID:    p.BookID,
-			UserID:    p.UserID,
-			Book:      p.Book,
-			Mahasiswa: mahasiswa, // Use the determined username
-			CreatedAt: p.CreatedAt,
-			ReturnAt:  returnAt,
-			IsPinjam:  p.IsPinjam,
+			ID:            p.ID,
+			BookID:        p.BookID,
+			UserID:        p.UserID,
+			Book:          p.Book,
+			Mahasiswa:     mahasiswa, // Use the determined username
+			CreatedAt:     p.CreatedAt,
+			ReturnAt:      returnAt,
+			IsPinjam:      p.IsPinjam,
+			IsReservation: p.IsReservation,
 		}
 
 		borrowInfoList = append(borrowInfoList, borrowInfo)
@@ -508,11 +515,12 @@ func BorrowBook(c *fiber.Ctx) error {
 
 	// Save borrowing record to the database
 	peminjaman := model.Peminjaman{
-		BookID:    book.ID, // Change to &book.ID to match *uint type in BorrowInfo
-		UserID:    user.ID,
-		CreatedAt: time.Now(),
-		ReturnAt:  nil, // Ensure ReturnAt is nil if no return date is set
-		IsPinjam:  true,
+		BookID:        book.ID,
+		UserID:        user.ID,
+		CreatedAt:     time.Now(),
+		ReturnAt:      nil,
+		IsPinjam:      true,
+		IsReservation: false,
 	}
 
 	if err := database.DBConn.Create(&peminjaman).Error; err != nil {
@@ -525,6 +533,134 @@ func BorrowBook(c *fiber.Ctx) error {
 	context["msg"] = "Buku Berhasil Dipinjam."
 	context["Nama Mahasiswa"] = username
 	context["Kode Buku"] = book.KodeBuku
+	context["IsReservation"] = peminjaman.IsReservation
+
+	return c.Status(fiber.StatusCreated).JSON(context)
+}
+
+func ReservationBook(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"status_code": "200",
+		"msg":         "Add a Book Reservation",
+	}
+
+	// Get the username from Local storage
+	username, exists := c.Locals("username").(string)
+	log.Println(username)
+
+	// Check if username exists
+	if !exists {
+		log.Println("username key not found.")
+		context["msg"] = "username not found."
+		return c.Status(fiber.StatusUnauthorized).JSON(context)
+	}
+
+	// Parse request body JSON
+	var requestBody struct {
+		KodeBuku string `json:"kode_buku"`
+		UserID   uint   `json:"user_id"`
+	}
+
+	if err := c.BodyParser(&requestBody); err != nil {
+		log.Println("Error in parsing request:", err)
+		context["status_code"] = "400"
+		context["msg"] = "Something went wrong JSON format"
+		return c.Status(fiber.StatusBadRequest).JSON(context)
+	}
+
+	// Check if kode_buku is provided
+	if requestBody.KodeBuku == "" {
+		log.Println("kode_buku is required.")
+		context["status_code"] = "400"
+		context["msg"] = "kode_buku is required."
+		return c.Status(fiber.StatusBadRequest).JSON(context)
+	}
+
+	// Find the book based on kode_buku
+	var book model.Book
+	if err := database.DBConn.Where("kode_buku = ?", requestBody.KodeBuku).First(&book).Error; err != nil {
+		context["msg"] = "Kode Buku not found."
+		context["status_code"] = "404"
+		return c.Status(fiber.StatusNotFound).JSON(context)
+	}
+
+	// Fetch user information who is reserving
+	var user model.User
+	if err := database.DBConn.First(&user, "username=?", username).Error; err != nil {
+		log.Println("Error while fetching user:", err)
+		context["msg"] = "Error while fetching user."
+		context["status_code"] = "500"
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	// Check if the book is already borrowed or reserved
+	var existingPeminjaman model.Peminjaman
+	if err := database.DBConn.Where("book_id = ? AND (is_pinjam = ? OR (expired_at > ?))", book.ID, true, time.Now()).First(&existingPeminjaman).Error; err == nil {
+		if existingPeminjaman.IsPinjam {
+			context["msg"] = "Buku sedang dipinjam"
+			context["status_code"] = "409"
+		} else if existingPeminjaman.IsReservation {
+			// Check if the reservation is still valid
+			if existingPeminjaman.ExpiredAt != nil && existingPeminjaman.ExpiredAt.After(time.Now()) {
+				context["msg"] = "Buku sedang direservasi"
+				context["status_code"] = "409"
+				return c.Status(fiber.StatusConflict).JSON(context)
+			}
+		}
+		return c.Status(fiber.StatusConflict).JSON(context)
+	}
+
+	// Set expiration time for the reservation (1 day from now)
+	expirationTime := time.Now().Add(24 * time.Hour)
+
+	// Save reservation record to the database
+	peminjaman := model.Peminjaman{
+		BookID:        book.ID,
+		UserID:        user.ID,
+		CreatedAt:     time.Now(),
+		ExpiredAt:     &expirationTime, // Set expiration time
+		IsPinjam:      false,
+		IsReservation: true,
+	}
+
+	if err := database.DBConn.Create(&peminjaman).Error; err != nil {
+		log.Println("Error while saving reservation:", err)
+		context["msg"] = "Failed to save reservation."
+		context["status_code"] = "500"
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	// Include ExpiredAt in the response JSON
+	context["msg"] = "Buku Berhasil Direservasi."
+	context["Nama Mahasiswa"] = username
+	context["Kode Buku"] = book.KodeBuku
+	context["IsReservation"] = peminjaman.IsReservation
+	context["ExpiredAt"] = expirationTime.Format(time.RFC3339) // Format ExpiredAt as RFC3339
+
+	// Goroutine to monitor and update IsReservation when expired_at is passed
+	go func() {
+		<-time.After(time.Until(*peminjaman.ExpiredAt))
+
+		// Fetch the latest peminjaman record from the database
+		var latestPeminjaman model.Peminjaman
+		if err := database.DBConn.First(&latestPeminjaman, peminjaman.ID).Error; err != nil {
+			log.Println("Error while fetching latest reservation:", err)
+			return
+		}
+
+		// Check if expired_at is already past
+		if latestPeminjaman.ExpiredAt != nil && latestPeminjaman.ExpiredAt.Before(time.Now()) {
+			latestPeminjaman.IsReservation = false
+			latestPeminjaman.ExpiredAt = nil // Set expired_at to null
+
+			if err := database.DBConn.Save(&latestPeminjaman).Error; err != nil {
+				log.Println("Error while updating reservation status:", err)
+				return
+			}
+
+			log.Println("Reservation status updated: IsReservation = false")
+		}
+	}()
 
 	return c.Status(fiber.StatusCreated).JSON(context)
 }
@@ -692,4 +828,3 @@ func GetTotalAvailableBooks(c *fiber.Ctx) error {
 	// Return JSON response
 	return c.Status(fiber.StatusOK).JSON(context)
 }
-

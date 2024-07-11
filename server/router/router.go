@@ -47,6 +47,7 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/borrowbookuser/:page/:perPage", controller.GetBorrowBookPaginationByUser)
 	private.Post("/borrowbook", controller.BorrowBook)
 	private.Put("/borrowbook/:id", controller.ReturnBook)
+	private.Post("/reservationbook", controller.ReservationBook)
 	// private.Get("/borrowbook/:search", controller.SearchBorrowBooks)
 	// Blog CRUD
 	private.Get("/", controller.WelcomeBlog)
