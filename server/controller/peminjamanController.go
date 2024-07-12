@@ -24,6 +24,20 @@ type BorrowInfo struct {
 	IsReservation bool       `json:"is_reservation"`
 }
 
+type ReservationResponse struct {
+	ID            uint       `json:"id"`
+	BookID        uint       `json:"book_id"`
+	UserID        uint       `json:"user_id"`
+	Book          model.Book `json:"book"`
+	Mahasiswa     string     `json:"mahasiswa"`
+	Nim           string     `json:"nim"`
+	CreatedAt     string     `json:"created_at"`
+	ReturnAt      *string    `json:"return_at,omitempty"`
+	ExpiredAt     *string    `json:"expired_at,omitempty"`
+	IsPinjam      bool       `json:"is_pinjam"`
+	IsReservation bool       `json:"is_reservation"`
+}
+
 func GetBorrowBookPagination(c *fiber.Ctx) error {
 	page := c.Params("page")
 	perPage := c.Params("perPage")
@@ -513,6 +527,25 @@ func BorrowBook(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusConflict).JSON(context)
 	}
 
+	if err := database.DBConn.Where("book_id = ? AND is_reservation = ?", book.ID, true).First(&existingPeminjaman).Error; err == nil {
+		if existingPeminjaman.IsReservation {
+			existingPeminjaman.IsReservation = false
+			existingPeminjaman.IsPinjam = true
+			existingPeminjaman.ExpiredAt = nil
+			if err := database.DBConn.Save(&existingPeminjaman).Error; err != nil {
+				log.Println("Error while updating reservation:", err)
+				context["msg"] = "Failed to update reservation."
+				context["status_code"] = "500"
+				return c.Status(fiber.StatusInternalServerError).JSON(context)
+			}
+			context["msg"] = "Reservation updated to borrowing."
+			context["Nama Mahasiswa"] = username
+			context["Kode Buku"] = book.KodeBuku
+			context["IsReservation"] = existingPeminjaman.IsReservation
+			return c.Status(fiber.StatusOK).JSON(context)
+		}
+	}
+
 	// Save borrowing record to the database
 	peminjaman := model.Peminjaman{
 		BookID:        book.ID,
@@ -564,7 +597,7 @@ func ReservationBook(c *fiber.Ctx) error {
 	if err := c.BodyParser(&requestBody); err != nil {
 		log.Println("Error in parsing request:", err)
 		context["status_code"] = "400"
-		context["msg"] = "Something went wrong JSON format"
+		context["msg"] = "Something went wrong with JSON format"
 		return c.Status(fiber.StatusBadRequest).JSON(context)
 	}
 
@@ -586,27 +619,26 @@ func ReservationBook(c *fiber.Ctx) error {
 
 	// Fetch user information who is reserving
 	var user model.User
-	if err := database.DBConn.First(&user, "username=?", username).Error; err != nil {
+	if err := database.DBConn.First(&user, "username = ?", username).Error; err != nil {
 		log.Println("Error while fetching user:", err)
 		context["msg"] = "Error while fetching user."
 		context["status_code"] = "500"
 		return c.Status(fiber.StatusInternalServerError).JSON(context)
 	}
 
-	// Check if the book is already borrowed or reserved
-	var existingPeminjaman model.Peminjaman
-	if err := database.DBConn.Where("book_id = ? AND (is_pinjam = ? OR (expired_at > ?))", book.ID, true, time.Now()).First(&existingPeminjaman).Error; err == nil {
-		if existingPeminjaman.IsPinjam {
-			context["msg"] = "Buku sedang dipinjam"
-			context["status_code"] = "409"
-		} else if existingPeminjaman.IsReservation {
-			// Check if the reservation is still valid
-			if existingPeminjaman.ExpiredAt != nil && existingPeminjaman.ExpiredAt.After(time.Now()) {
-				context["msg"] = "Buku sedang direservasi"
-				context["status_code"] = "409"
-				return c.Status(fiber.StatusConflict).JSON(context)
-			}
-		}
+	// Check if the book is already borrowed
+	var borrowedBook model.Peminjaman
+	if err := database.DBConn.Where("book_id = ? AND is_pinjam = 1 AND return_at IS NULL", book.ID).First(&borrowedBook).Error; err == nil {
+		context["msg"] = "Buku sedang dipinjam"
+		context["status_code"] = "409"
+		return c.Status(fiber.StatusConflict).JSON(context)
+	}
+
+	// Check if the book is already reserved
+	var existingReservation model.Peminjaman
+	if err := database.DBConn.Where("book_id = ? AND is_reservation = 1 AND expired_at > ?", book.ID, time.Now()).First(&existingReservation).Error; err == nil {
+		context["msg"] = "Buku sedang direservasi"
+		context["status_code"] = "409"
 		return c.Status(fiber.StatusConflict).JSON(context)
 	}
 
@@ -663,6 +695,159 @@ func ReservationBook(c *fiber.Ctx) error {
 	}()
 
 	return c.Status(fiber.StatusCreated).JSON(context)
+}
+
+func GetReservationBook(c *fiber.Ctx) error {
+	db := database.DBConn
+
+	var peminjaman []model.Peminjaman
+	result := db.Preload("Book").Preload("User").Where("is_reservation = ? AND expired_at IS NOT NULL", true).Find(&peminjaman)
+	if result.Error != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"msg":         "Failed to retrieve reservations",
+			"status_code": "500",
+		})
+	}
+
+	// Handle case where no reservation records are found
+	if len(peminjaman) == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"msg":         "No reservation records found",
+			"status_code": "404",
+		})
+	}
+
+	var response []ReservationResponse
+	for _, p := range peminjaman {
+		createdAt := p.CreatedAt.Format(time.RFC3339)
+		var returnAt, expiredAt *string
+		if p.ReturnAt != nil {
+			rt := p.ReturnAt.Format(time.RFC3339)
+			returnAt = &rt
+		}
+		if p.ExpiredAt != nil {
+			et := p.ExpiredAt.Format(time.RFC3339)
+			expiredAt = &et
+		}
+		response = append(response, ReservationResponse{
+			ID:            p.ID,
+			BookID:        p.BookID,
+			UserID:        p.UserID,
+			Book:          p.Book,
+			Mahasiswa:     p.User.Username, // Assuming User.Username holds "mahasiswa"
+			Nim:           p.User.Nim,      // Assuming User.Username holds "Nim"
+			CreatedAt:     createdAt,
+			ReturnAt:      returnAt,
+			ExpiredAt:     expiredAt,
+			IsPinjam:      p.IsPinjam,
+			IsReservation: p.IsReservation,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"data":        response,
+		"msg":         "Get Reservation Book List",
+		"status_code": "200",
+	})
+}
+
+func GetReservationBookPagination(c *fiber.Ctx) error {
+	page := c.Params("page")
+	perPage := c.Params("perPage")
+	keyword := c.Params("keyword") // Get keyword from URL path parameters
+
+	numPage, err := strconv.Atoi(page)
+	if err != nil || numPage <= 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Invalid page number",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	numPerPage, err := strconv.Atoi(perPage)
+	if err != nil || numPerPage <= 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Invalid perPage number",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	db := database.DBConn
+
+	var totalData int64
+	query := db.Model(&model.Peminjaman{}).Where("is_reservation = ? AND expired_at IS NOT NULL", true) // Only include records where IsReservation is true and expired_at is not null
+
+	// Apply keyword filter if provided
+	if keyword != "" {
+		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR books.kategori_buku LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	}
+
+	query.Count(&totalData)
+
+	totalPage := int(totalData) / numPerPage
+	if int(totalData)%numPerPage != 0 {
+		totalPage++
+	}
+
+	if totalPage == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"msg":         "No reservation records found",
+			"status_code": http.StatusNotFound,
+		})
+	}
+
+	if numPage > totalPage {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Page number out of range",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	offset := (numPage - 1) * numPerPage
+
+	var peminjaman []model.Peminjaman
+	if err := query.Preload("Book").Preload("User").Offset(offset).Limit(numPerPage).Find(&peminjaman).Error; err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"msg":         "Failed to retrieve reservations",
+			"status_code": "500",
+		})
+	}
+
+	var response []ReservationResponse
+	for _, p := range peminjaman {
+		createdAt := p.CreatedAt.Format(time.RFC3339)
+		var returnAt, expiredAt *string
+		if p.ReturnAt != nil {
+			rt := p.ReturnAt.Format(time.RFC3339)
+			returnAt = &rt
+		}
+		if p.ExpiredAt != nil {
+			et := p.ExpiredAt.Format(time.RFC3339)
+			expiredAt = &et
+		}
+		response = append(response, ReservationResponse{
+			ID:            p.ID,
+			BookID:        p.BookID,
+			UserID:        p.UserID,
+			Book:          p.Book,
+			Mahasiswa:     p.User.Username, // Assuming User.Username holds "mahasiswa"
+			CreatedAt:     createdAt,
+			ReturnAt:      returnAt,
+			ExpiredAt:     expiredAt,
+			IsPinjam:      p.IsPinjam,
+			IsReservation: p.IsReservation,
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"data":        response,
+		"msg":         "Get Reservation Book List",
+		"status_code": "200",
+		"total_page":  totalPage,
+		"page_now":    numPage,
+		"limit":       numPerPage,
+	})
 }
 
 func ReturnBook(c *fiber.Ctx) error {

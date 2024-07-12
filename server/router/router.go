@@ -32,7 +32,7 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/dashboard-all", controller.DataManagementList)
 	// Book CRUD
 	private.Get("/book", controller.BookList)
-	private.Get("/book/:page/:perPage/:keyword", controller.BookPagination)
+	private.Get("/book/:page/:perPage/:keyword?", controller.BookPagination)
 	private.Get("/book/:page/:perPage/", controller.BookPagination)
 	private.Post("/book", controller.BookCreate)
 	private.Put("/book/:id", controller.BookUpdate)
@@ -47,6 +47,8 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/borrowbookuser/:page/:perPage/:keyword", controller.GetBorrowBookPaginationByUser)
 	private.Get("/borrowbookuser/:page/:perPage", controller.GetBorrowBookPaginationByUser)
 	private.Post("/reservationbook", controller.ReservationBook)
+	private.Get("/reservationbook", controller.GetReservationBook)
+	private.Get("/reservationbook/:page/:perPage/:keyword?", controller.GetReservationBookPagination)
 	private.Post("/borrowbook", controller.BorrowBook)
 	private.Put("/borrowbook/:id", controller.ReturnBook)
 	// Blog CRUD
