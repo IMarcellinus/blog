@@ -18,9 +18,10 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("api/login", controller.Login)
 	app.Post("api/register", controller.Register)
 	app.Get("api/logout", controller.Logout)
+	app.Post("api/loginmobile", controller.LoginMobile)
+	app.Post("api/loginuser", controller.ScanUser)
 	// Auth Admin
 	private := app.Group("/api")
-	private.Post("/loginuser", controller.ScanUser)
 	// Middleware menggunakan cookies jwt
 	private.Use(middleware.Authenticate)
 	private.Get("/active-account", controller.GetActiveUsersCount)
@@ -45,10 +46,9 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/borrowbook/:page/:perPage", controller.GetBorrowBookPagination)
 	private.Get("/borrowbookuser/:page/:perPage/:keyword", controller.GetBorrowBookPaginationByUser)
 	private.Get("/borrowbookuser/:page/:perPage", controller.GetBorrowBookPaginationByUser)
+	private.Post("/reservationbook", controller.ReservationBook)
 	private.Post("/borrowbook", controller.BorrowBook)
 	private.Put("/borrowbook/:id", controller.ReturnBook)
-	private.Post("/reservationbook", controller.ReservationBook)
-	// private.Get("/borrowbook/:search", controller.SearchBorrowBooks)
 	// Blog CRUD
 	private.Get("/", controller.WelcomeBlog)
 	private.Get("/blog/:id", controller.BlogListById)

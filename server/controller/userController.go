@@ -118,6 +118,81 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(returnObject)
 }
 
+func LoginMobile(c *fiber.Ctx) error {
+	returnObject := fiber.Map{
+		"status_code": "200",
+		"msg":         "Something went wrong.",
+	}
+
+	// Check user for the given credentials
+	var formData struct {
+		Nim      string `json:"nim"`
+		Password string `json:"password"`
+	}
+
+	// Parse JSON request body
+	if err := c.BodyParser(&formData); err != nil {
+		log.Println("Error in json binding.")
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Invalid JSON format",
+		})
+	}
+
+	// Add formdata to model
+	user := new(model.User)
+
+	database.DBConn.First(&user, "nim = ?", formData.Nim)
+
+	if user.ID == 0 {
+		returnObject["msg"] = "User not found."
+		returnObject["status_code"] = "400"
+		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password))
+
+	if err != nil {
+		log.Println("Invalid Password.")
+		returnObject["msg"] = "Invalid Password."
+		returnObject["status_code"] = "401"
+		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
+	}
+
+	token, err := helper.GenerateToken(*user)
+
+	if err != nil {
+		returnObject["msg"] = "Could not Login."
+		returnObject["status_code"] = "401"
+		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
+	}
+
+	// Update IsActive to true
+	user.IsActive = true
+	if err := database.DBConn.Save(&user).Error; err != nil {
+		log.Println("Error updating user active status:", err)
+		returnObject["msg"] = "Could not update user status."
+		returnObject["status_code"] = "500"
+		return c.Status(fiber.StatusInternalServerError).JSON(returnObject)
+	}
+
+	cookie := fiber.Cookie{
+		Name:     "token",
+		Value:    token,
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	returnObject["token"] = token
+	returnObject["user"] = user
+	returnObject["msg"] = "Success Login."
+	returnObject["status"] = "Ok."
+
+	c.Status(200)
+	return c.JSON(returnObject)
+}
+
 // Function Register
 func Register(c *fiber.Ctx) error {
 	// Collect form data
