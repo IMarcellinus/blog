@@ -850,6 +850,243 @@ func GetReservationBookPagination(c *fiber.Ctx) error {
 	})
 }
 
+func GetReservationBookByUser(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"status_code": "200",
+		"msg":         "Get Reservation Book List",
+	}
+
+	// Get the username from Local storage
+	username, exists := c.Locals("username").(string)
+	log.Println(username)
+
+	// Check if username exists
+	if !exists {
+		log.Println("username key not found.")
+		context["msg"] = "username not found."
+		return c.Status(fiber.StatusUnauthorized).JSON(context)
+	}
+
+	// Get the userID of the logged-in user
+	userID, exists := c.Locals("userid").(uint)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "UserID not found in context"})
+	}
+
+	// Get the role from Local storage
+	role, exists := c.Locals("role").(string)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Role not found in context"})
+	}
+
+	db := database.DBConn
+
+	var Peminjaman []model.Peminjaman
+	query := db.Model(&model.Peminjaman{}).Preload("Book").Preload("User").Where("user_id = ? AND is_reservation = ? AND expired_at IS NOT NULL", userID, true)
+
+	if role == "admin" {
+		query = db.Model(&model.Peminjaman{}).Preload("Book").Preload("User").Where("is_reservation = ? AND expired_at IS NOT NULL", true)
+	}
+
+	if err := query.Find(&Peminjaman).Error; err != nil {
+		return err
+	}
+
+	// Create a slice to store reservation information
+	reservationInfoList := []ReservationResponse{}
+
+	// Loop through each Peminjaman object and fill in the reservation information
+	for _, p := range Peminjaman {
+		createdAt := p.CreatedAt.Format(time.RFC3339)
+		var returnAt, expiredAt *string
+		if p.ReturnAt != nil {
+			rt := p.ReturnAt.Format(time.RFC3339)
+			returnAt = &rt
+		}
+		if p.ExpiredAt != nil {
+			et := p.ExpiredAt.Format(time.RFC3339)
+			expiredAt = &et
+		}
+
+		// Determine the username to use based on the role
+		mahasiswa := username
+		if role == "admin" {
+			mahasiswa = p.User.Username
+		}
+
+		reservationInfo := ReservationResponse{
+			ID:            p.ID,
+			BookID:        p.BookID,
+			UserID:        p.UserID,
+			Book:          p.Book,
+			Mahasiswa:     mahasiswa,
+			Nim:           p.User.Nim,
+			CreatedAt:     createdAt,
+			ReturnAt:      returnAt,
+			ExpiredAt:     expiredAt,
+			IsPinjam:      p.IsPinjam,
+			IsReservation: p.IsReservation,
+		}
+
+		reservationInfoList = append(reservationInfoList, reservationInfo)
+	}
+
+	// Check if reservationInfoList is empty
+	if len(reservationInfoList) == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"msg":         "No reservation records found",
+			"status_code": http.StatusNotFound,
+		})
+	}
+
+	context["data"] = reservationInfoList
+
+	return c.JSON(context)
+}
+
+func GetReservationBookPaginationByUser(c *fiber.Ctx) error {
+	page := c.Params("page")
+	perPage := c.Params("perPage")
+	keyword := c.Params("keyword") // Get keyword from URL path parameters
+
+	numPage, err := strconv.Atoi(page)
+	if err != nil || numPage <= 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Invalid page number",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	numPerPage, err := strconv.Atoi(perPage)
+	if err != nil || numPerPage <= 0 {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Invalid perPage number",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	context := fiber.Map{
+		"status_code": "200",
+		"msg":         "Get Reservation Book List",
+	}
+
+	// Get the username from Local storage
+	username, exists := c.Locals("username").(string)
+	log.Println(username)
+
+	// Check if username exists
+	if !exists {
+		log.Println("username key not found.")
+		context["msg"] = "username not found."
+		return c.Status(fiber.StatusUnauthorized).JSON(context)
+	}
+
+	// Get the userID of the logged-in user
+	userID, exists := c.Locals("userid").(uint)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "UserID not found in context"})
+	}
+
+	// Get the role from Local storage
+	role, exists := c.Locals("role").(string)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Role not found in context"})
+	}
+
+	db := database.DBConn
+
+	var totalData int64
+	query := db.Model(&model.Peminjaman{}).Where("user_id = ? AND is_reservation = ? AND expired_at IS NOT NULL", userID, true)
+
+	if role == "admin" {
+		query = db.Model(&model.Peminjaman{}).Where("is_reservation = ? AND expired_at IS NOT NULL", true)
+	}
+
+	// Apply keyword filter if provided
+	if keyword != "" {
+		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR books.kategori_buku LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	}
+
+	query.Count(&totalData)
+
+	totalPage := int(totalData) / numPerPage
+	if int(totalData)%numPerPage != 0 {
+		totalPage++
+	}
+
+	if totalPage == 0 {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"msg":         "No reservation records found",
+			"status_code": http.StatusNotFound,
+		})
+	}
+
+	if numPage > totalPage {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"msg":         "Page number out of range",
+			"status_code": http.StatusBadRequest,
+		})
+	}
+
+	offset := (numPage - 1) * numPerPage
+
+	var Peminjaman []model.Peminjaman
+	if err := query.Preload("Book").Preload("User").Offset(offset).Limit(numPerPage).Find(&Peminjaman).Error; err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"msg":         "Failed to retrieve reservations",
+			"status_code": "500",
+		})
+	}
+
+	// Create a slice to store reservation information
+	reservationInfoList := []ReservationResponse{}
+
+	// Loop through each Peminjaman object and fill in the reservation information
+	for _, p := range Peminjaman {
+		createdAt := p.CreatedAt.Format(time.RFC3339)
+		var returnAt, expiredAt *string
+		if p.ReturnAt != nil {
+			rt := p.ReturnAt.Format(time.RFC3339)
+			returnAt = &rt
+		}
+		if p.ExpiredAt != nil {
+			et := p.ExpiredAt.Format(time.RFC3339)
+			expiredAt = &et
+		}
+
+		// Determine the username to use based on the role
+		mahasiswa := username
+		if role == "admin" {
+			mahasiswa = p.User.Username
+		}
+
+		reservationInfo := ReservationResponse{
+			ID:            p.ID,
+			BookID:        p.BookID,
+			UserID:        p.UserID,
+			Book:          p.Book,
+			Mahasiswa:     mahasiswa,
+			CreatedAt:     createdAt,
+			ReturnAt:      returnAt,
+			ExpiredAt:     expiredAt,
+			IsPinjam:      p.IsPinjam,
+			IsReservation: p.IsReservation,
+		}
+
+		reservationInfoList = append(reservationInfoList, reservationInfo)
+	}
+
+	return c.JSON(fiber.Map{
+		"data":        reservationInfoList,
+		"msg":         "Get Reservation Book List by User",
+		"status_code": "200",
+		"total_page":  totalPage,
+		"page_now":    numPage,
+		"limit":       numPerPage,
+	})
+}
+
 func ReturnBook(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"status_code": "200",
