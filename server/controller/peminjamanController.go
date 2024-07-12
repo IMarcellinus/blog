@@ -973,6 +973,7 @@ func GetReservationBookByUser(c *fiber.Ctx) error {
 	// Check if reservationInfoList is empty
 	if len(reservationInfoList) == 0 {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"data":        []ReservationResponse{},
 			"msg":         "No reservation records found",
 			"status_code": http.StatusNotFound,
 		})
@@ -1068,6 +1069,7 @@ func GetReservationBookPaginationByUser(c *fiber.Ctx) error {
 
 	if totalPage == 0 {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"data":        []ReservationResponse{},
 			"msg":         "No reservation records found",
 			"status_code": http.StatusNotFound,
 		})
