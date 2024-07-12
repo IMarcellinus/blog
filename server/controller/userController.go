@@ -401,9 +401,37 @@ func RefreshToken(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(returnObject)
 	}
 
+	// Struct for response to exclude password
+	type UserResponse struct {
+		ID           uint   `json:"id"`
+		Username     string `json:"username"`
+		Nim          string `json:"nim"`
+		Nama         string `json:"nama"`
+		JenisKelamin string `json:"jeniskelamin"`
+		Prodi        string `json:"prodi"`
+		CodeQr       string `json:"codeqr"`
+		Role         string `json:"role"`
+		CreatedAt    string `json:"created_at"`
+		IsActive     bool   `json:"is_active"`
+	}
+
+	// Create a response user object
+	responseUser := UserResponse{
+		ID:           user.ID,
+		Username:     user.Username,
+		Nim:          user.Nim,
+		Nama:         user.Nama,
+		JenisKelamin: user.JenisKelamin,
+		Prodi:        user.Prodi,
+		CodeQr:       user.CodeQr,
+		Role:         user.Role,
+		CreatedAt:    user.CreatedAt,
+		IsActive:     user.IsActive,
+	}
+
 	// Menyimpan token dan informasi user ke dalam response
 	returnObject["token"] = token
-	returnObject["user"] = user
+	returnObject["user"] = responseUser
 	returnObject["status_code"] = "200"
 
 	return c.Status(fiber.StatusOK).JSON(returnObject)
