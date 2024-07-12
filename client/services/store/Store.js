@@ -3,7 +3,8 @@ import Authslice from './reducers/Authslice'
 import Bookslice from './reducers/Bookslice'
 import Borrowslice from './reducers/Borrowslice'
 import Userslice from './reducers/Userslice'
-import DashboardSlice, { dashboardSlice } from './reducers/Dashboardslice'
+import DashboardSlice from './reducers/Dashboardslice'
+import ReservationSlice from './reducers/Reservationslice'
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     users: Userslice,
     borrowbooks: Borrowslice,
     dashboard: DashboardSlice,
+    reservations: ReservationSlice,
   },
 })

@@ -3,7 +3,9 @@ package controller
 import (
 	"log"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/IMarcellinus/blog/database"
@@ -98,10 +100,22 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Unauthorized role"})
 	}
 
+	// Decode the keyword to handle spaces
+	decodedKeyword, err := url.QueryUnescape(keyword)
+	if err != nil {
+		context := fiber.Map{
+			"msg":         "error decoding keyword",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
 	// Apply keyword filter if provided
-	if keyword != "" {
+	if decodedKeyword != "" {
+		// Ensure the keyword is correctly parsed and spaces are handled
+		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	query.Count(&totalData)
@@ -307,10 +321,22 @@ func GetBorrowBookPaginationByUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Unauthorized role"})
 	}
 
+	// Decode the keyword to handle spaces
+	decodedKeyword, err := url.QueryUnescape(keyword)
+	if err != nil {
+		context := fiber.Map{
+			"msg":         "error decoding keyword",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
 	// Apply keyword filter if provided
-	if keyword != "" {
+	if decodedKeyword != "" {
+		// Ensure the keyword is correctly parsed and spaces are handled
+		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	query.Count(&totalData)
@@ -777,10 +803,22 @@ func GetReservationBookPagination(c *fiber.Ctx) error {
 	var totalData int64
 	query := db.Model(&model.Peminjaman{}).Where("is_reservation = ? AND expired_at IS NOT NULL", true) // Only include records where IsReservation is true and expired_at is not null
 
+	// Decode the keyword to handle spaces
+	decodedKeyword, err := url.QueryUnescape(keyword)
+	if err != nil {
+		context := fiber.Map{
+			"msg":         "Error decoding keyword",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
 	// Apply keyword filter if provided
-	if keyword != "" {
+	if decodedKeyword != "" {
+		// Ensure the keyword is correctly parsed and spaces are handled
+		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR books.kategori_buku LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR books.kategori_buku LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	query.Count(&totalData)
@@ -832,6 +870,7 @@ func GetReservationBookPagination(c *fiber.Ctx) error {
 			UserID:        p.UserID,
 			Book:          p.Book,
 			Mahasiswa:     p.User.Username, // Assuming User.Username holds "mahasiswa"
+			Nim:           p.User.Nim,
 			CreatedAt:     createdAt,
 			ReturnAt:      returnAt,
 			ExpiredAt:     expiredAt,
@@ -1002,10 +1041,22 @@ func GetReservationBookPaginationByUser(c *fiber.Ctx) error {
 		query = db.Model(&model.Peminjaman{}).Where("is_reservation = ? AND expired_at IS NOT NULL", true)
 	}
 
+	// Decode the keyword to handle spaces
+	decodedKeyword, err := url.QueryUnescape(keyword)
+	if err != nil {
+		context := fiber.Map{
+			"msg":         "Error decoding keyword",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
 	// Apply keyword filter if provided
-	if keyword != "" {
+	if decodedKeyword != "" {
+		// Ensure the keyword is correctly parsed and spaces are handled
+		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR books.kategori_buku LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR books.kategori_buku LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	query.Count(&totalData)

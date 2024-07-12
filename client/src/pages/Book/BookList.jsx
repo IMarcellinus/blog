@@ -5,7 +5,6 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { HiTrash } from "react-icons/hi";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
   deleteBook,

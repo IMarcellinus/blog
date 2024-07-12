@@ -49,7 +49,7 @@ func SetupRoutes(app *fiber.App) {
 	private.Post("/reservationbook", controller.ReservationBook)
 	private.Get("/reservationbook", controller.GetReservationBook)
 	private.Get("/reservationbookuser", controller.GetReservationBookByUser)
-	private.Get("/reservationbookuser/:page/:perPage/:keyword?", controller.GetReservationBookByUser)
+	private.Get("/reservationbookuser/:page/:perPage/:keyword", controller.GetReservationBookByUser)
 	private.Get("/reservationbook/:page/:perPage/:keyword?", controller.GetReservationBookPagination)
 	private.Post("/borrowbook", controller.BorrowBook)
 	private.Put("/borrowbook/:id", controller.ReturnBook)

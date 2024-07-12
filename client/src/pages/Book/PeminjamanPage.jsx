@@ -99,7 +99,7 @@ const PeminjamanPage = ({ authUser }) => {
 
     if (isSubmit) {
       handleCloseModal();
-      toast.success("Create Book Berhasil");
+      toast.success("Create Borrow Book Success");
       const currentPage = currentPageBookBorrow + 1;
       if (search) {
         dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search, role: authUser.role }));

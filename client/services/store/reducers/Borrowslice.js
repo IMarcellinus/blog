@@ -223,7 +223,6 @@ export const BorrowSlice = createSlice({
       state.isLoading = true;
     });
     builder.addCase(getBorrowBook.fulfilled, (state, action) => {
-      // console.log("getborrowbook:", action.payload);
       state.isLoading = false;
       state.isError = false;
       state.isSuccess = true;
