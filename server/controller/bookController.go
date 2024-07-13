@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -126,10 +125,6 @@ func BookPagination(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(context)
 }
 
-func getBookCodeByID(id uint) string {
-	return fmt.Sprintf("A%d", id)
-}
-
 // function for BookCreate
 func BookCreate(c *fiber.Ctx) error {
 	context := fiber.Map{
@@ -183,7 +178,7 @@ func BookCreate(c *fiber.Ctx) error {
 	}
 
 	// Set the book code based on the book ID
-	record.KodeBuku = getBookCodeByID(record.ID)
+	record.KodeBuku = strconv.Itoa(int(record.ID))
 
 	// Update the record with the generated book code
 	result = database.DBConn.Save(record)
