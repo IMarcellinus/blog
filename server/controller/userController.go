@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"image/png"
 	"log"
 	"net/http"
 	"net/url"
@@ -16,6 +18,8 @@ import (
 	"github.com/IMarcellinus/blog/helper"
 	"github.com/IMarcellinus/blog/model"
 	"github.com/gofiber/fiber/v2"
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/oned"
 	"github.com/skip2/go-qrcode"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -844,8 +848,10 @@ func GetUserByID(c *fiber.Ctx) error {
 		})
 	}
 
+	writer := oned.NewCode128Writer()
+
 	// Create QR code from CodeQr column
-	qrFromCodeQr, err := qrcode.Encode(user.CodeQr, qrcode.Medium, 256)
+	qrFromCodeQr, err := writer.Encode(user.CodeQr, gozxing.BarcodeFormat_CODE_128, 250, 50, nil)
 	if err != nil {
 		log.Println("Error generating QR code from CodeQr:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -854,13 +860,21 @@ func GetUserByID(c *fiber.Ctx) error {
 		})
 	}
 
-	encodeBase64 := base64.StdEncoding.EncodeToString(qrFromCodeQr)
+	// Encode the QR code to PNG format
+	var buf bytes.Buffer
+	if err := png.Encode(&buf, qrFromCodeQr); err != nil {
+		log.Println("Error encoding QR code to PNG:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to encode QR code to PNG",
+		})
+	}
 
-	// Return the user details
-	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"status":    "Success Get User By Id",
-		"baseImage": encodeBase64,
-	})
+	// Set header response
+	c.Set("Content-Type", "image/png")
+
+	// Send the PNG image as response
+	return c.Send(buf.Bytes())
 }
 
 func GetActiveUsersCount(c *fiber.Ctx) error {

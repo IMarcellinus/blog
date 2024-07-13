@@ -68,6 +68,9 @@ export const dashboardSlice = createSlice({
     setTotalUser: (state, action) => {
       state.totalUser = action.payload
     },
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -110,6 +113,6 @@ export const dashboardSlice = createSlice({
   },
 });
 
-export const {setTotalUser} = dashboardSlice.actions;
+export const {setTotalUser, setIsLoading} = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;
