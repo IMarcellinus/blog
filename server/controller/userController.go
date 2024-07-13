@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"image"
+	"image/color"
 	"image/png"
 	"log"
 	"net/http"
@@ -831,8 +833,7 @@ func ChangePassword(c *fiber.Ctx) error {
 	})
 }
 
-// Function Get User By Id
-func GetUserByID(c *fiber.Ctx) error {
+func GetBarcodeByID(c *fiber.Ctx) error {
 	// Get the ID parameter from the URL
 	id := c.Params("id")
 
@@ -848,10 +849,77 @@ func GetUserByID(c *fiber.Ctx) error {
 		})
 	}
 
+	// Created Barcode
 	writer := oned.NewCode128Writer()
 
-	// Create QR code from CodeQr column
+	// Create barcode from CodeQr column
 	qrFromCodeQr, err := writer.Encode(user.CodeQr, gozxing.BarcodeFormat_CODE_128, 250, 50, nil)
+	if err != nil {
+		log.Println("Error generating barcode from CodeQr:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate barcode from CodeQr",
+		})
+	}
+
+	// Convert BitMatrix to an image
+	img := bitMatrixToImage(qrFromCodeQr)
+
+	// Encode the image to PNG
+	var buf bytes.Buffer
+	err = png.Encode(&buf, img)
+	if err != nil {
+		log.Println("Error encoding image to PNG:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to encode image to PNG",
+		})
+	}
+
+	encodeBase64 := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+	// Return the user details
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":    "Success Get Barcode By Id",
+		"baseImage": encodeBase64,
+	})
+}
+
+// Convert BitMatrix to an image.Image
+func bitMatrixToImage(matrix *gozxing.BitMatrix) image.Image {
+	width := matrix.GetWidth()
+	height := matrix.GetHeight()
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			if matrix.Get(x, y) {
+				img.Set(x, y, color.Black)
+			} else {
+				img.Set(x, y, color.White)
+			}
+		}
+	}
+	return img
+}
+
+func GetQrCodeByID(c *fiber.Ctx) error {
+	// Get the ID parameter from the URL
+	id := c.Params("id")
+
+	// Initialize the User struct
+	var user model.User
+
+	// Fetch the user from the database by ID
+	if err := database.DBConn.First(&user, "id = ?", id).Error; err != nil {
+		log.Println("Error fetching user:", err)
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "User not found",
+		})
+	}
+
+	// Create QR code from CodeQr column
+	qrFromCodeQr, err := qrcode.Encode(user.CodeQr, qrcode.Medium, 256)
 	if err != nil {
 		log.Println("Error generating QR code from CodeQr:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -860,21 +928,13 @@ func GetUserByID(c *fiber.Ctx) error {
 		})
 	}
 
-	// Encode the QR code to PNG format
-	var buf bytes.Buffer
-	if err := png.Encode(&buf, qrFromCodeQr); err != nil {
-		log.Println("Error encoding QR code to PNG:", err)
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"status": "Error",
-			"msg":    "Failed to encode QR code to PNG",
-		})
-	}
+	encodeBase64 := base64.StdEncoding.EncodeToString(qrFromCodeQr)
 
-	// Set header response
-	c.Set("Content-Type", "image/png")
-
-	// Send the PNG image as response
-	return c.Send(buf.Bytes())
+	// Return the user details
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":    "Success Get Qr Code By Id",
+		"baseImage": encodeBase64,
+	})
 }
 
 func GetActiveUsersCount(c *fiber.Ctx) error {

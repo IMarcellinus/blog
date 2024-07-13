@@ -14,7 +14,9 @@ const initialState = {
   currentPageUser: 0,
   edit: false,
   barcode: false,
-  urlbarcode: false,
+  qrcode: false,
+  urlbarcode: "",
+  urlqrcode: "",
   isSubmit: false,
   id: null,
   idUser: null,
@@ -180,8 +182,8 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
-export const getUserById = createAsyncThunk(
-  "users/getUserById",
+export const getQrCodeById = createAsyncThunk(
+  "users/getQrCodeById",
   async ({ id }, thunkAPI) => {
     const token = await getToken();
     if (!token) {
@@ -189,7 +191,29 @@ export const getUserById = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(`${BASE_URL}/getuser/${id}`, {
+      const response = await axios.get(`${BASE_URL}/getuserqrcode/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getBarCodeById = createAsyncThunk(
+  "users/getBarCodeById",
+  async ({ id }, thunkAPI) => {
+    const token = await getToken();
+    if (!token) {
+      return thunkAPI.rejectWithValue("No token found");
+    }
+    try {
+      const token = await getToken();
+      const response = await axios.get(`${BASE_URL}/getuserbarcode/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -248,6 +272,9 @@ export const UserSlice = createSlice({
     setBarcode: (state, action) => {
       state.barcode = action.payload;
     },
+    setQrCode: (state, action) => {
+      state.qrcode = action.payload;
+    },
     setSearch: (state, action) => {
       state.search = action.payload;
     },
@@ -271,6 +298,9 @@ export const UserSlice = createSlice({
     },
     setUrlBarcode: (state, action) => {
       state.urlbarcode = action.payload;
+    },
+    setUrlQrCode: (state, action) => {
+      state.urlqrcode = action.payload;
     },
     setIsSucess: (state, action) => {
       state.isSuccess = action.payload;
@@ -378,17 +408,31 @@ export const UserSlice = createSlice({
       state.message = action.payload.msg;
     });
 
-    // Get User By Id
-    builder.addCase(getUserById.pending, (state) => {
+    // Get QR Code By Id
+    builder.addCase(getQrCodeById.pending, (state) => {
       state.isLoading = true;
-      state.isSubmit = false;
     });
-    builder.addCase(getUserById.fulfilled, (state, action) => {
+    builder.addCase(getQrCodeById.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.qrcode = true;
+      state.urlqrcode = action.payload?.baseImage;
+    });
+    builder.addCase(getQrCodeById.rejected, (state, action) => {
+      state.isLoading = false;
+      state.deleteFail = true;
+      state.isError = true;
+      state.message = action.payload.msg;
+    });
+    // Get User By Id
+    builder.addCase(getBarCodeById.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getBarCodeById.fulfilled, (state, action) => {
       state.isLoading = false;
       state.barcode = true;
       state.urlbarcode = action.payload?.baseImage;
     });
-    builder.addCase(getUserById.rejected, (state, action) => {
+    builder.addCase(getBarCodeById.rejected, (state, action) => {
       state.isLoading = false;
       state.deleteFail = true;
       state.isError = true;
@@ -397,6 +441,6 @@ export const UserSlice = createSlice({
   },
 });
 
-export const {setId, setBarcode,setIsSucess,setIsDelete, setFetchUser, setUrlBarcode, setUserId, setUsername, setPassword, setNim, setJenisKelamin, setNama, setProdi, setRole, setCurrentPageUser, setMessage, setStatus, setEdit, setSearch, setSearchDetail, setUserDetail, setUserSearch, setIdUser,setDeleteFail, setActive} = UserSlice.actions;
+export const {setId, setBarcode, setQrCode, setUrlQrCode, setIsSucess,setIsDelete, setFetchUser, setUrlBarcode, setUserId, setUsername, setPassword, setNim, setJenisKelamin, setNama, setProdi, setRole, setCurrentPageUser, setMessage, setStatus, setEdit, setSearch, setSearchDetail, setUserDetail, setUserSearch, setIdUser,setDeleteFail, setActive} = UserSlice.actions;
 
 export default UserSlice.reducer;

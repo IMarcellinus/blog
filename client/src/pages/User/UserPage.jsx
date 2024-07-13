@@ -22,6 +22,7 @@ import {
   setPassword,
   setProdi,
   setRole,
+  setUrlQrCode,
   setUserSearch,
   setUsername,
 } from "../../../services/store/reducers/Userslice";
@@ -66,6 +67,7 @@ const UserPage = ({ authUser }) => {
     dispatch(setMessage(""));
     dispatch(setEdit(false));
     dispatch(setBarcode(false));
+    dispatch(setUrlQrCode(false));
     dispatch(setIsSucess(false));
     dispatch(setIsDelete(false));
     document.body.style.overflow = "auto";

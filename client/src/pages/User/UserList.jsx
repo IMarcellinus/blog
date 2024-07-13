@@ -1,17 +1,15 @@
-// import { delay } from "@reduxjs/toolkit/dist/utils";
 import Tippy from "@tippyjs/react";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BsQrCode } from "react-icons/bs";
 import { HiTrash } from "react-icons/hi";
-import { IoMdEye } from "react-icons/io";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { deleteUser, getUserById, setCurrentPageUser, setDeleteFail, setEdit, setId, setJenisKelamin, setMessage, setNama, setNim, setProdi, setRole } from "../../../services/store/reducers/Userslice";
+import { deleteUser, getBarCodeById, getQrCodeById, setBarcode, setCurrentPageUser, setDeleteFail, setEdit, setId, setJenisKelamin, setMessage, setNama, setNim, setProdi, setQrCode, setRole } from "../../../services/store/reducers/Userslice";
 import { delay } from "../../../utils/api";
+import { FaBarcode } from "react-icons/fa6";
 
 const UserList = ({
   authUser,
@@ -20,10 +18,9 @@ const UserList = ({
   setModalIsOpen,
   totalPages,
 }) => {
-  // console.log(users);
   const dispatch = useDispatch();
   const { role } = authUser;
-  const { search, userSearch, currentPageUser, deleteFail, message, baseImage } =
+  const { search, userSearch, currentPageUser, deleteFail, message } =
     useSelector((state) => state.users);
 
   const changePage = ({ selected }) => {
@@ -46,8 +43,17 @@ const UserList = ({
     });
   };
 
-  const handleShowBarcode = async (id) => {
-    dispatch(getUserById({id})); 
+  const handleShowBarCode = async (id) => {
+    dispatch(setQrCode(false))
+    dispatch(getBarCodeById({id})); 
+    await delay(100)
+    dispatch(setEdit(false))
+    setModalIsOpen(true);
+  };
+  
+  const handleShowQrCode = async (id) => {
+    dispatch(setBarcode(false))
+    dispatch(getQrCodeById({id})); 
     await delay(100)
     dispatch(setEdit(false))
     setModalIsOpen(true);
@@ -56,6 +62,8 @@ const UserList = ({
   const handleEdit = (id, nim, jeniskelamin, nama, prodi, role) => {
     dispatch(setId(id));
     dispatch(setNim(nim));
+    dispatch(setBarcode(false))
+    dispatch(setQrCode(false))
     dispatch(setJenisKelamin(jeniskelamin));
     dispatch(setNama(nama));
     dispatch(setProdi(prodi));
@@ -109,10 +117,18 @@ const UserList = ({
                 <td className="p-4 text-left">{user.role}</td>
                 {!isLoading && role == "admin" && (
                   <td className="relative flex h-full gap-3 px-4 py-3">
-                    <Tippy content="Show Barcode" followCursor>
+                    <Tippy content="Show BarCode" followCursor>
                       <div
                         className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
-                        onClick={() => handleShowBarcode(user.id)}
+                        onClick={() => handleShowBarCode(user.id)}
+                      >
+                        <FaBarcode className="size-full" />
+                      </div>
+                    </Tippy>
+                    <Tippy content="Show QR Code" followCursor>
+                      <div
+                        className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
+                        onClick={() => handleShowQrCode(user.id)}
                       >
                         <BsQrCode className="size-full" />
                       </div>

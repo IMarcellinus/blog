@@ -66,7 +66,8 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/barcode/:id", controller.GenerateQRCodeFromUser)
 	// User CRUD
 	private.Get("/users", controller.UserList)
-	private.Get("/getuser/:id", controller.GetUserByID)
+	private.Get("/getuserbarcode/:id", controller.GetBarcodeByID)
+	private.Get("/getuserqrcode/:id", controller.GetQrCodeByID)
 	private.Get("/users/:page/:perPage/:keyword", controller.UserPagination)
 	private.Get("/users/:page/:perPage/", controller.UserPagination)
 	private.Post("/users", controller.UserCreate)
