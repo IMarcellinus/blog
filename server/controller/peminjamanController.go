@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -14,19 +15,19 @@ import (
 )
 
 type BorrowInfo struct {
-	ID            uint           `json:"id"`
-	BookID        uint           `json:"book_id"` // Changed to *uint
-	UserID        uint           `json:"user_id"`
-	Book          model.Book     `json:"book"`
-	Mahasiswa     string         `json:"mahasiswa"`
-	Nim           string         `json:"nim"`
-	CreatedAt     time.Time      `json:"created_at"`
-	ReturnAt      *time.Time     `json:"return_at"`  // Changed to *time.Time
-	ExpiredAt     *time.Time     `json:"expired_at"` // Changed to *time.Time
-	Duration      *time.Duration `json:"duration"`   // Added Duration
-	Rating        uint           `json:"rating"`     // Added Rating
-	IsPinjam      bool           `json:"is_pinjam"`
-	IsReservation bool           `json:"is_reservation"`
+	ID            uint       `json:"id"`
+	BookID        uint       `json:"book_id"` // Changed to *uint
+	UserID        uint       `json:"user_id"`
+	Book          model.Book `json:"book"`
+	Mahasiswa     string     `json:"mahasiswa"`
+	Nim           string     `json:"nim"`
+	CreatedAt     time.Time  `json:"created_at"`
+	ReturnAt      *time.Time `json:"return_at"`  // Changed to *time.Time
+	ExpiredAt     *time.Time `json:"expired_at"` // Changed to *time.Time
+	Duration      *string    `json:"duration"`   // Added Duration
+	Rating        uint       `json:"rating"`     // Added Rating
+	IsPinjam      bool       `json:"is_pinjam"`
+	IsReservation bool       `json:"is_reservation"`
 }
 
 type ReservationResponse struct {
@@ -171,6 +172,7 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 			ReturnAt:      p.ReturnAt, // ReturnAt is now a pointer
 			IsPinjam:      p.IsPinjam,
 			IsReservation: p.IsReservation,
+			Duration:      p.Duration,
 		}
 
 		// If the role is admin, include all details from the Peminjaman model and the user's username
@@ -255,6 +257,7 @@ func GetBorrowBook(c *fiber.Ctx) error {
 			Rating:        p.Rating,
 			IsReservation: p.IsReservation,
 			ExpiredAt:     p.ExpiredAt,
+			Duration:      p.Duration,
 		}
 
 		// If the role is admin, include all details from the Peminjaman model and the user's username
@@ -1226,14 +1229,19 @@ func ReturnBook(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(context)
 	}
 
-	// Calculate duration between return_at and created_at
-	var duration *time.Duration
-	if peminjaman.ReturnAt != nil && !peminjaman.CreatedAt.IsZero() {
-		dur := peminjaman.ReturnAt.Sub(peminjaman.CreatedAt)
-		duration = &dur
-		log.Println(duration)
+	// Calculate duration between created_at and current time (as return_at)
+	var durationStr *string
+	if !peminjaman.CreatedAt.IsZero() {
+		returnAt := time.Now() // Assuming the book is being returned now
+		duration := returnAt.Sub(peminjaman.CreatedAt)
+		log.Printf("Calculated duration: %v\n", duration)
+		hours := int(duration.Hours())
+		minutes := int(duration.Minutes()) % 60
+		seconds := int(duration.Seconds()) % 60
+		formattedDuration := fmt.Sprintf("%02d:%02d:%02d", hours, minutes, seconds)
+		durationStr = &formattedDuration
+		log.Printf("Formatted duration: %s\n", formattedDuration)
 	} else {
-		log.Println(duration)
 		log.Println("ReturnAt or CreatedAt is not set, skipping duration calculation.")
 	}
 
@@ -1242,7 +1250,7 @@ func ReturnBook(c *fiber.Ctx) error {
 		"is_pinjam": false,
 		"return_at": time.Now(),
 		"rating":    input.Rating,
-		"duration":  duration,
+		"duration":  durationStr,
 	}).Error; err != nil {
 		log.Println("Error while updating peminjaman:", err)
 		context["msg"] = "Error while updating peminjaman."
@@ -1264,8 +1272,8 @@ func ReturnBook(c *fiber.Ctx) error {
 	if input.Rating != nil {
 		context["Rating"] = *input.Rating
 	}
-	if duration != nil {
-		context["Duration"] = duration.String() // Convert to string for easier reading
+	if durationStr != nil {
+		context["Duration"] = *durationStr // Duration in "hours:minutes:seconds" format
 	}
 
 	log.Printf("ReturnAt: %v, CreatedAt: %v", peminjaman.ReturnAt, peminjaman.CreatedAt)
