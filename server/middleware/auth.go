@@ -27,6 +27,7 @@ func Authenticate(c *fiber.Ctx) error {
 
 	// Set the username, role, and userid in the local context
 	c.Locals("username", claims.Username)
+	c.Locals("nim", claims.Nim)
 	c.Locals("role", claims.Role)
 	c.Locals("userid", claims.UserId)
 

@@ -66,7 +66,7 @@ const PeminjamanList = ({
             <th className="px-4 py-3 text-left">Nama Buku</th>
             <th className="px-4 py-3 text-left">Kode Buku</th>
             <th className="px-4 py-3 text-left">Tanggal Pengesahan</th>
-            <th className="px-4 py-3 text-left">Mahasiswa</th>
+            <th className="px-4 py-3 text-left">Nim</th>
             <th className="px-4 py-3 text-left">Status</th>
             {isPengembalianPage && (
               <th className="px-4 py-3 text-left">Action</th>
@@ -89,7 +89,7 @@ const PeminjamanList = ({
                   {booksBorrow.book?.tanggal_pengesahan}
                 </td>
                 <td className="p-4 text-left">
-                  {booksBorrow.mahasiswa}
+                  {booksBorrow.nim}
                 </td>
                 <td className="p-4 text-left">
                   {booksBorrow.is_pinjam ? "sedang dipinjam" : "tidak dipinjam"}
