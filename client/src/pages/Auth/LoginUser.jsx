@@ -17,7 +17,7 @@ function LoginUserPage() {
   const submitButtonRef = useRef(null);
 
   useEffect(() => {
-    const webSocket = new WebSocket('ws://192.168.137.208:81');
+    const webSocket = new WebSocket('ws://192.168.1.4:81');
 
     webSocket.onopen = function(event) {
       console.log('WebSocket connection established');
