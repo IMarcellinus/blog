@@ -19,7 +19,7 @@ const Header = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const token = Cookies.get("token")
+  const token = Cookies.get("token");
 
   const LogOut = () => {
     Swal.fire({
@@ -35,7 +35,7 @@ const Header = ({
       if (result.isConfirmed) {
         dispatch(logoutUser())
           .then(() => {
-            Cookies.remove("token")
+            Cookies.remove("token");
             dispatch(resetStateBorrow());
             dispatch(reset());
             dispatch(resetStateBook());
@@ -77,7 +77,7 @@ const Header = ({
               }}
             />
             <h3 className="text-lg hidden md:block">
-              Sistem Layanan Perpustakaan
+              Sistem Layanan Perpustakaan Jurusan Teknik Elektro
             </h3>
           </div>
         </div>
@@ -91,7 +91,7 @@ const Header = ({
             }}
           >
             <p className="hidden select-none sm:block">
-              Welcome {authUser && authUser?.username}
+              Welcome {authUser && authUser?.nama}
             </p>
           </div>
           {dropdown && (
@@ -126,7 +126,7 @@ Header.propTypes = {
   dropdown: PropTypes.bool.isRequired,
   setDropdown: PropTypes.func.isRequired,
   authUser: PropTypes.shape({
-    username: PropTypes.string.isRequired,
+    nama: PropTypes.string.isRequired,
     role: PropTypes.string.isRequired,
   }).isRequired,
   dropdownRef: PropTypes.shape({

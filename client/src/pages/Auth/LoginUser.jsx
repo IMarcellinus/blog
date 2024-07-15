@@ -88,7 +88,13 @@ function LoginUserPage() {
         <div className="flex items-center flex-col">
           <img src={SilaperLogo} className="h-28 sm:h-44 md:h-52" alt="Silaper Logo"></img>
           <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-black text-center">
-            Sistem Pelayanan Perpustakaan (SILAPER)
+            Sistem Layanan Perpustakaan (SILAPER)
+          </h1>
+          <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-black text-center">
+            Jurusan Teknik Elektro
+          </h1>
+          <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-black text-center">
+            Politeknik Negeri Semarang
           </h1>
         </div>
         {isError && (
