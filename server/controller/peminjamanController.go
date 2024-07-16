@@ -178,7 +178,7 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 		// If the role is admin, include all details from the Peminjaman model and the user's username
 		if role == "admin" {
 			borrowInfo.Mahasiswa = p.User.Username // Use the username from p.User
-			borrowInfo.Nim = p.User.Nim            // Use the username from p.User
+			borrowInfo.Nim = p.User.Nim            // Use the nim from p.User
 		}
 
 		borrowInfoList = append(borrowInfoList, borrowInfo)
@@ -309,14 +309,19 @@ func GetBorrowBookPaginationByUser(c *fiber.Ctx) error {
 	}
 
 	// Get the username from Local storage
-	username, exists := c.Locals("username").(string)
+	username, usernameExists := c.Locals("username").(string)
 	log.Println(username)
-
-	// Check if username exists
-	if !exists {
+	if !usernameExists {
 		log.Println("username key not found.")
-		context["msg"] = "username not found."
-		return c.Status(fiber.StatusUnauthorized).JSON(context)
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"msg": "username not found."})
+	}
+
+	// Get the NIM from Local storage
+	nim, nimExists := c.Locals("nim").(string)
+	log.Println(nim)
+	if !nimExists {
+		log.Println("Nim key not found.")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"msg": "Nim not found."})
 	}
 
 	// Get the userID of the logged-in user
@@ -399,15 +404,18 @@ func GetBorrowBookPaginationByUser(c *fiber.Ctx) error {
 			UserID:        p.UserID,
 			Book:          p.Book,
 			Mahasiswa:     username, // Use the username of the logged-in user
+			Nim:           nim,
 			CreatedAt:     p.CreatedAt,
 			ReturnAt:      p.ReturnAt, // ReturnAt is now a pointer
 			IsPinjam:      p.IsPinjam,
 			IsReservation: p.IsReservation,
+			Duration:      p.Duration,
 		}
 
 		// If the role is admin, include all details from the Peminjaman model and the user's username
 		if role == "admin" {
 			borrowInfo.Mahasiswa = p.User.Username // Use the username from p.User
+			borrowInfo.Nim = p.User.Nim            // Use the nim from p.User
 		}
 
 		borrowInfoList = append(borrowInfoList, borrowInfo)
@@ -428,14 +436,19 @@ func GetBorrowBookByUser(c *fiber.Ctx) error {
 	}
 
 	// Get the username from Local storage
-	username, exists := c.Locals("username").(string)
+	username, usernameExists := c.Locals("username").(string)
 	log.Println(username)
-
-	// Check if username exists
-	if !exists {
+	if !usernameExists {
 		log.Println("username key not found.")
-		context["msg"] = "username not found."
-		return c.Status(fiber.StatusUnauthorized).JSON(context)
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"msg": "username not found."})
+	}
+
+	// Get the NIM from Local storage
+	nim, nimExists := c.Locals("nim").(string)
+	log.Println(nim)
+	if !nimExists {
+		log.Println("Nim key not found.")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"msg": "Nim not found."})
 	}
 
 	// Get the userID of the logged-in user
@@ -481,6 +494,7 @@ func GetBorrowBookByUser(c *fiber.Ctx) error {
 		mahasiswa := username
 		if role == "admin" {
 			mahasiswa = p.User.Username
+			nim = p.User.Nim
 		}
 
 		borrowInfo := BorrowInfo{
@@ -489,10 +503,12 @@ func GetBorrowBookByUser(c *fiber.Ctx) error {
 			UserID:        p.UserID,
 			Book:          p.Book,
 			Mahasiswa:     mahasiswa, // Use the determined username
+			Nim:           nim,
 			CreatedAt:     p.CreatedAt,
 			ReturnAt:      returnAt,
 			IsPinjam:      p.IsPinjam,
 			IsReservation: p.IsReservation,
+			Duration:      p.Duration,
 		}
 
 		borrowInfoList = append(borrowInfoList, borrowInfo)
@@ -564,6 +580,20 @@ func BorrowBook(c *fiber.Ctx) error {
 		context["msg"] = "Error while fetching user."
 		context["status_code"] = "500"
 		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	// Check if the user has already borrowed 5 books
+	var borrowCount int64
+	if err := database.DBConn.Model(&model.Peminjaman{}).Where("user_id = ? AND is_pinjam = ?", user.ID, true).Count(&borrowCount).Error; err != nil {
+		log.Println("Error while counting borrow records:", err)
+		context["msg"] = "Failed to count borrow records."
+		context["status_code"] = "500"
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+	if borrowCount >= 5 {
+		context["msg"] = "You have already borrowed 5 books."
+		context["status_code"] = "409"
+		return c.Status(fiber.StatusConflict).JSON(context)
 	}
 
 	// Check if the book is already borrowed
@@ -671,6 +701,20 @@ func ReservationBook(c *fiber.Ctx) error {
 		context["msg"] = "Error while fetching user."
 		context["status_code"] = "500"
 		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+
+	// Check if the user has already borrowed 5 books
+	var borrowCount int64
+	if err := database.DBConn.Model(&model.Peminjaman{}).Where("user_id = ? AND is_pinjam = ?", user.ID, true).Count(&borrowCount).Error; err != nil {
+		log.Println("Error while counting borrow records:", err)
+		context["msg"] = "Failed to count borrow records."
+		context["status_code"] = "500"
+		return c.Status(fiber.StatusInternalServerError).JSON(context)
+	}
+	if borrowCount >= 5 {
+		context["msg"] = "You have already borrowed 5 books."
+		context["status_code"] = "409"
+		return c.Status(fiber.StatusConflict).JSON(context)
 	}
 
 	// Check if the book is already borrowed
@@ -1229,6 +1273,12 @@ func ReturnBook(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(context)
 	}
 
+	// Check if the rating is nil or not provided
+	if input.Rating == nil {
+		context["msg"] = "Rating is required."
+		return c.Status(fiber.StatusBadRequest).JSON(context)
+	}
+
 	// Calculate duration between created_at and current time (as return_at)
 	var durationStr *string
 	if !peminjaman.CreatedAt.IsZero() {
@@ -1269,9 +1319,7 @@ func ReturnBook(c *fiber.Ctx) error {
 	context["Nama Mahasiswa"] = username
 	context["Kode Buku"] = book.KodeBuku
 	context["Returned At"] = time.Now() // Updated to current time
-	if input.Rating != nil {
-		context["Rating"] = *input.Rating
-	}
+	context["Rating"] = *input.Rating
 	if durationStr != nil {
 		context["Duration"] = *durationStr // Duration in "hours:minutes:seconds" format
 	}
