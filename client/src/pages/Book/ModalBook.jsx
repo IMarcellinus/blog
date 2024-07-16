@@ -16,13 +16,12 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
     (state) => state.books
   );
   const dispatch = useDispatch();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!nama_buku.trim() || !tanggal_pengesahan.trim() || !kategori_buku.trim()) {
       dispatch(setMessage("Nama buku, tanggal pengesahan, dan kategori buku harus diisi."));
     } else {
-      if (id == null) {
+      if (!id) {
         dispatch(createBook({ nama_buku, tanggal_pengesahan, kategori_buku }));
       } else {
         dispatch(updateBook({ id, nama_buku, tanggal_pengesahan, kategori_buku }));

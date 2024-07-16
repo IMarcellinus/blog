@@ -167,11 +167,11 @@ const ModalPeminjaman = ({ modalIsOpen, handleCloseModal }) => {
                               className="mt-2 max-h-32 overflow-auto rounded-md border-2 border-black p-2"
                             >
                               {(data.length > 0 || data == null) &&
-                                data.map((datas) => (
+                                data.map((datas, index) => (
                                   <div
                                     onClick={() => handleClick(datas)}
                                     className="cursor-pointer border-b-2 border-gray-500 p-2"
-                                    key={datas.id}
+                                    key={index}
                                   >
                                     <div>{datas.kode_buku}</div>
                                   </div>

@@ -4,7 +4,8 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
+import ModalPengembalian from "./ModalPengembalian";
+
 import {
   getAllBookBorrow,
   getBorrowBook,
@@ -116,6 +117,7 @@ const PengembalianPage = ({authUser}) => {
               <p className="text-lg font-bold">Return Book List</p>
               <div className="mt-2"><SearchBarPeminjaman /></div>
             </div>
+            <ModalPengembalian handleCloseModal={handleCloseModal} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
           </div>
           <div>
             <PeminjamanList

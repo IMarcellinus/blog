@@ -8,6 +8,8 @@ import Swal from "sweetalert2";
 import {
   returnBorrowBook,
   setCurrentPageBookBorrow,
+  setId,
+  setRating,
 } from "../../../services/store/reducers/Borrowslice";
 
 const PeminjamanList = ({
@@ -24,24 +26,14 @@ const PeminjamanList = ({
   const changePage = ({ selected }) => {
     dispatch(setCurrentPageBookBorrow(selected));
   };
-  // console.log(booksBorrows);
 
   const isPengembalianPage = location.pathname === "/pengembalian";
 
   const handleReturnBook = (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, return it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(returnBorrowBook({ id }));
-      }
-    });
+    // console.log(id)
+    dispatch(setId(id));
+    dispatch(setRating(""))
+    setModalIsOpen(true)
   };
 
   // Filter booksBorrows to only include those with is_pinjam set to true
@@ -102,7 +94,6 @@ const PeminjamanList = ({
                         onClick={() =>
                           handleReturnBook(
                             booksBorrow.id,
-                            booksBorrow.book.kode_buku
                           )
                         }
                       >

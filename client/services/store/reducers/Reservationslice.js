@@ -136,6 +136,7 @@ export const ReservationSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
+      state.reservations = [];
       state.message = action.payload.msg;
       state.status = action.payload.status_code;
     });

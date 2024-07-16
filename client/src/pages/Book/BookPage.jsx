@@ -120,6 +120,7 @@ const BookPage = ({ authUser }) => {
   useEffect(() => {
     let timeoutId;
     const fetchData = () => {
+      handleCloseModal();
       const currentPage = 1;
       if (search) {
         dispatch(getAllBook({ currentPageBook: currentPage, search }));

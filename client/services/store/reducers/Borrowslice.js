@@ -28,6 +28,7 @@ const initialState = {
   active: false,
   detailBookBorrow: null,
   kode_buku: "",
+  rating: "",
 };
 
 const getToken = async () => {
@@ -129,7 +130,7 @@ export const returnBorrowBook = createAsyncThunk(
       const response = await axios.put(
         `${BASE_URL}/borrowbook/${update.id}`,
         {
-          kode_buku: update.kode_buku,
+          rating: update.rating,
         },
         {
           headers: {
@@ -192,6 +193,9 @@ export const BorrowSlice = createSlice({
     setActive: (state, action) => {
       state.active = action.payload;
     },
+    setRating: (state, action) => {
+      state.rating = action.payload;
+    }
   },
   extraReducers: (builder) => {
     // Get BorrowBook using pagination
@@ -292,7 +296,8 @@ export const {
   setSearch,
   setSearchDetail,
   setStatus,
-  resetStateBorrow
+  resetStateBorrow,
+  setRating
 } = BorrowSlice.actions;
 
 export default BorrowSlice.reducer;
