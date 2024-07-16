@@ -267,6 +267,16 @@ function RegisterUserPage() {
               {isLoading ? "Loading..." : "Submit"}
             </button>
           </div>
+          <div className="flex justify-start">
+            <p className="text-black">
+              Have Account?{" "}
+              <i>
+                <Link to="/loginuser" className="hover:text-sky-900 hover:underline">
+                  Click here
+                </Link>
+              </i>
+            </p>
+          </div>
         </form>
         <div className="flex">
           {imageBarcode && isSuccess && (

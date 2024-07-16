@@ -17,6 +17,7 @@ import PageNotFound from "./pages/PageNotFound";
 import UserPage from "./pages/User/UserPage";
 import Swal from "sweetalert2";
 import ReservationPage from "./pages/Reservation/ReservationPage";
+import DashboardPageUser from "./pages/DashboardPageUser";
 
 function App() {
   const {
@@ -39,18 +40,18 @@ function App() {
       window.location.pathname !== "/login" &&
       window.location.pathname !== "/register"
     ) {
-      if(status == 401){
+      if (status == 401) {
         navigate("/loginuser");
         Swal.fire({
-          icon: 'error',
-          text: 'Sesi Telah Habis, Silahkan Login Kembali :)',
+          icon: "error",
+          text: "Sesi Telah Habis, Silahkan Login Kembali :)",
         });
       }
-      if(status == 401){
-        Cookies.remove("token")
+      if (status == 401) {
+        Cookies.remove("token");
       }
     }
-  }, [navigate,status]);
+  }, [navigate, status]);
 
   useEffect(() => {
     if (!token || token === undefined) {
@@ -74,12 +75,21 @@ function App() {
       <Routes>
         <Route path="/*" element={<PageNotFound />} />
         <Route path="/" element={<Layout authUser={authUser} />}>
+          {authUser && authUser.role === "user" &&(
+          <>
+            <Route index element={<DashboardPageUser authUser={authUser} />} />
+            <Route path="/user" element={<UserPage authUser={authUser} />} />
+          </>
+          )}
           {/* Gunakan Outlet untuk menampilkan komponen-komponen di bawahnya */}
           {authUser && authUser.role === "admin" && (
             <>
               <Route index element={<DashboardPage authUser={authUser} />} />
               <Route path="/user" element={<UserPage authUser={authUser} />} />
-              <Route path="/reservation" element={<ReservationPage authUser={authUser} />} />
+              <Route
+                path="/reservation"
+                element={<ReservationPage authUser={authUser} />}
+              />
             </>
           )}
           <Route path="/book" element={<BookPage authUser={authUser} />} />

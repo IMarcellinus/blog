@@ -187,6 +187,33 @@ function Sidebar({
                 </NavLink>
               </>
             ) : null}
+            {authUser && authUser.role === "user" ? (
+              <>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                      : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+                  }
+                >
+                  {!minSidebar ? (
+                    <AiOutlineDashboard className="size-5" />
+                  ) : (
+                    <Tippy content="Dashboard">
+                      <div>
+                        <AiOutlineDashboard className="size-8" />
+                      </div>
+                    </Tippy>
+                  )}
+                  {!minSidebar && (
+                    <div className="text-sm font-medium tracking-wider">
+                      Dashboard
+                    </div>
+                  )}
+                </NavLink>
+              </>
+            ) : null}
             <NavLink
               to="/book"
               className={({ isActive }) =>
@@ -198,7 +225,11 @@ function Sidebar({
               {!minSidebar ? (
                 <GiBookshelf className="size-5" />
               ) : (
-                <Tippy content={authUser.role === "user" ? "Pengumpulan Buku" : "Book"}>
+                <Tippy
+                  content={
+                    authUser.role === "user" ? "Pengumpulan Buku" : "Book"
+                  }
+                >
                   <div>
                     <GiBookshelf className="size-8" />
                   </div>
@@ -233,32 +264,31 @@ function Sidebar({
                 </div>
               )}
             </NavLink>
-            {authUser && authUser.role === 'admin' ? (
+            {authUser && authUser.role === "admin" ? (
               <>
-            <NavLink
-              to="/pengembalian"
-              className={({ isActive }) =>
-                isActive
-                  ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
-                  : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
-              }
-            >
-              {!minSidebar ? (
-                <SiBookstack className="size-5" />
-              ) : (
-                <Tippy content="Pengembalian Buku">
-                  <div>
-                    <SiBookstack className="size-8" />
-                  </div>
-                </Tippy>
-              )}
-              {!minSidebar && (
-                <div className="text-sm font-medium tracking-wider">
-                  Pengembalian Buku
-                </div>
-              )}
-            </NavLink>
-
+                <NavLink
+                  to="/pengembalian"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "flex gap-3 rounded-md px-4 py-3 items-center group bg-blue-500 text-white active:bg-blue-600 md:gap-4"
+                      : "flex gap-3 rounded-md px-4 py-3 items-center text-slate-600 group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+                  }
+                >
+                  {!minSidebar ? (
+                    <SiBookstack className="size-5" />
+                  ) : (
+                    <Tippy content="Pengembalian Buku">
+                      <div>
+                        <SiBookstack className="size-8" />
+                      </div>
+                    </Tippy>
+                  )}
+                  {!minSidebar && (
+                    <div className="text-sm font-medium tracking-wider">
+                      Pengembalian Buku
+                    </div>
+                  )}
+                </NavLink>
               </>
             ) : null}
           </>
