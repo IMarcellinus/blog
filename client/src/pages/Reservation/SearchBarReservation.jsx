@@ -9,8 +9,6 @@ import {
 const SearchBarReservation = ({ currentPageReservation }) => {
   const dispatch = useDispatch();
   const { search, searchDetail } = useSelector((state) => state.reservations);
-  console.log("search reversation:", search);
-  console.log("search detail reversation:", searchDetail);
 
   const isReservationPage = location.pathname === "/reservation";
 

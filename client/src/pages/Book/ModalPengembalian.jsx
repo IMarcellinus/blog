@@ -18,10 +18,11 @@ const ModalPengembalian = ({ modalIsOpen, handleCloseModal }) => {
     e.preventDefault();
     if (!rating) {
       dispatch(setMessage("Rating harus diisi."));
+      return; // Early return to prevent Swal from showing
     }
     Swal.fire({
       title: "Are you sure?",
-      text: `Are you sure you want to return book?`,
+      text: `Are you sure you want to return the book?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -41,6 +42,7 @@ const ModalPengembalian = ({ modalIsOpen, handleCloseModal }) => {
       }
     });
   };
+
 
   const modalClose = () => {
     handleCloseModal();

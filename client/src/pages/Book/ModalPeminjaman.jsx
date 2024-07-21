@@ -84,7 +84,6 @@ const ModalPeminjaman = ({ modalIsOpen, handleCloseModal }) => {
     setQuery(id.kode_buku);
     setOpen(false);
     dispatch(setId(id));
-    console.log(id);
   };
 
   const handleScrollBottom = () => {
