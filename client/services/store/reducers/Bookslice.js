@@ -23,6 +23,7 @@ const initialState = {
   kodeBuku: "",
   tanggal_pengesahan: "",
   kategori_buku: "",
+  description: "",
   search: "",
   searchDetail: "",
   listBookDetail: [],
@@ -34,6 +35,7 @@ const initialState = {
   detailBook: null,
   fetchBook: false,
   fetchBookSearch: false,
+  toggleDetail: false,
 };
 
 const getToken = async () => {
@@ -106,6 +108,7 @@ export const createBook = createAsyncThunk(
           nama_buku: create.nama_buku,
           tanggal_pengesahan: create.tanggal_pengesahan,
           kategori_buku: create.kategori_buku,
+          description: create.description,
         },
         {
           headers: {
@@ -136,6 +139,7 @@ export const updateBook = createAsyncThunk(
           nama_buku: update.nama_buku,
           tanggal_pengesahan: update.tanggal_pengesahan,
           kategori_buku: update.kategori_buku,
+          description: update.description,
         },
         {
           headers: {
@@ -198,6 +202,9 @@ export const BookSlice = createSlice({
     setKategoriBuku: (state, action) => {
       state.kategori_buku = action.payload;
     },
+    setDescription: (state, action) => {
+      state.description = action.payload;
+    },
     setCurrentPageBook: (state, action) => {
       state.currentPageBook = action.payload;
     },
@@ -243,7 +250,10 @@ export const BookSlice = createSlice({
     },
     setIsDelete: (state, action) => {
       state.isDelete = action.payload;
-    }
+    },
+    setToggleDetail: (state, action) => {
+      state.toggleDetail = action.payload
+    },
   },
   extraReducers: (builder) => {
     // Get Book using pagination
@@ -358,6 +368,7 @@ export const {
   setNamaBuku,
   setKodeBuku,
   setTanggalPengesahan,
+  setDescription,
   setCurrentPageBook,
   setFetchBook,
   setFetchBookSearch,
@@ -374,7 +385,8 @@ export const {
   setActive,
   resetStateBook,
   setKategoriBuku,
-  setIsDelete
+  setIsDelete,
+  setToggleDetail
 } = BookSlice.actions;
 
 export default BookSlice.reducer;

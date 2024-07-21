@@ -1,7 +1,7 @@
 import Tippy from "@tippyjs/react";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlineEye } from "react-icons/ai";
 import { HiTrash } from "react-icons/hi";
 import ReactPaginate from "react-paginate";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,12 +10,14 @@ import {
   deleteBook,
   setCurrentPageBook,
   setDeleteFail,
+  setDescription,
   setEdit,
   setId,
   setKategoriBuku,
   setMessage,
   setNamaBuku,
   setTanggalPengesahan,
+  setToggleDetail,
 } from "../../../services/store/reducers/Bookslice";
 
 const BookList = ({
@@ -31,6 +33,16 @@ const BookList = ({
   const { role } = authUser;
   const changePage = ({ selected }) => {
     dispatch(setCurrentPageBook(selected));
+  };
+
+  const handleDetail = (nama_buku, tanggal_pengesahan, kategori_buku, description) => {
+    setModalIsOpen(true);
+    dispatch(setNamaBuku(nama_buku));
+    dispatch(setTanggalPengesahan(tanggal_pengesahan));
+    dispatch(setKategoriBuku(kategori_buku));
+    dispatch(setDescription(description));
+    dispatch(setToggleDetail(true));
+    document.body.style.overflow = 'hidden';
   };
 
   const handleDelete = (id) => {
@@ -49,12 +61,13 @@ const BookList = ({
     });
   };
 
-  const handleEdit = (id, nama_buku, tanggal_pengesahan, kategori_buku) => {
+  const handleEdit = (id, nama_buku, tanggal_pengesahan, kategori_buku, description) => {
     dispatch(setId(id));
     dispatch(setNamaBuku(nama_buku));
     dispatch(setTanggalPengesahan(tanggal_pengesahan));
     dispatch(setKategoriBuku(kategori_buku));
-    // console.log(kategori_buku)
+    dispatch(setDescription(description))
+    // console.log(tanggal_pengesahan)
     dispatch(setEdit(true));
     setModalIsOpen(true);
   };
@@ -102,6 +115,16 @@ const BookList = ({
                 <td className="p-4 text-left">{book.tanggal_pengesahan}</td>
                 {!isLoading && role == "admin" && (
                   <td className="relative flex h-full gap-3 px-4 py-3">
+                    <Tippy content='Show' followCursor>
+                    <div
+                      className='h-6 w-6 text-slate-500 hover:cursor-pointer hover:text-slate-600'
+                      onClick={() => {
+                        handleDetail(book.nama_buku, book.tanggal_pengesahan, book.kategori_buku, book.description);
+                      }}
+                    >
+                      <AiOutlineEye className='h-full w-full' />
+                    </div>
+                  </Tippy>
                     <Tippy content="Edit" followCursor>
                       <div className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600">
                         <AiOutlineEdit
@@ -111,7 +134,8 @@ const BookList = ({
                               book.id,
                               book.nama_buku,
                               book.tanggal_pengesahan,
-                              book.kategori_buku
+                              book.kategori_buku,
+                              book.description
                             );
                           }}
                         />

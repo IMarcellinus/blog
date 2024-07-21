@@ -10,6 +10,7 @@ import {
   setActive,
   setBookSearch,
   setCurrentPageBook,
+  setDescription,
   setEdit,
   setId,
   setKategoriBuku,
@@ -17,6 +18,7 @@ import {
   setMessage,
   setNamaBuku,
   setTanggalPengesahan,
+  setToggleDetail,
 } from "../../../services/store/reducers/Bookslice";
 import BookList from "./BookList";
 import ModalBook from "./ModalBook";
@@ -57,8 +59,10 @@ const BookPage = ({ authUser }) => {
     dispatch(setKodeBuku(""));
     dispatch(setTanggalPengesahan(""));
     dispatch(setKategoriBuku(""));
+    dispatch(setDescription(""));
     dispatch(setMessage(""));
     dispatch(setEdit(""));
+    dispatch(setToggleDetail(false));
     document.body.style.overflow = "auto";
   };
 

@@ -153,12 +153,18 @@ func BookCreate(c *fiber.Ctx) error {
 		return c.Status(400).JSON(context)
 	}
 
+	if record.Description == "" {
+		context["status_code"] = "400"
+		context["msg"] = "description cannot be empty"
+		return c.Status(400).JSON(context)
+	}
+
 	// Mengonversi string tanggal pengesahan ke dalam format time.Time
 	tanggalPengesahan, err := time.Parse("2006-01-02", record.TanggalPengesahan)
 	if err != nil {
 		log.Println("Error in parsing tanggal pengesahan:", err)
 		context["status_code"] = fiber.StatusBadRequest // Menggunakan status code 400 Bad Request
-		context["msg"] = "Invalid tanggal pengesahan format. Please use format yyyy/MM/dd"
+		context["msg"] = "Invalid tanggal pengesahan format. Please use format yyyy-MM-dd"
 		return c.Status(400).JSON(context)
 	}
 
@@ -233,10 +239,32 @@ func BookUpdate(c *fiber.Ctx) error {
 		return c.Status(400).JSON(context)
 	}
 
-	// Update only nama_buku, tanggal_pengesahan, and kategori_buku
+	// Validate nama_buku
+	if updatedRecord.NamaBuku == "" {
+		context["status_code"] = "400"
+		context["msg"] = "nama buku cannot be empty"
+		return c.Status(400).JSON(context)
+	}
+
+	// Validate kategori_buku
+	if updatedRecord.KategoriBuku == "" {
+		context["status_code"] = "400"
+		context["msg"] = "kategori buku cannot be empty"
+		return c.Status(400).JSON(context)
+	}
+
+	// Validate description
+	if updatedRecord.Description == "" {
+		context["status_code"] = "400"
+		context["msg"] = "description cannot be empty"
+		return c.Status(400).JSON(context)
+	}
+
+	// Update only nama_buku, tanggal_pengesahan, kategori_buku, and description
 	record.NamaBuku = updatedRecord.NamaBuku
 	record.TanggalPengesahan = updatedRecord.TanggalPengesahan
 	record.KategoriBuku = updatedRecord.KategoriBuku
+	record.Description = updatedRecord.Description
 
 	// Validating tanggal_pengesahan format
 	_, err := time.Parse("2006-01-02", record.TanggalPengesahan)
