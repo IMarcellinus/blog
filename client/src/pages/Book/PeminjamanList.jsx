@@ -30,7 +30,6 @@ const PeminjamanList = ({
   const isPengembalianPage = location.pathname === "/pengembalian";
 
   const handleReturnBook = (id) => {
-    // console.log(id)
     dispatch(setId(id));
     dispatch(setRating(""))
     setModalIsOpen(true)

@@ -1,7 +1,12 @@
 import PropTypes from "prop-types";
 import { FaWindowClose } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { returnBorrowBook, setMessage, setRating } from "../../../services/store/reducers/Borrowslice";
+import {
+  returnBorrowBook,
+  setMessage,
+  setRating,
+} from "../../../services/store/reducers/Borrowslice";
+import Swal from "sweetalert2";
 
 const ModalPengembalian = ({ modalIsOpen, handleCloseModal }) => {
   const dispatch = useDispatch();
@@ -13,9 +18,28 @@ const ModalPengembalian = ({ modalIsOpen, handleCloseModal }) => {
     e.preventDefault();
     if (!rating) {
       dispatch(setMessage("Rating harus diisi."));
-    } else {
-      dispatch(returnBorrowBook({ id, rating }));
     }
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Are you sure you want to return book?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(returnBorrowBook({ id, rating })).catch((error) => {
+          console.error("Borrow Book error:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Borrow Book Failed",
+            text: "Failed to borrow book. Please try again.",
+          });
+        });
+      }
+    });
   };
 
   const modalClose = () => {

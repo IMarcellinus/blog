@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { BottomScrollListener } from "react-bottom-scroll-listener";
 import {
   createBorrowBook,
-  setKodeBuku,
   setMessage,
 } from "../../../services/store/reducers/Borrowslice";
 import {
@@ -16,6 +15,7 @@ import {
   setId,
   setIsLoadingBook,
 } from "../../../services/store/reducers/Bookslice";
+import Swal from "sweetalert2";
 
 const ModalPeminjaman = ({ modalIsOpen, handleCloseModal }) => {
   const dispatch = useDispatch();
@@ -26,7 +26,6 @@ const ModalPeminjaman = ({ modalIsOpen, handleCloseModal }) => {
     books,
     fetchBook,
     fetchBookSearch,
-    search,
     totalPages,
   } = useSelector((state) => state.books);
 
@@ -37,12 +36,37 @@ const ModalPeminjaman = ({ modalIsOpen, handleCloseModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Check if searchQuery is empty
     if (!searchQuery.trim()) {
       dispatch(setMessage("Kode Buku harus diisi."));
-    } else {
-      dispatch(createBorrowBook({ kode_buku: searchQuery }));
+      return;
     }
+  
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Are you sure you want to borrow book?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(createBorrowBook({ kode_buku: searchQuery }))
+          .catch((error) => {
+            console.error("Borrow Book error:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Borrow Book Failed",
+              text: "Failed to borrow book. Please try again.",
+            });
+          });
+      }
+    });
   };
+  
 
   const modalClose = () => {
     handleCloseModal();
