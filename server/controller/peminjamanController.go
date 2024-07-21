@@ -170,6 +170,7 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 			Nim:           nim,
 			CreatedAt:     p.CreatedAt,
 			ReturnAt:      p.ReturnAt, // ReturnAt is now a pointer
+			Rating:        p.Rating,
 			IsPinjam:      p.IsPinjam,
 			IsReservation: p.IsReservation,
 			Duration:      p.Duration,
@@ -408,6 +409,7 @@ func GetBorrowBookPaginationByUser(c *fiber.Ctx) error {
 			CreatedAt:     p.CreatedAt,
 			ReturnAt:      p.ReturnAt, // ReturnAt is now a pointer
 			IsPinjam:      p.IsPinjam,
+			Rating:        p.Rating,
 			IsReservation: p.IsReservation,
 			Duration:      p.Duration,
 		}
@@ -505,6 +507,7 @@ func GetBorrowBookByUser(c *fiber.Ctx) error {
 			Mahasiswa:     mahasiswa, // Use the determined username
 			Nim:           nim,
 			CreatedAt:     p.CreatedAt,
+			Rating:        p.Rating,
 			ReturnAt:      returnAt,
 			IsPinjam:      p.IsPinjam,
 			IsReservation: p.IsReservation,

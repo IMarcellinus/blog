@@ -1,16 +1,15 @@
 import Tippy from "@tippyjs/react";
 import PropTypes from "prop-types";
-import { useEffect } from "react";
 import { TbBooksOff } from "react-icons/tb";
 import ReactPaginate from "react-paginate";
-import { useDispatch, useSelector } from "react-redux";
-import Swal from "sweetalert2";
+import { useDispatch } from "react-redux";
 import {
   returnBorrowBook,
   setCurrentPageBookBorrow,
   setId,
   setRating,
 } from "../../../services/store/reducers/Borrowslice";
+import RatingStar from "../../components/RatingStar";
 
 const PeminjamanList = ({
   authUser,
@@ -31,8 +30,8 @@ const PeminjamanList = ({
 
   const handleReturnBook = (id) => {
     dispatch(setId(id));
-    dispatch(setRating(""))
-    setModalIsOpen(true)
+    dispatch(setRating(""));
+    setModalIsOpen(true);
   };
 
   // Filter booksBorrows to only include those with is_pinjam set to true
@@ -58,6 +57,7 @@ const PeminjamanList = ({
             <th className="px-4 py-3 text-left">Kode Buku</th>
             <th className="px-4 py-3 text-left">Tanggal Pengesahan</th>
             <th className="px-4 py-3 text-left">Nim</th>
+            <th className="px-4 py-3 text-left">Rating</th>
             <th className="px-4 py-3 text-left">Status</th>
             {isPengembalianPage && (
               <th className="px-4 py-3 text-left">Action</th>
@@ -79,8 +79,9 @@ const PeminjamanList = ({
                 <td className="p-4 text-left">
                   {booksBorrow.book?.tanggal_pengesahan}
                 </td>
+                <td className="p-4 text-left">{booksBorrow.nim}</td>
                 <td className="p-4 text-left">
-                  {booksBorrow.nim}
+                  <RatingStar rating={booksBorrow.rating} />
                 </td>
                 <td className="p-4 text-left">
                   {booksBorrow.is_pinjam ? "sedang dipinjam" : "tidak dipinjam"}
@@ -90,11 +91,7 @@ const PeminjamanList = ({
                     <Tippy content="Return Book" followCursor>
                       <div
                         className="size-6 text-slate-500 hover:cursor-pointer hover:text-slate-600"
-                        onClick={() =>
-                          handleReturnBook(
-                            booksBorrow.id,
-                          )
-                        }
+                        onClick={() => handleReturnBook(booksBorrow.id)}
                       >
                         <TbBooksOff className="size-full" />
                       </div>
