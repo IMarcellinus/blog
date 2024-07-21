@@ -22,6 +22,7 @@ import BookList from "./BookList";
 import ModalBook from "./ModalBook";
 import SearchBarBook from "./SearchBarBook";
 import { setIsDelete } from "../../../services/store/reducers/Bookslice";
+import SkeletonTable from "../../components/Skeleton/SkeletonTable";
 
 const BookPage = ({ authUser }) => {
   // console.log(authUser.role);
@@ -180,14 +181,14 @@ const BookPage = ({ authUser }) => {
             </div>
           </div>
           <div>
-            <BookList
+            {isLoading ? (<SkeletonTable />) : (<BookList
               totalPages={totalPagesBook}
               currentPageBook={currentPageBook}
               isLoading={isLoading}
               books={books}
               setModalIsOpen={setModalIsOpen}
               authUser={authUser}
-            />
+            />)}
           </div>
         </div>
       </div>

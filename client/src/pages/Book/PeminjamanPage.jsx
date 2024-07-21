@@ -17,6 +17,7 @@ import {
 import ModalPeminjaman from "./ModalPeminjaman";
 import PeminjamanList from "./PeminjamanList";
 import SearchBarPeminjaman from "./SearchBarPeminjaman";
+import SkeletonTable from "../../components/Skeleton/SkeletonTable";
 
 const PeminjamanPage = ({ authUser }) => {
   const dispatch = useDispatch();
@@ -36,9 +37,7 @@ const PeminjamanPage = ({ authUser }) => {
     idUser,
   } = useSelector((state) => state.borrowbooks);
 
-  const {
-    fetchUser,
-  } = useSelector((state) => state.auth);
+  const { fetchUser } = useSelector((state) => state.auth);
 
   // console.log("peminjaman page:",authUser.role)
 
@@ -49,15 +48,15 @@ const PeminjamanPage = ({ authUser }) => {
 
   const handleCloseModal = () => {
     setModalIsOpen(false);
-    dispatch(setKodeBuku(""))
-    dispatch(setMessage(""))
+    dispatch(setKodeBuku(""));
+    dispatch(setMessage(""));
     document.body.style.overflow = "auto";
   };
 
   useEffect(() => {
     dispatch(setCurrentPageBookBorrow(0));
     dispatch(setBookBorrowSearch());
-    dispatch(setSearch(""))
+    dispatch(setSearch(""));
   }, [dispatch]);
 
   useEffect(() => {
@@ -66,10 +65,19 @@ const PeminjamanPage = ({ authUser }) => {
       const currentPage = 1;
       if (search) {
         dispatch(
-          getAllBookBorrow({ currentPageBookBorrow: currentPage, search, role: authUser.role })
+          getAllBookBorrow({
+            currentPageBookBorrow: currentPage,
+            search,
+            role: authUser.role,
+          })
         );
       } else {
-        dispatch(getBorrowBook({ currentPageBookBorrow: currentPage, role: authUser.role }));
+        dispatch(
+          getBorrowBook({
+            currentPageBookBorrow: currentPage,
+            role: authUser.role,
+          })
+        );
       }
       dispatch(setCurrentPageBookBorrow(0));
     };
@@ -89,25 +97,45 @@ const PeminjamanPage = ({ authUser }) => {
   useEffect(() => {
     const currentPage = currentPageBookBorrow + 1;
     if (search) {
-      dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search, role: authUser.role }));
+      dispatch(
+        getAllBookBorrow({
+          currentPageBookBorrow: currentPage,
+          search,
+          role: authUser.role,
+        })
+      );
     } else {
-      dispatch(getBorrowBook({ currentPageBookBorrow: currentPage, role: authUser.role }));
+      dispatch(
+        getBorrowBook({
+          currentPageBookBorrow: currentPage,
+          role: authUser.role,
+        })
+      );
     }
   }, [currentPageBookBorrow, dispatch, search]);
 
   useEffect(() => {
-
     if (isSubmit) {
       handleCloseModal();
       toast.success("Create Borrow Book Success");
       const currentPage = currentPageBookBorrow + 1;
       if (search) {
-        dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search, role: authUser.role }));
+        dispatch(
+          getAllBookBorrow({
+            currentPageBookBorrow: currentPage,
+            search,
+            role: authUser.role,
+          })
+        );
       } else {
-        dispatch(getBorrowBook({ currentPageBookBorrow: currentPage, role: authUser.role }));
+        dispatch(
+          getBorrowBook({
+            currentPageBookBorrow: currentPage,
+            role: authUser.role,
+          })
+        );
       }
     }
-
   }, [currentPageBookBorrow, dispatch, isUpdate, isSubmit, search]);
 
   return (
@@ -117,7 +145,9 @@ const PeminjamanPage = ({ authUser }) => {
           <div className="grid grid-cols-2 bg-white py-3 text-sm">
             <div>
               <p className="text-lg font-bold">Borrow Book List</p>
-              <div className="mt-2"><SearchBarPeminjaman /></div>
+              <div className="mt-2">
+                <SearchBarPeminjaman />
+              </div>
             </div>
             <div className="flex items-end justify-end ">
               <button
@@ -135,16 +165,20 @@ const PeminjamanPage = ({ authUser }) => {
             </div>
           </div>
           <div>
-            <PeminjamanList
-              totalPagesBookBorrow={totalPagesBookBorrow}
-              currentPageBookBorrow={currentPageBookBorrow}
-              isLoading={isLoading}
-              booksBorrows={booksBorrows}
-              setModalIsOpen={setModalIsOpen}
-              authUser={authUser}
-              bookBorrowSearch={bookBorrowSearch}
-              search={search}
-            />
+            {isLoading ? (
+              <SkeletonTable />
+            ) : (
+              <PeminjamanList
+                totalPagesBookBorrow={totalPagesBookBorrow}
+                currentPageBookBorrow={currentPageBookBorrow}
+                isLoading={isLoading}
+                booksBorrows={booksBorrows}
+                setModalIsOpen={setModalIsOpen}
+                authUser={authUser}
+                bookBorrowSearch={bookBorrowSearch}
+                search={search}
+              />
+            )}
           </div>
         </div>
       </div>

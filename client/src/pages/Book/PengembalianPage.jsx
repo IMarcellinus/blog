@@ -17,8 +17,9 @@ import {
 } from "../../../services/store/reducers/Borrowslice";
 import PeminjamanList from "./PeminjamanList";
 import SearchBarPeminjaman from "./SearchBarPeminjaman";
+import SkeletonTable from "../../components/Skeleton/SkeletonTable";
 
-const PengembalianPage = ({authUser}) => {
+const PengembalianPage = ({ authUser }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -36,9 +37,7 @@ const PengembalianPage = ({authUser}) => {
     idUser,
   } = useSelector((state) => state.borrowbooks);
 
-  const {
-    fetchUser,
-  } = useSelector((state) => state.auth);
+  const { fetchUser } = useSelector((state) => state.auth);
 
   const handleOpenModal = () => {
     setModalIsOpen(true);
@@ -47,15 +46,15 @@ const PengembalianPage = ({authUser}) => {
 
   const handleCloseModal = () => {
     setModalIsOpen(false);
-    dispatch(setKodeBuku(""))
-    dispatch(setMessage(""))
+    dispatch(setKodeBuku(""));
+    dispatch(setMessage(""));
     document.body.style.overflow = "auto";
   };
 
   useEffect(() => {
     dispatch(setCurrentPageBookBorrow(0));
     dispatch(setBookBorrowSearch());
-    dispatch(setSearch(""))
+    dispatch(setSearch(""));
   }, [dispatch]);
 
   useEffect(() => {
@@ -87,27 +86,29 @@ const PengembalianPage = ({authUser}) => {
   useEffect(() => {
     const currentPage = currentPageBookBorrow + 1;
     if (search) {
-      dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search }));
+      dispatch(
+        getAllBookBorrow({ currentPageBookBorrow: currentPage, search })
+      );
     } else {
       dispatch(getBorrowBook({ currentPageBookBorrow: currentPage }));
     }
   }, [currentPageBookBorrow, dispatch, search]);
 
   useEffect(() => {
-
     if (isUpdate) {
       handleCloseModal();
       toast.success("Return Book Berhasil");
       const currentPage = currentPageBookBorrow + 1;
       if (search) {
-        dispatch(getAllBookBorrow({ currentPageBookBorrow: currentPage, search }));
+        dispatch(
+          getAllBookBorrow({ currentPageBookBorrow: currentPage, search })
+        );
       } else {
         dispatch(getBorrowBook({ currentPageBookBorrow: currentPage }));
       }
     }
-
   }, [currentPageBookBorrow, dispatch, isUpdate, search]);
-  
+
   return (
     <main className="min-h-screen overflow-x-auto pb-14">
       <div className="inline-block min-w-full pl-4">
@@ -115,27 +116,37 @@ const PengembalianPage = ({authUser}) => {
           <div className="grid grid-cols-2 bg-white py-3 text-sm">
             <div>
               <p className="text-lg font-bold">Return Book List</p>
-              <div className="mt-2"><SearchBarPeminjaman /></div>
+              <div className="mt-2">
+                <SearchBarPeminjaman />
+              </div>
             </div>
-            <ModalPengembalian handleCloseModal={handleCloseModal} modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen} />
+            <ModalPengembalian
+              handleCloseModal={handleCloseModal}
+              modalIsOpen={modalIsOpen}
+              setModalIsOpen={setModalIsOpen}
+            />
           </div>
           <div>
-            <PeminjamanList
-              totalPagesBookBorrow={totalPagesBookBorrow}
-              currentPageBookBorrow={currentPageBookBorrow}
-              isLoading={isLoading}
-              booksBorrows={booksBorrows}
-              setModalIsOpen={setModalIsOpen}
-              authUser={authUser}
-              bookBorrowSearch={bookBorrowSearch}
-              search={search}
-            />
+            {isLoading ? (
+              <SkeletonTable />
+            ) : (
+              <PeminjamanList
+                totalPagesBookBorrow={totalPagesBookBorrow}
+                currentPageBookBorrow={currentPageBookBorrow}
+                isLoading={isLoading}
+                booksBorrows={booksBorrows}
+                setModalIsOpen={setModalIsOpen}
+                authUser={authUser}
+                bookBorrowSearch={bookBorrowSearch}
+                search={search}
+              />
+            )}
           </div>
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
 const authUserShape = {
   role: PropTypes.string.isRequired,
@@ -145,4 +156,4 @@ PengembalianPage.propTypes = {
   authUser: PropTypes.shape(authUserShape).isRequired,
 };
 
-export default PengembalianPage
+export default PengembalianPage;

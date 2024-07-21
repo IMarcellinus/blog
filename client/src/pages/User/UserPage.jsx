@@ -29,6 +29,7 @@ import {
 import SearchBarUser from "./SearchBarUser";
 import ModalUser from "./ModalUser";
 import UserList from "./UserList";
+import SkeletonTable from "../../components/Skeleton/SkeletonTable";
 
 const UserPage = ({ authUser }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -75,7 +76,7 @@ const UserPage = ({ authUser }) => {
 
   const handleDeleteLogic = () => {
     const currentPage = currentPageUser + 1;
-  
+
     if (
       users.length === 1 &&
       userSearch.length === 0 &&
@@ -116,7 +117,7 @@ const UserPage = ({ authUser }) => {
       dispatch(getUser({ currentPageUser: currentPage }));
     }
   };
-  
+
   useEffect(() => {
     if (isSubmit) {
       handleCloseModal();
@@ -214,14 +215,18 @@ const UserPage = ({ authUser }) => {
             </div>
           </div>
           <div>
-            <UserList
-              totalPages={totalPagesUser}
-              currentPageUser={currentPageUser}
-              isLoading={isLoading}
-              users={users}
-              setModalIsOpen={setModalIsOpen}
-              authUser={authUser}
-            />
+            {isLoading ? (
+              <SkeletonTable />
+            ) : (
+              <UserList
+                totalPages={totalPagesUser}
+                currentPageUser={currentPageUser}
+                isLoading={isLoading}
+                users={users}
+                setModalIsOpen={setModalIsOpen}
+                authUser={authUser}
+              />
+            )}
           </div>
         </div>
       </div>

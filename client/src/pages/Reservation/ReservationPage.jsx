@@ -5,8 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReservationList from "./ReservationList";
-import { getAllReservation, getReservation, setCurrentPageReservation, setReservationSearch } from "../../../services/store/reducers/Reservationslice";
+import {
+  getAllReservation,
+  getReservation,
+  setCurrentPageReservation,
+  setReservationSearch,
+} from "../../../services/store/reducers/Reservationslice";
 import SearchBarReservation from "./SearchBarReservation";
+import SkeletonTable from "../../components/Skeleton/SkeletonTable";
 
 const ReservationPage = ({ authUser }) => {
   const {
@@ -20,24 +26,24 @@ const ReservationPage = ({ authUser }) => {
   const fetchData = () => {
     const currentPage = 1;
     if (search) {
-      dispatch(getAllReservation({ currentPageReservation: currentPage, search }));
+      dispatch(
+        getAllReservation({ currentPageReservation: currentPage, search })
+      );
     } else {
       dispatch(getReservation({ currentPageReservation: currentPage }));
     }
     dispatch(setCurrentPageReservation(0));
   };
-  
-  const {
-    isSubmit,
-  } = useSelector((state) => state.borrowbooks);
+
+  const { isSubmit } = useSelector((state) => state.borrowbooks);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(isSubmit){
+    if (isSubmit) {
       fetchData();
     }
-  }, [isSubmit, dispatch])
+  }, [isSubmit, dispatch]);
 
   useEffect(() => {
     dispatch(setCurrentPageReservation(0));
@@ -46,7 +52,7 @@ const ReservationPage = ({ authUser }) => {
 
   useEffect(() => {
     let timeoutId;
-    
+
     fetchData();
     const delayedFetch = () => {
       clearTimeout(timeoutId);
@@ -61,14 +67,16 @@ const ReservationPage = ({ authUser }) => {
   }, [search, dispatch]);
 
   useEffect(() => {
-      const currentPage = currentPageReservation + 1;
-      if (search) {
-        dispatch(getAllReservation({ currentPageReservation: currentPage, search }));
-      } else {
-        dispatch(getReservation({ currentPageReservation: currentPage }));
-      }
+    const currentPage = currentPageReservation + 1;
+    if (search) {
+      dispatch(
+        getAllReservation({ currentPageReservation: currentPage, search })
+      );
+    } else {
+      dispatch(getReservation({ currentPageReservation: currentPage }));
+    }
   }, [currentPageReservation, dispatch, search]);
-  
+
   return (
     <main className="min-h-screen overflow-x-auto pb-14">
       <div className="inline-block min-w-full pl-4">
@@ -84,19 +92,23 @@ const ReservationPage = ({ authUser }) => {
             </div>
           </div>
           <div>
-            <ReservationList
-              totalPages={totalPagesReservation}
-              currentPageReservation={currentPageReservation}
-              isLoading={isLoading}
-              reservations={reservations}
-              authUser={authUser}
-            />
+            {isLoading ? (
+              <SkeletonTable />
+            ) : (
+              <ReservationList
+                totalPages={totalPagesReservation}
+                currentPageReservation={currentPageReservation}
+                isLoading={isLoading}
+                reservations={reservations}
+                authUser={authUser}
+              />
+            )}
           </div>
         </div>
       </div>
     </main>
-  )
-}
+  );
+};
 
 const authUserShape = {
   role: PropTypes.string.isRequired,
@@ -106,4 +118,4 @@ ReservationPage.propTypes = {
   authUser: PropTypes.shape(authUserShape).isRequired,
 };
 
-export default ReservationPage
+export default ReservationPage;
