@@ -3,8 +3,12 @@ import PropTypes from "prop-types";
 import { TbBooksOff } from "react-icons/tb";
 import ReactPaginate from "react-paginate";
 import { useDispatch } from "react-redux";
+import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import {
-  returnBorrowBook,
+  getAllBookBorrowAsc,
+  getAllBookBorrowDsc,
+  getBorrowBookAsc,
+  getBorrowBookDsc,
   setCurrentPageBookBorrow,
   setId,
   setRating,
@@ -34,18 +38,54 @@ const PeminjamanList = ({
     setModalIsOpen(true);
   };
 
-  // Filter booksBorrows to only include those with is_pinjam set to true
   // Apply filter only if authUser.role is admin
-  const filteredBooksBorrows =
-    authUser.role !== "admin"
-      ? (search === "" ? booksBorrows : bookBorrowSearch)?.filter(
-          (booksBorrow) => booksBorrow.is_pinjam
-        )
-      : search === ""
-      ? booksBorrows
-      : bookBorrowSearch;
+  const filteredBooksBorrows = search === "" ? booksBorrows : bookBorrowSearch;
 
   const noBooksBorrowed = !isLoading && filteredBooksBorrows.length === 0;
+
+  const handleAscending = (e) => {
+    const currentPage = currentPageBookBorrow + 1;
+
+    e.preventDefault();
+
+    if (search) {
+      dispatch(
+        getAllBookBorrowAsc({
+          currentPageBookBorrow: currentPage,
+          search,
+          role: authUser.role,
+        })
+      );
+    } else {
+      dispatch(
+        getBorrowBookAsc({
+          currentPageBookBorrow: currentPage,
+          role: authUser.role,
+        })
+      );
+    }
+  };
+
+  const handleDescending = (e) => {
+    const currentPage = currentPageBookBorrow + 1;
+    e.preventDefault();
+    if (search) {
+      dispatch(
+        getAllBookBorrowDsc({
+          currentPageBookBorrow: currentPage,
+          search,
+          role: authUser.role,
+        })
+      );
+    } else {
+      dispatch(
+        getBorrowBookDsc({
+          currentPageBookBorrow: currentPage,
+          role: authUser.role,
+        })
+      );
+    }
+  };
 
   return (
     <div className="min-h-[470px]">
@@ -58,7 +98,21 @@ const PeminjamanList = ({
             <th className="px-4 py-3 text-left">Tanggal Pengesahan</th>
             <th className="px-4 py-3 text-left">Nim</th>
             <th className="px-4 py-3 text-left">Rating</th>
-            <th className="px-4 py-3 text-left">Status</th>
+            <div className="flex">
+              <th className="px-4 py-3 text-left">Status</th>
+              <div className="flex flex-col justify-center">
+                <Tippy content="Dipinjam" placement="top" inertia={true}>
+                  <div className="cursor-pointer hover:text-black">
+                    <IoIosArrowUp onClick={handleAscending} />
+                  </div>
+                </Tippy>
+                <Tippy content="Tidak Dipinjam" placement="bottom">
+                  <div className="cursor-pointer hover:text-black">
+                    <IoIosArrowDown onClick={handleDescending} />
+                  </div>
+                </Tippy>
+              </div>
+            </div>
             {isPengembalianPage && (
               <th className="px-4 py-3 text-left">Action</th>
             )}
