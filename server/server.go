@@ -21,7 +21,7 @@ func init() {
 	database.ConnectDB()
 }
 
-func main() {
+func runServer() {
 	port := os.Getenv("PORT")
 	sqlDb, err := database.DBConn.DB()
 	if err != nil {
@@ -33,12 +33,19 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization", // Menambahkan Authorization ke AllowHeaders
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 	}))
 
 	app.Use(logger.New())
+	router.SetupRoutes(app)
 
-	// Define the CLI app
+	log.Println("Starting server on port", port)
+	if err := app.Listen(port); err != nil {
+		log.Fatalf("Error starting server: %v", err)
+	}
+}
+
+func main() {
 	cliApp := &cli.App{
 		Name:  "blog",
 		Usage: "CLI Tool for Blog Application",
@@ -56,15 +63,14 @@ func main() {
 				},
 			},
 		},
+		Action: func(c *cli.Context) error {
+			runServer()
+			return nil
+		},
 	}
 
-	// Run CLI commands if any provided
-	err = cliApp.Run(os.Args)
+	err := cliApp.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	router.SetupRoutes(app)
-
-	app.Listen(port)
 }
