@@ -4,9 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import ChartSelamatDatang from "../components/ChartSelamatDatang";
 import {
   actionCreatorGetDataManagement,
-  setIsLoading,
+  GetDataAvailableBooks
 } from "../../services/store/reducers/Dashboardslice";
-import { GetDataAvailableBooks } from "../../services/store/reducers/Dashboardslice";
 
 function DashboardPage({ authUser }) {
   const { isLoading } = useSelector((state) => state.dashboard);
@@ -38,7 +37,10 @@ function DashboardPage({ authUser }) {
             return response.json();
           })
         );
-        setBooks(bookDetails);
+        // Extract the actual book details from the array
+        const flattenedBookDetails = bookDetails.map(bookArray => bookArray[0]);
+        console.log("Fetched book details:", flattenedBookDetails);
+        setBooks(flattenedBookDetails);
       } catch (error) {
         console.error('Error fetching book details:', error);
       }
@@ -74,6 +76,7 @@ function DashboardPage({ authUser }) {
     </main>
   );
 }
+
 
 DashboardPage.propTypes = {
   authUser: PropTypes.object.isRequired,

@@ -23,6 +23,13 @@ Create a virtual environment to manage your dependencies:
 python -m venv env
 \```
 
+### 2.5 Ubah kebijakan eksekusi
+Ubah kebijakan eksekusi:
+\```bash
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+\```
+
+
 ### 3. Activate the Virtual Environment
 Activate the virtual environment:
 
@@ -41,6 +48,7 @@ Install the required Python packages:
 \```bash
 pip install -r requirements.txt
 \```
+
 
 ### 5. Configure Database
 Make sure you have MySQL installed and create a database named `perpustakaan`. Update the database configuration in `app.py` if necessary.
