@@ -48,7 +48,7 @@ Make sure you have MySQL installed and create a database named `perpustakaan`. U
 ### 6. Run the Application
 Start the Flask application:
 \```bash
-python .pp.py
+python ./app.py
 \```
 
 The application will run on `http://127.0.0.1:5000`.

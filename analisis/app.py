@@ -5,15 +5,27 @@ from sklearn.decomposition import TruncatedSVD
 from flask_sqlalchemy import SQLAlchemy
 import mysql.connector
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
 
 
 app = Flask(__name__)
 
+# Load environment variables from .env file
+load_dotenv()
+
+# Get database connection details from environment variables
+db_host = os.getenv('DB_HOST')
+db_user = os.getenv('DB_USER')
+db_password = os.getenv('DB_PASSWORD')
+db_name = os.getenv('DB_NAME')
+
+# Establish database connection
 conn = mysql.connector.connect(
-    host='localhost',
-    user='root',
-    password='',  # masukkan password MySQL Anda jika ada
-    database='perpustakaan'
+    host=db_host,
+    user=db_user,
+    password=db_password,
+    database=db_name
 )
 
 if conn.is_connected():
