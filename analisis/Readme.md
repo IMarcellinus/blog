@@ -1,68 +1,90 @@
-# Book Recommendation System
 
-This project is a book recommendation system built using Singular Value Decomposition (SVD) for collaborative filtering. The system is implemented with a Flask API to provide book recommendations to users.
+# Library Management System
 
-## Setup
+## Overview
+This is a library management system that provides book recommendations to users based on their borrowing history using machine learning. The backend is built with Flask and the frontend is built with React.
 
-1. **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
+## Requirements
+- Python 3.8+
+- pip (Python package installer)
 
-2. **Install the required packages:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+## Setup Instructions
 
-3. **Run the Flask server:**
-    ```bash
-    python app.py
-    ```
+### 1. Clone the Repository
+Clone this repository to your local machine using:
+\```bash
+git clone <repository-url>
+cd <repository-directory>
+\```
 
-## API Endpoints
+### 2. Create a Virtual Environment
+Create a virtual environment to manage your dependencies:
+\```bash
+python -m venv env
+\```
 
-### `/recommend`
+### 3. Activate the Virtual Environment
+Activate the virtual environment:
 
-**Method:** GET
+- **Command Prompt:**
+  \```cmd
+  env\Scripts\Activate
+  \```
 
-**Parameters:**
-- `user_id` (required): ID of the user for whom the recommendations are to be generated.
-- `num_recommendations` (optional, default=5): Number of recommendations to return.
+- **PowerShell:**
+  \```powershell
+  .\env\Scripts\Activate.ps1
+  \```
 
-**Response:**
-- `200 OK`: Successfully retrieved recommendations.
-    ```json
-    {
-      "1": 4.5,
-      "2": 4.2,
-      "3": 4.1
-    }
-    ```
-- `404 Not Found`: User ID not found.
-    ```json
-    {
-      "error": "User ID not found"
-    }
-    ```
-- `500 Internal Server Error`: Server error.
-    ```json
-    {
-      "error": "Description of the error"
-    }
-    ```
+### 4. Install Dependencies
+Install the required Python packages:
+\```bash
+pip install -r requirements.txt
+\```
 
-## Example Usage
+### 5. Configure Database
+Make sure you have MySQL installed and create a database named `perpustakaan`. Update the database configuration in `app.py` if necessary.
 
-You can test the API using tools like Postman or cURL.
+### 6. Run the Application
+Start the Flask application:
+\```bash
+python .pp.py
+\```
 
-### Using Postman
+The application will run on `http://127.0.0.1:5000`.
 
-1. Create a new GET request.
-2. Enter the URL: `http://127.0.0.1:5000/recommend?user_id=1&num_recommendations=5`.
-3. Send the request and view the recommendations in the response.
+## Frontend Setup
 
-### Using cURL
+### 1. Navigate to the Frontend Directory
+Navigate to the frontend directory where the React application is located:
+\```bash
+cd frontend
+\```
 
-```bash
-curl -X GET "http://127.0.0.1:5000/recommend?user_id=1&num_recommendations=5"
+### 2. Install Frontend Dependencies
+Install the required Node.js packages:
+\```bash
+npm install
+\```
+
+### 3. Start the React Application
+Start the React application:
+\```bash
+npm start
+\```
+
+The React application will run on `http://localhost:3000`.
+
+## Usage
+- Open your web browser and go to `http://localhost:3000`.
+- Login with your user credentials.
+- You will see book recommendations on your dashboard.
+
+## Troubleshooting
+If you encounter any issues, ensure you have followed all steps correctly and that your virtual environment is activated.
+
+## Contributing
+Feel free to fork this repository and submit pull requests.
+
+## License
+This project is licensed under the MIT License.

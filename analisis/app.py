@@ -2,49 +2,101 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import TruncatedSVD
-from sklearn.metrics import mean_squared_error
+from flask_sqlalchemy import SQLAlchemy
+import mysql.connector
+from flask_cors import CORS
 
-# Load datasets (replace 'your_path' with the actual paths)
-datapinjam_new = pd.read_csv('../database/user-borrowrecord-updated.csv')
-datauser_new = pd.read_csv('../database/use-datauser.csv')
-databuku_new = pd.read_csv('../database/user-databuku-updated.csv')
+
+app = Flask(__name__)
+
+conn = mysql.connector.connect(
+    host='localhost',
+    user='root',
+    password='',  # masukkan password MySQL Anda jika ada
+    database='perpustakaan'
+)
+
+if conn.is_connected():
+    print('Connected to MySQL database')
+conn.close()
+
+
+# Configure MySQL connection
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost/perpustakaan'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Enable CORS
+CORS(app)
+
+# Load datasets from database
+def load_data():
+    with app.app_context():
+        datapinjam_new = pd.read_sql('SELECT * FROM peminjamen', db.engine)
+        datauser_new = pd.read_sql('SELECT * FROM users', db.engine)
+        databuku_new = pd.read_sql('SELECT * FROM books', db.engine)
+    return datapinjam_new, datauser_new, databuku_new
 
 # Create the user-item interaction matrix
+datapinjam_new, datauser_new, databuku_new = load_data()
+print(databuku_new.columns)  # Print columns to verify
+
 interaction_matrix_new = datapinjam_new.pivot_table(index='user_id', columns='book_id', values='rating').fillna(0)
 
-# Optimal number of components found
-n_components = 75
-
-# Train SVD model
+# Apply SVD
+n_components = 35  # Set optimal number of components based on previous analysis
 svd = TruncatedSVD(n_components=n_components, random_state=42)
 latent_matrix = svd.fit_transform(interaction_matrix_new)
 latent_matrix_transposed = svd.components_
 
-# Function to predict ratings using SVD
+# Function to predict ratings
 def predict_ratings_svd(user_id, book_id):
     if user_id not in interaction_matrix_new.index or book_id not in interaction_matrix_new.columns:
-        return interaction_matrix_new.mean().mean()  # Default rating prediction if user_id or book_id is not found
+        return interaction_matrix_new.mean().mean()
     user_idx = interaction_matrix_new.index.get_loc(user_id)
     book_idx = interaction_matrix_new.columns.get_loc(book_id)
-    return np.dot(latent_matrix[user_idx, :], latent_matrix_transposed[:, book_idx])
+    rating = np.dot(latent_matrix[user_idx, :], latent_matrix_transposed[:, book_idx])
+    rating = np.clip(rating, 0, 5)
+    return rating
 
-# Function to provide book recommendations
+# Function to recommend books for a given user
 def recommend_books(user_id, num_recommendations=5):
-    book_ids = interaction_matrix_new.columns
-    predicted_ratings = [predict_ratings_svd(user_id, book_id) for book_id in book_ids]
-    recommended_books = pd.Series(predicted_ratings, index=book_ids).sort_values(ascending=False).head(num_recommendations)
-    return recommended_books
-
-# Initialize Flask app
-app = Flask(__name__)
+    if user_id not in interaction_matrix_new.index:
+        return "User not found in the database."
+    
+    user_ratings = interaction_matrix_new.loc[user_id]
+    already_rated = user_ratings[user_ratings > 0].index.tolist()
+    
+    book_ids = interaction_matrix_new.columns.tolist()
+    predictions = [predict_ratings_svd(user_id, book_id) for book_id in book_ids]
+    
+    recommendations = pd.DataFrame({'book_id': book_ids, 'predicted_rating': predictions})
+    recommendations = recommendations[~recommendations['book_id'].isin(already_rated)]
+    recommendations = recommendations.sort_values(by='predicted_rating', ascending=False).head(num_recommendations)
+    
+    return recommendations[['book_id']]
 
 @app.route('/recommend', methods=['GET'])
 def recommend():
     user_id = int(request.args.get('user_id'))
     num_recommendations = int(request.args.get('num_recommendations', 5))
     recommendations = recommend_books(user_id, num_recommendations)
-    recommendations = recommendations.to_dict()
-    return jsonify(recommendations)
+    if isinstance(recommendations, str):
+        app.logger.info(f"No recommendations found for user {user_id}")
+        return jsonify({'error': recommendations})
+    else:
+        app.logger.info(f"Recommendations for user {user_id}: {recommendations.to_json(orient='records')}")
+        return recommendations.to_json(orient='records')
+
+@app.route('/bookdetails', methods=['GET'])
+def book_details():
+    book_id = int(request.args.get('book_id'))
+    print(databuku_new.columns)  # Print columns to verify
+    book_details = databuku_new[databuku_new['id'] == book_id].to_dict(orient='records')  # Use 'id' instead of 'book_id'
+    if book_details:
+        return jsonify(book_details[0])
+    else:
+        return jsonify({'error': 'Book not found'})
 
 if __name__ == '__main__':
     app.run(debug=True)
