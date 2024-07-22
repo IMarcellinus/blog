@@ -125,7 +125,8 @@ func GetBorrowBookPagination(c *fiber.Ctx) error {
 		// Ensure the keyword is correctly parsed and spaces are handled
 		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword)
+			Joins("JOIN users ON users.id = peminjamen.user_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR users.nim LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	query.Count(&totalData)
@@ -468,7 +469,8 @@ func GetBorrowBookAscPagination(c *fiber.Ctx) error {
 		// Ensure the keyword is correctly parsed and spaces are handled
 		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword)
+			Joins("JOIN users ON users.id = peminjamen.user_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR users.nim LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	// Count the total number of records
@@ -730,7 +732,8 @@ func GetBorrowBookDescPagination(c *fiber.Ctx) error {
 		// Ensure the keyword is correctly parsed and spaces are handled
 		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword)
+			Joins("JOIN users ON users.id = peminjamen.user_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR users.nim LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	// Count total data
@@ -887,7 +890,8 @@ func GetBorrowBookPaginationByUser(c *fiber.Ctx) error {
 		// Pastikan kata kunci di-parse dengan benar dan spasi ditangani
 		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword)
+			Joins("JOIN users ON users.id = peminjamen.user_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR users.nim LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	query.Count(&totalData)
@@ -1222,7 +1226,8 @@ func GetBorrowBookAscByUserPagination(c *fiber.Ctx) error {
 	if decodedKeyword != "" {
 		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword)
+			Joins("JOIN users ON users.id = peminjamen.user_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR users.nim LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	// Count total data

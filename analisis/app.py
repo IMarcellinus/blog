@@ -7,7 +7,7 @@ import mysql.connector
 from flask_cors import CORS
 from dotenv import load_dotenv
 import os
-
+import logging
 
 app = Flask(__name__)
 
@@ -20,18 +20,24 @@ db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
 db_name = os.getenv('DB_NAME')
 
+# Debug: print the database connection details
+print(f"DB Host: {db_host}, DB User: {db_user}, DB Password: {db_password}, DB Name: {db_name}")
+
 # Establish database connection
-conn = mysql.connector.connect(
-    host=db_host,
-    user=db_user,
-    password=db_password,
-    database=db_name
-)
-
-if conn.is_connected():
-    print('Connected to MySQL database')
-conn.close()
-
+try:
+    conn = mysql.connector.connect(
+        host=db_host,
+        user=db_user,
+        password=db_password,
+        database=db_name
+    )
+    if conn.is_connected():
+        print('Connected to MySQL database')
+except mysql.connector.Error as err:
+    print(f"Error: {err}")
+finally:
+    if conn.is_connected():
+        conn.close()
 
 # Configure MySQL connection
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:@localhost/perpustakaan'
@@ -47,11 +53,16 @@ def load_data():
         datapinjam_new = pd.read_sql('SELECT * FROM peminjamen', db.engine)
         datauser_new = pd.read_sql('SELECT * FROM users', db.engine)
         databuku_new = pd.read_sql('SELECT * FROM books', db.engine)
+        # Debug: print the head of the datasets
+        print(datapinjam_new.head())
+        print(datauser_new.head())
+        print(databuku_new.head())
     return datapinjam_new, datauser_new, databuku_new
 
 # Create the user-item interaction matrix
 datapinjam_new, datauser_new, databuku_new = load_data()
-print(databuku_new.columns)  # Print columns to verify
+# Debug: print columns to verify
+print(databuku_new.columns)
 
 interaction_matrix_new = datapinjam_new.pivot_table(index='user_id', columns='book_id', values='rating').fillna(0)
 
@@ -86,7 +97,13 @@ def recommend_books(user_id, num_recommendations=5):
     recommendations = recommendations[~recommendations['book_id'].isin(already_rated)]
     recommendations = recommendations.sort_values(by='predicted_rating', ascending=False).head(num_recommendations)
     
+    # Debug: print recommendations
+    print(f"Recommendations for user {user_id}: {recommendations}")
+    
     return recommendations[['book_id']]
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/recommend', methods=['GET'])
 def recommend():
@@ -103,7 +120,8 @@ def recommend():
 @app.route('/bookdetails', methods=['GET'])
 def book_details():
     book_id = int(request.args.get('book_id'))
-    print(databuku_new.columns)  # Print columns to verify
+    # Debug: print columns to verify
+    print(databuku_new.columns)
     book_details = databuku_new[databuku_new['id'] == book_id].to_dict(orient='records')  # Use 'id' instead of 'book_id'
     if book_details:
         return jsonify(book_details[0])

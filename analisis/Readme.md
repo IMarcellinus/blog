@@ -36,6 +36,11 @@ Activate the virtual environment:
   .\env\Scripts\Activate.ps1
   \```
 
+- **Linux, Unix, macOS:**
+  \```powershell
+  source env/bin/activate
+  \```
+
 ### 4. Install Dependencies
 Install the required Python packages:
 \```bash
@@ -52,33 +57,6 @@ python ./app.py
 \```
 
 The application will run on `http://127.0.0.1:5000`.
-
-## Frontend Setup
-
-### 1. Navigate to the Frontend Directory
-Navigate to the frontend directory where the React application is located:
-\```bash
-cd frontend
-\```
-
-### 2. Install Frontend Dependencies
-Install the required Node.js packages:
-\```bash
-npm install
-\```
-
-### 3. Start the React Application
-Start the React application:
-\```bash
-npm start
-\```
-
-The React application will run on `http://localhost:3000`.
-
-## Usage
-- Open your web browser and go to `http://localhost:3000`.
-- Login with your user credentials.
-- You will see book recommendations on your dashboard.
 
 ## Troubleshooting
 If you encounter any issues, ensure you have followed all steps correctly and that your virtual environment is activated.
