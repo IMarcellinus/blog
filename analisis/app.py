@@ -84,8 +84,9 @@ def recommend_books(user_id, num_recommendations=5):
     book_ids = interaction_matrix_new.columns.tolist()
     predictions = [predict_ratings_svd(user_id, book_id) for book_id in book_ids]
     
-    recommendations = pd.DataFrame({'book_id': book_ids})
+    recommendations = pd.DataFrame({'book_id': book_ids, 'predicted_rating': predictions})
     recommendations = recommendations[~recommendations['book_id'].isin(already_rated)]
+    recommendations = recommendations.sort_values(by='predicted_rating', ascending=False)
     recommendations = recommendations.head(num_recommendations)
     
     return recommendations
@@ -110,4 +111,3 @@ if __name__ == '__main__':
     with app.app_context():
         datapinjam_new, datauser_new, databuku_new = load_data()
     app.run(debug=True)
-
