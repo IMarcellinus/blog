@@ -7,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from flask_cors import CORS
 
-
 app = Flask(__name__)
 CORS(app)  # Tambahkan baris ini untuk mengaktifkan CORS
 
@@ -36,31 +35,37 @@ def load_data():
         print(databuku_new.head())
     return datapinjam_new, datauser_new, databuku_new
 
-# Create the user-item interaction matrix
-datapinjam_new, datauser_new, databuku_new = load_data()
+def update_svd_model():
+    global latent_matrix, latent_matrix_transposed, interaction_matrix_new
+    
+    # Create the user-item interaction matrix
+    datapinjam_new, datauser_new, databuku_new = load_data()
+    
+    # Debugging: Print the first few rows of datapinjam_new
+    print("Peminjaman Data:")
+    print(datapinjam_new.head())
+    
+    interaction_matrix_new = datapinjam_new.pivot_table(index='user_id', columns='book_id', values='rating').fillna(0)
+    
+    # Debugging: Print the interaction matrix
+    print("Interaction Matrix:")
+    print(interaction_matrix_new.head())
+    
+    # Apply SVD
+    n_components = 35  # Set optimal number of components based on previous analysis
+    svd = TruncatedSVD(n_components=n_components, random_state=42)
+    
+    # Check if the interaction matrix is not empty and has the right dimensions
+    if not interaction_matrix_new.empty and interaction_matrix_new.shape[1] >= 2:
+        latent_matrix = svd.fit_transform(interaction_matrix_new)
+        latent_matrix_transposed = svd.components_
+    else:
+        print("Interaction matrix is not valid for SVD")
+        latent_matrix = np.array([])
+        latent_matrix_transposed = np.array([])
 
-# Debugging: Print the first few rows of datapinjam_new
-print("Peminjaman Data:")
-print(datapinjam_new.head())
-
-interaction_matrix_new = datapinjam_new.pivot_table(index='user_id', columns='book_id', values='rating').fillna(0)
-
-# Debugging: Print the interaction matrix
-print("Interaction Matrix:")
-print(interaction_matrix_new.head())
-
-# Apply SVD
-n_components = 35  # Set optimal number of components based on previous analysis
-svd = TruncatedSVD(n_components=n_components, random_state=42)
-
-# Check if the interaction matrix is not empty and has the right dimensions
-if not interaction_matrix_new.empty and interaction_matrix_new.shape[1] >= 2:
-    latent_matrix = svd.fit_transform(interaction_matrix_new)
-    latent_matrix_transposed = svd.components_
-else:
-    print("Interaction matrix is not valid for SVD")
-    latent_matrix = np.array([])
-    latent_matrix_transposed = np.array([])
+# Initialize the SVD model at the start
+update_svd_model()
 
 # Function to predict ratings
 def predict_ratings_svd(user_id, book_id):
@@ -75,6 +80,9 @@ def predict_ratings_svd(user_id, book_id):
 
 # Function to recommend books for a given user
 def recommend_books(user_id, num_recommendations=5):
+    # Update the SVD model to ensure latest data is used
+    update_svd_model()
+    
     if user_id not in interaction_matrix_new.index:
         return "User not found in the database."
     
