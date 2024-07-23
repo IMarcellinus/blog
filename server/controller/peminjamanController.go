@@ -1894,7 +1894,8 @@ func GetReservationBookPagination(c *fiber.Ctx) error {
 		// Ensure the keyword is correctly parsed and spaces are handled
 		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
 		query = query.Joins("JOIN books ON books.id = peminjamen.book_id").
-			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR books.kategori_buku LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
+			Joins("JOIN users ON users.id = peminjamen.user_id").
+			Where("books.nama_buku LIKE ? OR books.kode_buku LIKE ? OR books.tanggal_pengesahan LIKE ? OR users.nim LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	query.Count(&totalData)

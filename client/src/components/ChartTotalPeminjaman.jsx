@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineBook } from "react-icons/md";
-import { useDispatch, useSelector } from "react-redux";
-import { GetDataAvailableBooks } from "../../services/store/reducers/Dashboardslice";
+import { useSelector } from "react-redux";
 
 
 const ChartTotalPeminjaman = () => {

@@ -30,6 +30,7 @@ func SetupRoutes(app *fiber.App) {
 	private.Get("/user", controller.RefreshToken)
 	// Fetch Dashboard
 	private.Get("/dashboard-all", controller.DataManagementList)
+	private.Get("/dashboard-prodi", controller.GetBooksBorrowedByProdiThisMonth)
 	// Book CRUD
 	private.Get("/book", controller.BookList)
 	private.Get("/book/:page/:perPage/:keyword?", controller.BookPagination)

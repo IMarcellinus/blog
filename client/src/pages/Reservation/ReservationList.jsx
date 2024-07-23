@@ -64,7 +64,7 @@ const ReservationList = ({
   );
 
   // Menggunakan custom hook untuk handle actions
-  useReservationActions(message);
+  // useReservationActions(message);
 
   const changePage = ({ selected }) => {
     dispatch(setCurrentPageReservation(selected));
