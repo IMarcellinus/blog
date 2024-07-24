@@ -37,8 +37,7 @@ function App() {
 
   useEffect(() => {
     if (
-      window.location.pathname !== "/login" &&
-      window.location.pathname !== "/register"
+      window.location.pathname !== "/login"
     ) {
       if (status == 401) {
         navigate("/loginuser");
@@ -63,7 +62,7 @@ function App() {
     return (
       <Routes>
         <Route path="/loginuser" element={<LoginUserPage />} />
-        <Route path="/register" element={<RegisterUserPage />} />
+        {/* <Route path="/register" element={<RegisterUserPage />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<PageNotFound />} />
       </Routes>

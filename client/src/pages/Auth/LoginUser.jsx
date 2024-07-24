@@ -137,7 +137,7 @@ function LoginUserPage() {
               {isLoading ? "Loading..." : "Submit"}
             </button>
           </div>
-          <div className="flex justify-start">
+          {/* <div className="flex justify-start">
             <p className="text-black">
               New Account?{" "}
               <i>
@@ -146,7 +146,7 @@ function LoginUserPage() {
                 </Link>
               </i>
             </p>
-          </div>
+          </div> */}
         </form>
       </div>
     </section>
