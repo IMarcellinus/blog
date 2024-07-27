@@ -73,25 +73,25 @@ const PeminjamanList = ({
             <th className="px-4 py-3 text-left">Tanggal Pengesahan</th>
             <th className="px-4 py-3 text-left">Nim</th>
             <th className="px-4 py-3 text-left">Rating</th>
-            <th className="px-4 py-3 text-left">Status</th>
-            {isPengembalianPage && (
-              <th className="px-4 py-3 text-left">
-                <div className="flex items-center space-x-2">
-                  <span>Action</span>
-                  <div className="flex flex-col items-center">
-                    <Tippy content="Dipinjam" placement="top" inertia={true}>
-                      <div className="cursor-pointer hover:text-black">
-                        <IoIosArrowUp onClick={handleSort("asc")} />
-                      </div>
-                    </Tippy>
-                    <Tippy content="Tidak Dipinjam" placement="bottom">
-                      <div className="cursor-pointer hover:text-black">
-                        <IoIosArrowDown onClick={handleSort("dsc")} />
-                      </div>
-                    </Tippy>
-                  </div>
+            <th className="px-4 py-3 text-left">
+              <div className="flex items-center space-x-2">
+                <span>Status</span>
+                <div className="flex flex-col items-center">
+                  <Tippy content="Dipinjam" placement="top" inertia={true}>
+                    <div className="cursor-pointer hover:text-black">
+                      <IoIosArrowUp onClick={handleSort("asc")} />
+                    </div>
+                  </Tippy>
+                  <Tippy content="Tidak Dipinjam" placement="bottom">
+                    <div className="cursor-pointer hover:text-black">
+                      <IoIosArrowDown onClick={handleSort("dsc")} />
+                    </div>
+                  </Tippy>
                 </div>
-              </th>
+              </div>
+            </th>
+            {isPengembalianPage && (
+              <th className="px-4 py-3 text-left">Action</th>
             )}
           </tr>
         </thead>
