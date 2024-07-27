@@ -117,23 +117,41 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                         disabled={toggleDetail === true}
                       />
                     </div>
-                    <div className="flex flex-col">
-                      <label className="font-medium">Kategori Buku</label>
-                      <select
-                        name="kategori_buku"
-                        value={kategori_buku}
-                        onChange={(e) => {
-                          dispatch(setKategoriBuku(e.target.value));
-                        }}
-                        className="rounded-md border-2 border-sky-700 p-2 text-sm"
-                        disabled={toggleDetail === true}
-                      >
-                        <option value="">Pilih Kategori</option>
-                        <option value="laporan magang">Laporan Magang</option>
-                        <option value="laporan skripsi">Laporan Skripsi</option>
-                        <option value="keteknikan">Keteknikan</option>
-                      </select>
-                    </div>
+                    {toggleDetail && (
+                      <div className="flex h-full flex-col">
+                        <label className="font-medium">Kategori Buku</label>
+                        <input
+                          name="kategori_buku"
+                          value={kategori_buku}
+                          onChange={(e) => {
+                            dispatch(setKategoriBuku(e.target.value));
+                          }}
+                          className="rounded-md border border-sky-600 px-2 py-3 text-xs focus:border-[2px] focus:border-sky-500 focus:outline-none sm:py-2 sm:text-base"
+                          type="text"
+                          disabled={toggleDetail === true}
+                        />
+                      </div>
+                    )}
+                    {!toggleDetail && (
+                      <div className="flex flex-col">
+                        <label className="font-medium">Kategori Buku</label>
+                        <select
+                          name="kategori_buku"
+                          value={kategori_buku}
+                          onChange={(e) => {
+                            dispatch(setKategoriBuku(e.target.value));
+                          }}
+                          className="rounded-md border-2 border-sky-700 p-2 text-sm"
+                        >
+                          <option value="">Pilih Kategori</option>
+                          <option value="laporan magang">Laporan Magang</option>
+                          <option value="laporan skripsi">
+                            Laporan Skripsi
+                          </option>
+                          <option value="keteknikan">Keteknikan</option>
+                        </select>
+                      </div>
+                    )}
                     <div className="flex h-full flex-col">
                       <label className="font-medium">Book Description</label>
                       <textarea
