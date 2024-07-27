@@ -3,7 +3,7 @@ import Tippy from "@tippyjs/react";
 import PropTypes from "prop-types";
 import { TbBooksOff } from "react-icons/tb";
 import ReactPaginate from "react-paginate";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import {
   getAllBookBorrowAsc,
@@ -28,6 +28,7 @@ const PeminjamanList = ({
 }) => {
   const dispatch = useDispatch();
   const isPengembalianPage = location.pathname === "/pengembalian";
+  const { isAscending } = useSelector((state) => state.borrowbooks);
 
   const handleReturnBook = (id) => {
     dispatch(setId(id));
@@ -45,6 +46,7 @@ const PeminjamanList = ({
       : order === "asc"
       ? getBorrowBookAsc
       : getBorrowBookDsc;
+    console.log(isAscending);
 
     dispatch(
       sortAction({

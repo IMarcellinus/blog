@@ -17,6 +17,7 @@ import {
   setKodeBuku,
   setMessage,
   setNamaBuku,
+  setSearch,
   setTanggalPengesahan,
   setToggleDetail,
 } from "../../../services/store/reducers/Bookslice";
@@ -120,6 +121,7 @@ const BookPage = ({ authUser }) => {
   useEffect(() => {
     dispatch(setCurrentPageBook(0));
     dispatch(setBookSearch());
+    dispatch(setSearch(""))
   }, [dispatch]);
 
   useEffect(() => {

@@ -231,32 +231,11 @@ func BookUpdate(c *fiber.Ctx) error {
 		return c.Status(400).JSON(context)
 	}
 
-	// Validate if kode_buku is provided
-	if updatedRecord.KodeBuku != "" {
-		log.Println("Error: kode_buku cannot be updated.")
+	// Validate input
+	if updatedRecord.NamaBuku == "" || updatedRecord.TanggalPengesahan == "" || updatedRecord.KategoriBuku == "" || updatedRecord.Description == "" {
+		log.Println("Some fields are missing.")
 		context["status_code"] = "400"
-		context["msg"] = "Kode Buku cannot be updated."
-		return c.Status(400).JSON(context)
-	}
-
-	// Validate nama_buku
-	if updatedRecord.NamaBuku == "" {
-		context["status_code"] = "400"
-		context["msg"] = "nama buku cannot be empty"
-		return c.Status(400).JSON(context)
-	}
-
-	// Validate kategori_buku
-	if updatedRecord.KategoriBuku == "" {
-		context["status_code"] = "400"
-		context["msg"] = "kategori buku cannot be empty"
-		return c.Status(400).JSON(context)
-	}
-
-	// Validate description
-	if updatedRecord.Description == "" {
-		context["status_code"] = "400"
-		context["msg"] = "description cannot be empty"
+		context["msg"] = "All fields are required."
 		return c.Status(400).JSON(context)
 	}
 

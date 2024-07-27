@@ -324,16 +324,23 @@ func GetBorrowBookAsc(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	var totalData int64
-	query := db.Model(&model.Peminjaman{})
+	var totalTrue int64
+	var totalFalse int64
+
+	trueQuery := db.Model(&model.Peminjaman{}).Where("is_pinjam = ?", true)
+	falseQuery := db.Model(&model.Peminjaman{}).Where("is_pinjam = ?", false)
 
 	if role == "user" {
-		query = query.Where("user_id = ?", userID)
+		trueQuery = trueQuery.Where("user_id = ?", userID)
+		falseQuery = falseQuery.Where("user_id = ?", userID)
 	} else if role != "admin" {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Unauthorized role"})
 	}
 
-	// Count the total number of records
-	query.Count(&totalData)
+	trueQuery.Count(&totalTrue)
+	falseQuery.Count(&totalFalse)
+
+	totalData = totalTrue + totalFalse
 
 	totalPage := int(totalData) / numPerPage
 	if int(totalData)%numPerPage != 0 {
@@ -357,10 +364,22 @@ func GetBorrowBookAsc(c *fiber.Ctx) error {
 	offset := (numPage - 1) * numPerPage
 
 	// Fetch the records with pagination
-	var Peminjaman []model.Peminjaman
-	if err := query.Preload("Book").Preload("User").Offset(offset).Limit(numPerPage).Find(&Peminjaman).Error; err != nil {
-		return err
+	var PeminjamanTrue []model.Peminjaman
+	var PeminjamanFalse []model.Peminjaman
+
+	trueQuery.Preload("Book").Preload("User").Find(&PeminjamanTrue)
+	falseQuery.Preload("Book").Preload("User").Find(&PeminjamanFalse)
+
+	Peminjaman := append(PeminjamanTrue, PeminjamanFalse...)
+
+	// Pagination logic
+	startIndex := offset
+	endIndex := offset + numPerPage
+	if endIndex > len(Peminjaman) {
+		endIndex = len(Peminjaman)
 	}
+
+	Peminjaman = Peminjaman[startIndex:endIndex]
 
 	// Create and fill the borrowing information list
 	borrowInfoList := make([]BorrowInfo, len(Peminjaman))
@@ -386,18 +405,6 @@ func GetBorrowBookAsc(c *fiber.Ctx) error {
 			borrowInfoList[i].Nim = p.User.Nim
 		}
 	}
-
-	// Sort the list with IsPinjam=true on top and CreatedAt for tie-breaking
-	sort.SliceStable(borrowInfoList, func(i, j int) bool {
-		if borrowInfoList[i].IsPinjam && !borrowInfoList[j].IsPinjam {
-			return true
-		}
-		if !borrowInfoList[i].IsPinjam && borrowInfoList[j].IsPinjam {
-			return false
-		}
-		// For tie-breaking, compare CreatedAt using Before method
-		return borrowInfoList[i].CreatedAt.Before(borrowInfoList[j].CreatedAt)
-	})
 
 	context["data"] = borrowInfoList
 	context["total_page"] = totalPage
@@ -548,6 +555,7 @@ func GetBorrowBookAscPagination(c *fiber.Ctx) error {
 }
 
 func GetBorrowBookDesc(c *fiber.Ctx) error {
+	// Retrieve pagination parameters from URL path parameters
 	page := c.Params("page")
 	perPage := c.Params("perPage")
 
@@ -585,18 +593,23 @@ func GetBorrowBookDesc(c *fiber.Ctx) error {
 	db := database.DBConn
 
 	var totalData int64
-	query := db.Model(&model.Peminjaman{})
+	var totalTrue int64
+	var totalFalse int64
+
+	trueQuery := db.Model(&model.Peminjaman{}).Where("is_pinjam = ?", true)
+	falseQuery := db.Model(&model.Peminjaman{}).Where("is_pinjam = ?", false)
 
 	if role == "user" {
-		query = query.Where("user_id = ?", userID)
-	} else if role == "admin" {
-		// No additional query constraints for admins
-	} else {
+		trueQuery = trueQuery.Where("user_id = ?", userID)
+		falseQuery = falseQuery.Where("user_id = ?", userID)
+	} else if role != "admin" {
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{"error": "Unauthorized role"})
 	}
 
-	// Count total data
-	query.Count(&totalData)
+	trueQuery.Count(&totalTrue)
+	falseQuery.Count(&totalFalse)
+
+	totalData = totalTrue + totalFalse
 
 	totalPage := int(totalData) / numPerPage
 	if int(totalData)%numPerPage != 0 {
@@ -619,10 +632,23 @@ func GetBorrowBookDesc(c *fiber.Ctx) error {
 
 	offset := (numPage - 1) * numPerPage
 
-	var Peminjaman []model.Peminjaman
-	if err := query.Preload("Book").Preload("User").Offset(offset).Limit(numPerPage).Find(&Peminjaman).Error; err != nil {
-		return err
+	// Fetch the records with pagination
+	var PeminjamanTrue []model.Peminjaman
+	var PeminjamanFalse []model.Peminjaman
+
+	trueQuery.Preload("Book").Preload("User").Find(&PeminjamanTrue)
+	falseQuery.Preload("Book").Preload("User").Find(&PeminjamanFalse)
+
+	Peminjaman := append(PeminjamanFalse, PeminjamanTrue...)
+
+	// Pagination logic
+	startIndex := offset
+	endIndex := offset + numPerPage
+	if endIndex > len(Peminjaman) {
+		endIndex = len(Peminjaman)
 	}
+
+	Peminjaman = Peminjaman[startIndex:endIndex]
 
 	// Create and fill the borrowing information list
 	borrowInfoList := make([]BorrowInfo, len(Peminjaman))
@@ -648,18 +674,6 @@ func GetBorrowBookDesc(c *fiber.Ctx) error {
 			borrowInfoList[i].Nim = p.User.Nim
 		}
 	}
-
-	// Sort the list with IsPinjam=false on top and CreatedAt for tie-breaking
-	sort.SliceStable(borrowInfoList, func(i, j int) bool {
-		if !borrowInfoList[i].IsPinjam && borrowInfoList[j].IsPinjam {
-			return true
-		}
-		if borrowInfoList[i].IsPinjam && !borrowInfoList[j].IsPinjam {
-			return false
-		}
-		// For tie-breaking, compare CreatedAt using Before method
-		return borrowInfoList[i].CreatedAt.After(borrowInfoList[j].CreatedAt)
-	})
 
 	context["data"] = borrowInfoList
 	context["total_page"] = totalPage

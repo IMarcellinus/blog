@@ -9,6 +9,8 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
+  isAscending: false,
+  isDescending: false,
   message: "",
   totalPagesBookBorrow: 1,
   currentPageBookBorrow: 0,
@@ -305,6 +307,12 @@ export const BorrowSlice = createSlice({
     },
     setRating: (state, action) => {
       state.rating = action.payload;
+    },
+    setIsAscending: (state, action) => {
+      state.isAscending = action.payload;
+    },
+    setIsDescending: (state, action) => {
+      state.isDescending = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -415,6 +423,7 @@ export const BorrowSlice = createSlice({
       state.booksBorrows = action.payload?.data;
       state.bookBorrowSearch = [];
       state.totalPagesBookBorrow = action.payload?.total_page;
+      state.isAscending = true;
       state.isDelete = false;
       state.isSubmit = false;
       state.isUpdate = false;
@@ -439,6 +448,7 @@ export const BorrowSlice = createSlice({
       state.booksBorrows = action.payload?.data;
       state.bookBorrowSearch = [];
       state.totalPagesBookBorrow = action.payload?.total_page;
+      state.isDescending = true;
       state.isDelete = false;
       state.isSubmit = false;
       state.isUpdate = false;
@@ -503,7 +513,9 @@ export const {
   setSearchDetail,
   setStatus,
   resetStateBorrow,
-  setRating
+  setRating,
+  setIsAscending,
+  setIsDescending
 } = BorrowSlice.actions;
 
 export default BorrowSlice.reducer;

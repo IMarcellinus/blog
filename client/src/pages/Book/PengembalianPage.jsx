@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -8,12 +8,18 @@ import ModalPengembalian from "./ModalPengembalian";
 
 import {
   getAllBookBorrow,
+  getAllBookBorrowAsc,
+  getAllBookBorrowDsc,
   getBorrowBook,
+  getBorrowBookAsc,
+  getBorrowBookDsc,
   setBookBorrowSearch,
   setCurrentPageBookBorrow,
+  setIsAscending,
   setKodeBuku,
   setMessage,
   setSearch,
+  setIsDescending
 } from "../../../services/store/reducers/Borrowslice";
 import PeminjamanList from "./PeminjamanList";
 import SearchBarPeminjaman from "./SearchBarPeminjaman";
@@ -27,14 +33,12 @@ const PengembalianPage = ({ authUser }) => {
     booksBorrows,
     isLoading,
     totalPagesBookBorrow,
-    isSubmit,
     isUpdate,
-    isDelete,
     currentPageBookBorrow,
-    status,
     search,
     bookBorrowSearch,
-    idUser,
+    isAscending,
+    isDescending
   } = useSelector((state) => state.borrowbooks);
 
   const { fetchUser } = useSelector((state) => state.auth);
@@ -51,6 +55,37 @@ const PengembalianPage = ({ authUser }) => {
     document.body.style.overflow = "auto";
   };
 
+  const fetchData = useCallback(() => {
+    const currentPage = 1;
+    dispatch(setIsAscending(false)); // Set isAscending to false before fetching data
+    dispatch(setIsDescending(false)); // Set isDescending to false before fetching data
+    if (search) {
+      dispatch(
+        getAllBookBorrow({
+          currentPageBookBorrow: currentPage,
+          search,
+          role: authUser.role,
+        })
+      );
+    } else {
+      dispatch(
+        getBorrowBook({
+          currentPageBookBorrow: currentPage,
+          role: authUser.role,
+        })
+      );
+    }
+    dispatch(setCurrentPageBookBorrow(0));
+  }, [authUser.role, search, dispatch]);
+
+  const handleUpdate = useCallback(() => {
+    if (isUpdate) {
+      handleCloseModal();
+      toast.success("Return Book Berhasil");
+      fetchData();
+    }
+  }, [isUpdate, fetchData]);
+
   useEffect(() => {
     dispatch(setCurrentPageBookBorrow(0));
     dispatch(setBookBorrowSearch());
@@ -58,56 +93,58 @@ const PengembalianPage = ({ authUser }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    let timeoutId;
-    const fetchData = () => {
-      const currentPage = 1;
-      if (search) {
-        dispatch(
-          getAllBookBorrow({ currentPageBookBorrow: currentPage, search })
-        );
-      } else {
-        dispatch(getBorrowBook({ currentPageBookBorrow: currentPage }));
-      }
-      dispatch(setCurrentPageBookBorrow(0));
-    };
-
-    const delayedFetch = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(fetchData, 1000);
-    };
-
-    delayedFetch();
-
+    const delayedFetch = setTimeout(fetchData, 1000);
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(delayedFetch);
     };
-  }, [search, dispatch]);
+  }, [search, fetchData]);
 
   useEffect(() => {
     const currentPage = currentPageBookBorrow + 1;
     if (search) {
+      let action;
+      if (isAscending) {
+        action = getAllBookBorrowAsc;
+      } else if (isDescending) {
+        action = getAllBookBorrowDsc;
+      } else {
+        action = getAllBookBorrow;
+      }
       dispatch(
-        getAllBookBorrow({ currentPageBookBorrow: currentPage, search })
+        action({
+          currentPageBookBorrow: currentPage,
+          search,
+          role: authUser.role,
+        })
       );
     } else {
-      dispatch(getBorrowBook({ currentPageBookBorrow: currentPage }));
+      let action;
+      if (isAscending) {
+        action = getBorrowBookAsc;
+      } else if (isDescending) {
+        action = getBorrowBookDsc;
+      } else {
+        action = getBorrowBook;
+      }
+      dispatch(
+        action({
+          currentPageBookBorrow: currentPage,
+          role: authUser.role,
+        })
+      );
     }
-  }, [currentPageBookBorrow, dispatch, search]);
+  }, [
+    currentPageBookBorrow,
+    dispatch,
+    search,
+    isAscending,
+    isDescending,
+    authUser.role,
+  ]);
 
   useEffect(() => {
-    if (isUpdate) {
-      handleCloseModal();
-      toast.success("Return Book Berhasil");
-      const currentPage = currentPageBookBorrow + 1;
-      if (search) {
-        dispatch(
-          getAllBookBorrow({ currentPageBookBorrow: currentPage, search })
-        );
-      } else {
-        dispatch(getBorrowBook({ currentPageBookBorrow: currentPage }));
-      }
-    }
-  }, [currentPageBookBorrow, dispatch, isUpdate, search]);
+    handleUpdate();
+  }, [handleUpdate]);
 
   return (
     <main className="min-h-screen overflow-x-auto pb-14">
@@ -120,11 +157,20 @@ const PengembalianPage = ({ authUser }) => {
                 <SearchBarPeminjaman />
               </div>
             </div>
-            <ModalPengembalian
-              handleCloseModal={handleCloseModal}
-              modalIsOpen={modalIsOpen}
-              setModalIsOpen={setModalIsOpen}
-            />
+            <div className="flex items-end justify-end ">
+              <button
+                onClick={handleOpenModal}
+                className="flex items-center gap-1 rounded-md bg-sky-600 px-3 py-2 text-white"
+              >
+                Add Return Book
+                <IoMdAddCircleOutline className="h-6 w-6" />
+              </button>
+              <ModalPengembalian
+                handleCloseModal={handleCloseModal}
+                modalIsOpen={modalIsOpen}
+                setModalIsOpen={setModalIsOpen}
+              />
+            </div>
           </div>
           <div>
             {isLoading ? (

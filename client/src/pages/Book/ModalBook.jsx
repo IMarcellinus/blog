@@ -24,21 +24,22 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
     toggleDetail,
   } = useSelector((state) => state.books);
   const dispatch = useDispatch();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !nama_buku.trim() ||
-      !tanggal_pengesahan.trim() ||
-      !kategori_buku.trim() ||
-      !description.trim()
-    ) {
-      dispatch(
-        setMessage(
-          "Nama buku, tanggal pengesahan, dan kategori buku harus diisi."
-        )
-      );
-    } else {
-      if (!id) {
+    if (!id) {
+      if (
+        !nama_buku.trim() ||
+        !tanggal_pengesahan.trim() ||
+        !kategori_buku.trim() ||
+        !description.trim()
+      ) {
+        dispatch(
+          setMessage(
+            "Nama buku, tanggal pengesahan, kategori, dan description buku harus diisi."
+          )
+        );
+      } else {
         dispatch(
           createBook({
             nama_buku,
@@ -47,17 +48,17 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
             description,
           })
         );
-      } else {
-        dispatch(
-          updateBook({
-            id,
-            nama_buku,
-            tanggal_pengesahan,
-            kategori_buku,
-            description,
-          })
-        );
       }
+    } else {
+      dispatch(
+        updateBook({
+          id,
+          nama_buku,
+          tanggal_pengesahan,
+          kategori_buku,
+          description,
+        })
+      );
     }
   };
 
@@ -94,7 +95,6 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                     <div className="flex flex-col">
                       <label className="font-medium">Nama Buku</label>
                       <input
-                        required
                         value={nama_buku}
                         onChange={(e) => {
                           dispatch(setNamaBuku(e.target.value));

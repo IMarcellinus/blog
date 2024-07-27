@@ -22,6 +22,7 @@ import {
   setPassword,
   setProdi,
   setRole,
+  setSearch,
   setUrlQrCode,
   setUserSearch,
   setUsername,
@@ -151,6 +152,7 @@ const UserPage = ({ authUser }) => {
   useEffect(() => {
     dispatch(setCurrentPageUser(0));
     dispatch(setUserSearch());
+    dispatch(setSearch(""))
   }, [dispatch]);
 
   useEffect(() => {
