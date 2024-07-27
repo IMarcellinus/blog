@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/IMarcellinus/blog/database"
@@ -60,9 +61,21 @@ func BookPagination(c *fiber.Ctx) error {
 
 	query := db
 
-	// Mengecek apakah parameter keyword tidak kosong
-	if keyword != "" {
-		query = query.Where("nama_buku LIKE ? OR kode_buku LIKE ? OR tanggal_pengesahan LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	// Decode the keyword to handle spaces
+	decodedKeyword, err := url.QueryUnescape(keyword)
+	if err != nil {
+		context := fiber.Map{
+			"msg":         "error decoding keyword",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
+	// Check if the keyword parameter is not empty
+	if decodedKeyword != "" {
+		// Ensure the keyword is correctly parsed and spaces are handled
+		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
+		query = query.Where("nama_buku LIKE ? OR kode_buku LIKE ? OR tanggal_pengesahan LIKE ? OR kategori_buku LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	var totalData int64
@@ -110,17 +123,11 @@ func BookPagination(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(context)
-
-}
-
-func getBookCodeByID(id uint) string {
-	return fmt.Sprintf("A%d", id)
 }
 
 // function for BookCreate
 func BookCreate(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"statusText":  "Ok",
 		"status_code": fiber.StatusCreated,
 		"msg":         "Add a Book List",
 	}
@@ -129,14 +136,26 @@ func BookCreate(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&record); err != nil {
 		log.Println("Error in parsing request.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Something went wrong JSON format"
 		return c.Status(400).JSON(context)
 	}
 
 	if record.NamaBuku == "" {
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "nama buku cannot be empty"
+		return c.Status(400).JSON(context)
+	}
+
+	if record.KategoriBuku == "" {
+		context["status_code"] = "400"
+		context["msg"] = "kategori buku cannot be empty"
+		return c.Status(400).JSON(context)
+	}
+
+	if record.Description == "" {
+		context["status_code"] = "400"
+		context["msg"] = "description cannot be empty"
 		return c.Status(400).JSON(context)
 	}
 
@@ -144,9 +163,8 @@ func BookCreate(c *fiber.Ctx) error {
 	tanggalPengesahan, err := time.Parse("2006-01-02", record.TanggalPengesahan)
 	if err != nil {
 		log.Println("Error in parsing tanggal pengesahan:", err)
-		context["statusText"] = ""
 		context["status_code"] = fiber.StatusBadRequest // Menggunakan status code 400 Bad Request
-		context["msg"] = "Invalid tanggal pengesahan format. Please use format yyyy/MM/dd"
+		context["msg"] = "Invalid tanggal pengesahan format. Please use format yyyy-MM-dd"
 		return c.Status(400).JSON(context)
 	}
 
@@ -154,25 +172,25 @@ func BookCreate(c *fiber.Ctx) error {
 	record.TanggalPengesahan = tanggalPengesahan.Format("2006-01-02") // Format: tahun-bulan-tanggal
 
 	// Set CreatedAt field
-	record.CreatedAt = time.Now().Format("02-01-2006")
+	record.CreatedAt = time.Now().Format("2006-01-02")
 
 	result := database.DBConn.Create(record)
 
 	if result.Error != nil {
 		log.Println("Error in saving data:", result.Error)
-		context["statusText"] = ""
+		context["status_code"] = "500"
 		context["msg"] = "Error in saving data"
 		return c.Status(500).JSON(context)
 	}
 
 	// Set the book code based on the book ID
-	record.KodeBuku = getBookCodeByID(record.ID)
+	record.KodeBuku = strconv.Itoa(int(record.ID))
 
 	// Update the record with the generated book code
 	result = database.DBConn.Save(record)
 	if result.Error != nil {
 		log.Println("Error in updating data:", result.Error)
-		context["statusText"] = ""
+		context["status_code"] = "500"
 		context["msg"] = "Error in updating data"
 		return c.Status(500).JSON(context)
 	}
@@ -181,13 +199,13 @@ func BookCreate(c *fiber.Ctx) error {
 	context["data"] = record
 
 	return c.Status(201).JSON(context)
-
 }
 
+// Function Book Update
 func BookUpdate(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Update a Book List",
+		"status_code": "200",
+		"msg":         "Update a Book List",
 	}
 
 	id := c.Params("id")
@@ -198,7 +216,7 @@ func BookUpdate(c *fiber.Ctx) error {
 
 	if record.ID == 0 {
 		log.Println("Record not found.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Record not Found."
 		c.Status(400)
 		return c.JSON(context)
@@ -208,28 +226,30 @@ func BookUpdate(c *fiber.Ctx) error {
 	updatedRecord := new(model.Book)
 	if err := c.BodyParser(updatedRecord); err != nil {
 		log.Println("Error in parsing request.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Something went wrong JSON format"
 		return c.Status(400).JSON(context)
 	}
 
-	// Validate if kode_buku is provided
-	if updatedRecord.KodeBuku != "" {
-		log.Println("Error: kode_buku cannot be updated.")
-		context["statusText"] = ""
-		context["msg"] = "Kode Buku cannot be updated."
+	// Validate input
+	if updatedRecord.NamaBuku == "" || updatedRecord.TanggalPengesahan == "" || updatedRecord.KategoriBuku == "" || updatedRecord.Description == "" {
+		log.Println("Some fields are missing.")
+		context["status_code"] = "400"
+		context["msg"] = "All fields are required."
 		return c.Status(400).JSON(context)
 	}
 
-	// Update only nama_buku and tanggal_pengesahan
+	// Update only nama_buku, tanggal_pengesahan, kategori_buku, and description
 	record.NamaBuku = updatedRecord.NamaBuku
 	record.TanggalPengesahan = updatedRecord.TanggalPengesahan
+	record.KategoriBuku = updatedRecord.KategoriBuku
+	record.Description = updatedRecord.Description
 
 	// Validating tanggal_pengesahan format
 	_, err := time.Parse("2006-01-02", record.TanggalPengesahan)
 	if err != nil {
 		log.Println("Error in parsing tanggal pengesahan:", err)
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Invalid tanggal pengesahan format. Please use format yyyy-MM-dd"
 		return c.Status(400).JSON(context)
 	}
@@ -239,7 +259,7 @@ func BookUpdate(c *fiber.Ctx) error {
 
 	if result.Error != nil {
 		log.Println("Error in update data.")
-		context["statusText"] = ""
+		context["status_code"] = "500"
 		context["msg"] = "Error in updating data"
 		return c.Status(500).JSON(context)
 	}
@@ -248,74 +268,49 @@ func BookUpdate(c *fiber.Ctx) error {
 	context["data"] = record
 
 	return c.Status(200).JSON(context)
-
 }
 
+// Function Book Delete
 func BookDelete(c *fiber.Ctx) error {
-	c.Status(400)
-
 	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Delete Book",
+		"status_code": "200",
+		"msg":         "Delete Book",
 	}
 
 	id := c.Params("id")
 
 	var record model.Book
 
-	database.DBConn.First(&record, id)
-
-	if record.ID == 0 {
+	// Find the record by ID
+	if err := database.DBConn.First(&record, id).Error; err != nil {
 		log.Println("Record not found.")
-		context["statusText"] = ""
-		context["msg"] = "Record not Found."
+		context["status_code"] = "400"
+		context["msg"] = "Record not found."
 		c.Status(400)
 		return c.JSON(context)
 	}
 
-	result := database.DBConn.Delete(record)
-
-	if result.Error != nil {
-		log.Println("Error in update data.")
+	// Delete related Peminjaman records
+	if err := database.DBConn.Where("book_id = ?", id).Delete(&model.Peminjaman{}).Error; err != nil {
+		log.Println("Error in deleting related Peminjaman records:", err)
+		context["status_code"] = "500"
+		context["msg"] = "Error in deleting related Peminjaman records."
+		c.Status(500)
 		return c.JSON(context)
 	}
 
-	context["statusText"] = "Ok."
-	context["msg"] = "Record delete success."
+	// Soft delete the record
+	if err := database.DBConn.Delete(&record).Error; err != nil {
+		log.Println("Error in deleting record:", err)
+		context["status_code"] = "500"
+		context["msg"] = "Error in deleting record."
+		c.Status(500)
+		return c.JSON(context)
+	}
+
+	context["status_code"] = "200"
+	context["msg"] = "Record deleted successfully."
 	c.Status(200)
 
 	return c.JSON(context)
-}
-
-func SearchBorrowBooks(c *fiber.Ctx) error {
-	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Search Borrow Book List",
-	}
-	// Mendapatkan nilai parameter dari URL
-	param := c.Params("search")
-
-	db := database.DBConn
-
-	// Mencari buku berdasarkan parameter yang diberikan
-	var books []model.Book
-	if err := db.Where("nama_buku LIKE ? OR kode_buku LIKE ? OR tanggal_pengesahan LIKE ?", "%"+param+"%", "%"+param+"%", "%"+param+"%").Find(&books).Error; err != nil {
-		// Menangani kesalahan jika terjadi
-		context["statusText"] = "Error"
-		context["msg"] = "Failed to search books"
-		return c.Status(fiber.StatusInternalServerError).JSON(context)
-	}
-
-	// Mengembalikan daftar buku yang sesuai dengan kriteria pencarian
-	if len(books) == 0 {
-		// Menangani kasus jika tidak ada buku yang ditemukan
-		context["statusText"] = "Not Found"
-		context["msg"] = "No books found for the search query"
-		return c.Status(fiber.StatusNotFound).JSON(context)
-	}
-
-	context["book"] = books
-
-	return c.Status(fiber.StatusOK).JSON(context)
-
 }

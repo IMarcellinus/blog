@@ -1,19 +1,27 @@
 package controller
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"image"
+	"image/color"
+	"image/png"
 	"log"
 	"net/http"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/IMarcellinus/blog/database"
 	"github.com/IMarcellinus/blog/helper"
 	"github.com/IMarcellinus/blog/model"
 	"github.com/gofiber/fiber/v2"
+	"github.com/makiuchi-d/gozxing"
+	"github.com/makiuchi-d/gozxing/oned"
 	"github.com/skip2/go-qrcode"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -44,7 +52,6 @@ func WelcomeApi(c *fiber.Ctx) error {
 	return c.Status(200).JSON(returnObject)
 }
 
-// Function Login
 func Login(c *fiber.Ctx) error {
 	returnObject := fiber.Map{
 		"status_code": "200",
@@ -52,7 +59,6 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Check user for the given credentials
-
 	var formData formData
 
 	// Parse JSON request body
@@ -66,13 +72,12 @@ func Login(c *fiber.Ctx) error {
 
 	// Add formdata to model
 	user := new(model.User)
-	// var user model.User
 
 	database.DBConn.First(&user, "username = ?", formData.Username)
 
 	if user.ID == 0 {
 		returnObject["msg"] = "User not found."
-		returnObject["status"] = "Error."
+		returnObject["status_code"] = "400"
 		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
 	}
 
@@ -81,7 +86,7 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		log.Println("Invalid Password.")
 		returnObject["msg"] = "Invalid Password."
-		returnObject["status"] = "Error."
+		returnObject["status_code"] = "401"
 		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
 	}
 
@@ -89,8 +94,92 @@ func Login(c *fiber.Ctx) error {
 
 	if err != nil {
 		returnObject["msg"] = "Could not Login."
-		returnObject["status"] = "Error."
+		returnObject["status_code"] = "401"
 		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
+	}
+
+	// Update IsActive to true
+	user.IsActive = true
+	if err := database.DBConn.Save(&user).Error; err != nil {
+		log.Println("Error updating user active status:", err)
+		returnObject["msg"] = "Could not update user status."
+		returnObject["status_code"] = "500"
+		return c.Status(fiber.StatusInternalServerError).JSON(returnObject)
+	}
+
+	cookie := fiber.Cookie{
+		Name:     "token",
+		Value:    token,
+		HTTPOnly: true,
+	}
+
+	c.Cookie(&cookie)
+
+	returnObject["token"] = token
+	returnObject["user"] = user
+	returnObject["msg"] = "Success Login."
+	returnObject["status"] = "Ok."
+
+	c.Status(200)
+	return c.JSON(returnObject)
+}
+
+func LoginMobile(c *fiber.Ctx) error {
+	returnObject := fiber.Map{
+		"status_code": "200",
+		"msg":         "Something went wrong.",
+	}
+
+	// Check user for the given credentials
+	var formData struct {
+		Nim      string `json:"nim"`
+		Password string `json:"password"`
+	}
+
+	// Parse JSON request body
+	if err := c.BodyParser(&formData); err != nil {
+		log.Println("Error in json binding.")
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Invalid JSON format",
+		})
+	}
+
+	// Add formdata to model
+	user := new(model.User)
+
+	database.DBConn.First(&user, "nim = ?", formData.Nim)
+
+	if user.ID == 0 {
+		returnObject["msg"] = "User not found."
+		returnObject["status_code"] = "400"
+		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(formData.Password))
+
+	if err != nil {
+		log.Println("Invalid Password.")
+		returnObject["msg"] = "Invalid Password."
+		returnObject["status_code"] = "401"
+		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
+	}
+
+	token, err := helper.GenerateToken(*user)
+
+	if err != nil {
+		returnObject["msg"] = "Could not Login."
+		returnObject["status_code"] = "401"
+		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
+	}
+
+	// Update IsActive to true
+	user.IsActive = true
+	if err := database.DBConn.Save(&user).Error; err != nil {
+		log.Println("Error updating user active status:", err)
+		returnObject["msg"] = "Could not update user status."
+		returnObject["status_code"] = "500"
+		return c.Status(fiber.StatusInternalServerError).JSON(returnObject)
 	}
 
 	cookie := fiber.Cookie{
@@ -226,14 +315,39 @@ func Register(c *fiber.Ctx) error {
 
 // Function Logout
 func Logout(c *fiber.Ctx) error {
-	// Cek jika JWT sudah kosong
-	if c.Cookies("token") == "" {
-		return c.Status(401).JSON(fiber.Map{
-			"error": "Already logged out.",
+	authHeader := c.Get("Authorization")
+	// Check if the Authorization header exists and is in the format "Bearer token"
+	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
+		return c.Status(401).JSON(fiber.Map{"error": "Unauthorized: Bearer token missing", "status_code": 401})
+	}
+	// Get the token from the header
+	token := strings.Split(authHeader, " ")[1]
+
+	// Validate the token
+	claims, msg := helper.ValidateToken(token)
+	if msg != "" {
+		return c.Status(401).JSON(fiber.Map{"error": msg, "status_code": 401})
+	}
+
+	// Fetch the user from the database
+	var user model.User
+	if err := database.DBConn.First(&user, claims.UserId).Error; err != nil {
+		log.Println("Error fetching user:", err)
+		return c.Status(500).JSON(fiber.Map{
+			"error": "User not found.",
 		})
 	}
 
-	// Set cookie JWT dengan nilai kosong dan waktu kedaluwarsa yang sudah lewat
+	// Update IsActive to false
+	user.IsActive = false
+	if err := database.DBConn.Save(&user).Error; err != nil {
+		log.Println("Error updating user active status:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Could not update user status.",
+		})
+	}
+
+	// Set cookie JWT with an empty value and expired time
 	cookie := fiber.Cookie{
 		Name:     "token",
 		Value:    "",
@@ -241,13 +355,13 @@ func Logout(c *fiber.Ctx) error {
 		HTTPOnly: true,
 	}
 
-	// Menetapkan cookie
+	// Set the cookie
 	c.Cookie(&cookie)
 
-	// Respons berhasil
+	// Successful response
 	return c.Status(200).JSON(fiber.Map{
-		"status": "Ok",
-		"msg":    "Success Logout",
+		"status_code": 200,
+		"msg":         "Successfully logged out",
 	})
 }
 
@@ -293,9 +407,37 @@ func RefreshToken(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(returnObject)
 	}
 
+	// Struct for response to exclude password
+	type UserResponse struct {
+		ID           uint   `json:"id"`
+		Username     string `json:"username"`
+		Nim          string `json:"nim"`
+		Nama         string `json:"nama"`
+		JenisKelamin string `json:"jeniskelamin"`
+		Prodi        string `json:"prodi"`
+		CodeQr       string `json:"codeqr"`
+		Role         string `json:"role"`
+		CreatedAt    string `json:"created_at"`
+		IsActive     bool   `json:"is_active"`
+	}
+
+	// Create a response user object
+	responseUser := UserResponse{
+		ID:           user.ID,
+		Username:     user.Username,
+		Nim:          user.Nim,
+		Nama:         user.Nama,
+		JenisKelamin: user.JenisKelamin,
+		Prodi:        user.Prodi,
+		CodeQr:       user.CodeQr,
+		Role:         user.Role,
+		CreatedAt:    user.CreatedAt,
+		IsActive:     user.IsActive,
+	}
+
 	// Menyimpan token dan informasi user ke dalam response
 	returnObject["token"] = token
-	returnObject["user"] = user
+	returnObject["user"] = responseUser
 	returnObject["status_code"] = "200"
 
 	return c.Status(fiber.StatusOK).JSON(returnObject)
@@ -350,9 +492,21 @@ func UserPagination(c *fiber.Ctx) error {
 
 	query := db
 
-	// Mengecek apakah parameter keyword tidak kosong
-	if keyword != "" {
-		query = query.Where("nim LIKE ? OR nama LIKE ? OR jeniskelamin LIKE ? OR prodi LIKE ?", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%", "%"+keyword+"%")
+	// Decode the keyword to handle spaces
+	decodedKeyword, err := url.QueryUnescape(keyword)
+	if err != nil {
+		context := fiber.Map{
+			"msg":         "error decoding keyword",
+			"status_code": http.StatusBadRequest,
+		}
+		return c.Status(http.StatusBadRequest).JSON(context)
+	}
+
+	// Check if the keyword parameter is not empty
+	if decodedKeyword != "" {
+		// Ensure the keyword is correctly parsed and spaces are handled
+		parsedKeyword := "%" + strings.ReplaceAll(decodedKeyword, " ", "%") + "%"
+		query = query.Where("nim LIKE ? OR nama LIKE ? OR jeniskelamin LIKE ? OR prodi LIKE ?", parsedKeyword, parsedKeyword, parsedKeyword, parsedKeyword)
 	}
 
 	// Exclude users with the role 'admin'
@@ -503,8 +657,8 @@ func UserCreate(c *fiber.Ctx) error {
 // Function User Update by nim, role, nama, jenis kelamin, dan prodi
 func UserUpdate(c *fiber.Ctx) error {
 	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Update User Details",
+		"status_code": "200",
+		"msg":         "Update User Details",
 	}
 
 	id := c.Params("id")
@@ -516,7 +670,7 @@ func UserUpdate(c *fiber.Ctx) error {
 
 	if record.ID == 0 {
 		log.Println("Record not found.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Record not Found."
 		c.Status(400)
 		return c.JSON(context)
@@ -526,7 +680,7 @@ func UserUpdate(c *fiber.Ctx) error {
 	updatedRecord := new(formData)
 	if err := c.BodyParser(updatedRecord); err != nil {
 		log.Println("Error in parsing request.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Something went wrong JSON format"
 		return c.Status(400).JSON(context)
 	}
@@ -534,7 +688,7 @@ func UserUpdate(c *fiber.Ctx) error {
 	// Validate input
 	if updatedRecord.Role == "" || updatedRecord.Nim == "" || updatedRecord.Nama == "" || updatedRecord.JenisKelamin == "" || updatedRecord.Prodi == "" {
 		log.Println("Some fields are missing.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "All fields are required."
 		return c.Status(400).JSON(context)
 	}
@@ -542,7 +696,7 @@ func UserUpdate(c *fiber.Ctx) error {
 	// Validate gender input
 	if updatedRecord.JenisKelamin != "laki-laki" && updatedRecord.JenisKelamin != "perempuan" {
 		log.Println("Invalid gender input.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Gender must be either 'laki-laki' or 'perempuan'."
 		return c.Status(400).JSON(context)
 	}
@@ -559,7 +713,7 @@ func UserUpdate(c *fiber.Ctx) error {
 
 	if result.Error != nil {
 		log.Println("Error in updating data.")
-		context["statusText"] = ""
+		context["status_code"] = ""
 		context["msg"] = "Error in updating data"
 		return c.Status(500).JSON(context)
 	}
@@ -576,8 +730,8 @@ func UserDelete(c *fiber.Ctx) error {
 	c.Status(400)
 
 	context := fiber.Map{
-		"statusText": "Ok",
-		"msg":        "Delete User",
+		"status_code": "200",
+		"msg":         "Delete User",
 	}
 
 	id := c.Params("id")
@@ -588,7 +742,7 @@ func UserDelete(c *fiber.Ctx) error {
 
 	if record.ID == 0 {
 		log.Println("Record not found.")
-		context["statusText"] = ""
+		context["status_code"] = "400"
 		context["msg"] = "Record not Found."
 		c.Status(400)
 		return c.JSON(context)
@@ -601,7 +755,7 @@ func UserDelete(c *fiber.Ctx) error {
 		return c.JSON(context)
 	}
 
-	context["statusText"] = "Ok."
+	context["status_code"] = "200"
 	context["msg"] = "Record delete success."
 	c.Status(200)
 
@@ -679,8 +833,76 @@ func ChangePassword(c *fiber.Ctx) error {
 	})
 }
 
-// Function Get User By Id
-func GetUserByID(c *fiber.Ctx) error {
+func GetBarcodeByID(c *fiber.Ctx) error {
+	// Get the ID parameter from the URL
+	id := c.Params("id")
+
+	// Initialize the User struct
+	var user model.User
+
+	// Fetch the user from the database by ID
+	if err := database.DBConn.First(&user, "id = ?", id).Error; err != nil {
+		log.Println("Error fetching user:", err)
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "User not found",
+		})
+	}
+
+	// Created Barcode
+	writer := oned.NewCode128Writer()
+
+	// Create barcode from CodeQr column
+	qrFromCodeQr, err := writer.Encode(user.CodeQr, gozxing.BarcodeFormat_CODE_128, 250, 50, nil)
+	if err != nil {
+		log.Println("Error generating barcode from CodeQr:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to generate barcode from CodeQr",
+		})
+	}
+
+	// Convert BitMatrix to an image
+	img := bitMatrixToImage(qrFromCodeQr)
+
+	// Encode the image to PNG
+	var buf bytes.Buffer
+	err = png.Encode(&buf, img)
+	if err != nil {
+		log.Println("Error encoding image to PNG:", err)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "Failed to encode image to PNG",
+		})
+	}
+
+	encodeBase64 := base64.StdEncoding.EncodeToString(buf.Bytes())
+
+	// Return the user details
+	return c.Status(http.StatusOK).JSON(fiber.Map{
+		"status":    "Success Get Barcode By Id",
+		"baseImage": encodeBase64,
+	})
+}
+
+// Convert BitMatrix to an image.Image
+func bitMatrixToImage(matrix *gozxing.BitMatrix) image.Image {
+	width := matrix.GetWidth()
+	height := matrix.GetHeight()
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
+			if matrix.Get(x, y) {
+				img.Set(x, y, color.Black)
+			} else {
+				img.Set(x, y, color.White)
+			}
+		}
+	}
+	return img
+}
+
+func GetQrCodeByID(c *fiber.Ctx) error {
 	// Get the ID parameter from the URL
 	id := c.Params("id")
 
@@ -710,7 +932,38 @@ func GetUserByID(c *fiber.Ctx) error {
 
 	// Return the user details
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"status":    "Success Get User By Id",
+		"status":    "Success Get Qr Code By Id",
 		"baseImage": encodeBase64,
 	})
+}
+
+func GetActiveUsersCount(c *fiber.Ctx) error {
+	context := fiber.Map{
+		"status_code": 200,
+		"message":     "success getting total active users",
+	}
+
+	db := database.DBConn
+	var total int64
+
+	// Count total number of users where IsActive is true
+	if err := db.Model(&model.User{}).Where("is_active = ?", true).Count(&total).Error; err != nil {
+		context["status_code"] = http.StatusInternalServerError
+		context["message"] = "failed to get total active users"
+		return c.Status(http.StatusInternalServerError).JSON(context)
+	}
+
+	if total == 0 {
+		context["status_code"] = http.StatusNotFound
+		context["message"] = "no active users"
+		return c.Status(http.StatusNotFound).JSON(context)
+	}
+
+	context["data"] = []fiber.Map{
+		{
+			"account_active": total,
+		},
+	}
+
+	return c.JSON(context)
 }

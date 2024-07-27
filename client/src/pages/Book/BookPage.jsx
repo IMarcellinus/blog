@@ -4,23 +4,28 @@ import { IoMdAddCircleOutline } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
 import {
   getAllBook,
   getBook,
   setActive,
   setBookSearch,
   setCurrentPageBook,
+  setDescription,
   setEdit,
   setId,
+  setKategoriBuku,
   setKodeBuku,
   setMessage,
   setNamaBuku,
+  setSearch,
   setTanggalPengesahan,
+  setToggleDetail,
 } from "../../../services/store/reducers/Bookslice";
 import BookList from "./BookList";
 import ModalBook from "./ModalBook";
 import SearchBarBook from "./SearchBarBook";
+import { setIsDelete } from "../../../services/store/reducers/Bookslice";
+import SkeletonTable from "../../components/Skeleton/SkeletonTable";
 
 const BookPage = ({ authUser }) => {
   // console.log(authUser.role);
@@ -33,10 +38,8 @@ const BookPage = ({ authUser }) => {
     isUpdate,
     isDelete,
     currentPageBook,
-    status,
     search,
     bookSearch,
-    idUser,
   } = useSelector((state) => state.books);
   const {
     fetchUser,
@@ -56,8 +59,11 @@ const BookPage = ({ authUser }) => {
     dispatch(setActive(false));
     dispatch(setKodeBuku(""));
     dispatch(setTanggalPengesahan(""));
+    dispatch(setKategoriBuku(""));
+    dispatch(setDescription(""));
     dispatch(setMessage(""));
     dispatch(setEdit(""));
+    dispatch(setToggleDetail(false));
     document.body.style.overflow = "auto";
   };
 
@@ -77,22 +83,12 @@ const BookPage = ({ authUser }) => {
       dispatch(getAllBook({ currentPageBook: currentPage, search }));
     } else if (books.length === 0 && bookSearch.length === 1 && search && currentPageBook === 0) {
       dispatch(getAllBook({ currentPageBook: currentPage, search }));
+    } else if (books.length === 0 && bookSearch.length === 0 && !search) {
+      dispatch(getBook({currentPageBook}))
     }
   };
 
   useEffect(() => {
-    if (!fetchUser) {
-      let loginRoute = "/login";
-      if (authUser.role === "user") {
-        loginRoute = "/loginuser";
-      }
-      navigate(loginRoute);
-      Swal.fire({
-        icon: "error",
-        text: "Sesi Telah Habis, Silahkan Login Kembali :)",
-      });
-    }
-
     if (isSubmit) {
       handleCloseModal();
       toast.success("Tambah Buku Berhasil");
@@ -105,8 +101,9 @@ const BookPage = ({ authUser }) => {
     }
 
     if (isDelete) {
-      toast.error("Hapus Berhasil !");
       handleDeleteLogic();
+      toast.error("Hapus Buku Berhasil !");
+      dispatch(setIsDelete(false))
     }
 
     if (isUpdate) {
@@ -124,11 +121,13 @@ const BookPage = ({ authUser }) => {
   useEffect(() => {
     dispatch(setCurrentPageBook(0));
     dispatch(setBookSearch());
+    dispatch(setSearch(""))
   }, [dispatch]);
 
   useEffect(() => {
     let timeoutId;
     const fetchData = () => {
+      handleCloseModal();
       const currentPage = 1;
       if (search) {
         dispatch(getAllBook({ currentPageBook: currentPage, search }));
@@ -161,8 +160,6 @@ const BookPage = ({ authUser }) => {
     }
   }, [currentPageBook, dispatch, isDelete, search]);
 
-  
-  
   return (
     <main className="min-h-screen overflow-x-auto pb-14">
       <div className="inline-block min-w-full pl-4">
@@ -190,14 +187,14 @@ const BookPage = ({ authUser }) => {
             </div>
           </div>
           <div>
-            <BookList
+            {isLoading ? (<SkeletonTable />) : (<BookList
               totalPages={totalPagesBook}
               currentPageBook={currentPageBook}
               isLoading={isLoading}
               books={books}
               setModalIsOpen={setModalIsOpen}
               authUser={authUser}
-            />
+            />)}
           </div>
         </div>
       </div>

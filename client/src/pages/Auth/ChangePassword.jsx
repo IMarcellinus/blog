@@ -15,7 +15,6 @@ const ChangePassword = () => {
   const { authUser, passwordChanged, message } = useSelector((states) => states.auth);
   const id = authUser.id;
   const dispatch = useDispatch();
-  // console.log(id)
 
   const handleOldPasswordChange = (event) => {
     const value = event.target.value;

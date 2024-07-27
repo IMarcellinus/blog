@@ -10,23 +10,25 @@ import (
 const SecretKey = "secret"
 
 func Authenticate(c *fiber.Ctx) error {
-	// Mendapatkan header Authorization
+	// Get the Authorization header
 	authHeader := c.Get("Authorization")
-	// Mengecek apakah header Authorization ada dan berformat "Bearer token"
+	// Check if the Authorization header exists and is in the format "Bearer token"
 	if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
-		return c.Status(401).JSON(fiber.Map{"error": "Unauthorized: Bearer token missing"})
+		return c.Status(401).JSON(fiber.Map{"error": "Unauthorized: Bearer token missing", "status_code": 401})
 	}
-	// Mendapatkan token dari header
+	// Get the token from the header
 	token := strings.Split(authHeader, " ")[1]
 
-	// Memvalidasi token
+	// Validate the token
 	claims, msg := helper.ValidateToken(token)
 	if msg != "" {
-		return c.Status(401).JSON(fiber.Map{"error": msg})
+		return c.Status(401).JSON(fiber.Map{"error": msg, "status_code": 401})
 	}
 
-	// Menetapkan username ke dalam lokal context
+	// Set the username, role, and userid in the local context
 	c.Locals("username", claims.Username)
+	c.Locals("nim", claims.Nim)
+	c.Locals("role", claims.Role)
 	c.Locals("userid", claims.UserId)
 
 	return c.Next()

@@ -28,6 +28,8 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
     edit,
     barcode,
     urlbarcode,
+    urlqrcode,
+    qrcode,
   } = useSelector((state) => state.users);
 
   const dispatch = useDispatch();
@@ -94,10 +96,16 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
               className="fixed inset-0 z-50 bg-gray-500/75 transition-opacity"
               aria-hidden="true"
             ></div>
-            <div className={`relative z-50 flex h-auto ${barcode ? 'w-fit' : 'w-2/5'} min-w-[250px] flex-col rounded-lg bg-white p-4`}>
+            <div
+              className={`relative z-50 flex h-auto ${
+                qrcode || barcode ? "w-fit" : "w-2/5"
+              } min-w-[250px] flex-col rounded-lg bg-white p-4`}
+            >
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-bold text-gray-900">
-                  {barcode
+                  {qrcode
+                    ? "QR Code User"
+                    : barcode
                     ? "Barcode User"
                     : edit
                     ? "Edit User"
@@ -110,10 +118,12 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
               <div className="flex h-full flex-col pt-1">
                 <p className="text-red-600">{message}</p>
                 <div className="h-full">
-                  {barcode ? (
+                  {qrcode || barcode ? (
                     <img
-                      src={`data:image/png;base64,${urlbarcode}`}
-                      alt="QR Code"
+                      src={`data:image/png;base64,${
+                        qrcode ? urlqrcode : urlbarcode
+                      }`}
+                      alt={qrcode ? "QR Code" : "Barcode"}
                       className="h-full w-full"
                     />
                   ) : (

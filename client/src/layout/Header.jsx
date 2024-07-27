@@ -3,8 +3,11 @@ import { HiOutlineMenuAlt4 } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { logoutUser } from "../../services/store/reducers/Authslice";
+import { logoutUser, reset } from "../../services/store/reducers/Authslice";
 import { SilaperLogo } from "../assets/img";
+import { resetStateBorrow } from "../../services/store/reducers/Borrowslice";
+import { resetStateBook } from "../../services/store/reducers/Bookslice";
+import Cookies from "js-cookie";
 
 const Header = ({
   dropdownRef,
@@ -16,7 +19,8 @@ const Header = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // console.log("header: " ,authUser.role)
+  const token = Cookies.get("token");
+
   const LogOut = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -29,12 +33,28 @@ const Header = ({
       cancelButtonText: "No",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(logoutUser());
-        if (authUser.role === "admin") {
-          navigate("/login");
-        } else {
-          navigate("/loginuser");
-        }
+        dispatch(logoutUser())
+          .then(() => {
+            Cookies.remove("token");
+            dispatch(resetStateBorrow());
+            dispatch(reset());
+            dispatch(resetStateBook());
+
+            // Redirect to appropriate login page based on user role
+            if (authUser.role === "admin") {
+              navigate("/login");
+            } else {
+              navigate("/loginuser");
+            }
+          })
+          .catch((error) => {
+            console.error("Logout error:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Logout Failed",
+              text: "Failed to logout. Please try again.",
+            });
+          });
       }
     });
   };
@@ -46,7 +66,7 @@ const Header = ({
           <div className="flex flex-row items-center">
             <img
               src={SilaperLogo}
-              alt="Bluebird"
+              alt="Silaper"
               className="hidden h-24 md:block"
             />
             <HiOutlineMenuAlt4
@@ -56,7 +76,9 @@ const Header = ({
                 setDropdown(false);
               }}
             />
-            <h3 className="text-lg hidden md:block">Sistem Layanan Perpustakaan</h3>
+            <h3 className="text-lg hidden md:block">
+              Sistem Layanan Perpustakaan Jurusan Teknik Elektro
+            </h3>
           </div>
         </div>
         <div className="relative">
@@ -69,19 +91,21 @@ const Header = ({
             }}
           >
             <p className="hidden select-none sm:block">
-              Welcome {authUser && authUser?.username}
+              Welcome {authUser && authUser?.nama}
             </p>
           </div>
           {dropdown && (
             <div className="absolute -right-4 top-12 z-50 flex w-52 flex-col gap-1 rounded-xl bg-white p-4 text-black shadow-lg">
               <NavLink
-                  to='/changepassword'
-                  className={({ isActive }) =>
-                    isActive ? 'flex gap-3 rounded-md items-center group bg-blue-500 cursor-pointer p-2 text-sm text-white active:bg-blue-600 md:gap-4' : 'flex gap-3 rounded-md cursor-pointer p-2 text-sm items-center text-black group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4'
-                  }
-                >
-                  Change Password
-                </NavLink>
+                to="/changepassword"
+                className={({ isActive }) =>
+                  isActive
+                    ? "flex gap-3 rounded-md items-center group bg-blue-500 cursor-pointer p-2 text-sm text-white active:bg-blue-600 md:gap-4"
+                    : "flex gap-3 rounded-md cursor-pointer p-2 text-sm items-center text-black group hover:bg-blue-500 hover:text-white  active:bg-blue-600 md:gap-4"
+                }
+              >
+                Change Password
+              </NavLink>
               <button
                 className="w-full cursor-pointer rounded p-2 text-left text-sm hover:bg-blue-500 hover:text-white"
                 onClick={LogOut}
@@ -102,7 +126,7 @@ Header.propTypes = {
   dropdown: PropTypes.bool.isRequired,
   setDropdown: PropTypes.func.isRequired,
   authUser: PropTypes.shape({
-    username: PropTypes.string.isRequired,
+    nama: PropTypes.string.isRequired,
     role: PropTypes.string.isRequired,
   }).isRequired,
   dropdownRef: PropTypes.shape({

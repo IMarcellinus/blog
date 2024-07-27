@@ -10,6 +10,8 @@ import (
 
 type CustomClaims struct {
 	Username string
+	Role     string
+	Nim      string
 	UserId   uint
 
 	jwt.RegisteredClaims
@@ -23,6 +25,8 @@ func GenerateToken(user model.User) (string, error) {
 
 	claims := CustomClaims{
 		user.Username,
+		user.Role,
+		user.Nim,
 		user.ID,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),

@@ -44,9 +44,6 @@ const SearchBarUser = () => {
               className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 '
               placeholder='Search User'
             />
-            {/* <button type='submit' className='absolute inset-y-0 right-0 flex items-center pr-3 '>
-              <GrFormFilter className='h-5 w-5' />
-            </button> */}
           </div>
         </form>
     </div>

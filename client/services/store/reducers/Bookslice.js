@@ -22,6 +22,8 @@ const initialState = {
   nama_buku: "",
   kodeBuku: "",
   tanggal_pengesahan: "",
+  kategori_buku: "",
+  description: "",
   search: "",
   searchDetail: "",
   listBookDetail: [],
@@ -31,6 +33,9 @@ const initialState = {
   status: null,
   active: false,
   detailBook: null,
+  fetchBook: false,
+  fetchBookSearch: false,
+  toggleDetail: false,
 };
 
 const getToken = async () => {
@@ -101,7 +106,9 @@ export const createBook = createAsyncThunk(
         `${BASE_URL}/book`,
         {
           nama_buku: create.nama_buku,
-          tanggal_pengesahan: create.tanggal_pengesahan
+          tanggal_pengesahan: create.tanggal_pengesahan,
+          kategori_buku: create.kategori_buku,
+          description: create.description,
         },
         {
           headers: {
@@ -130,7 +137,9 @@ export const updateBook = createAsyncThunk(
         `${BASE_URL}/book/${update.id}`,
         {
           nama_buku: update.nama_buku,
-          tanggal_pengesahan: update.tanggal_pengesahan
+          tanggal_pengesahan: update.tanggal_pengesahan,
+          kategori_buku: update.kategori_buku,
+          description: update.description,
         },
         {
           headers: {
@@ -148,21 +157,18 @@ export const updateBook = createAsyncThunk(
 
 export const deleteBook = createAsyncThunk(
   "books/deleteBook",
-  async ({id}, thunkAPI) => {
+  async ({ id }, thunkAPI) => {
     const token = await getToken();
     if (!token) {
       return thunkAPI.rejectWithValue("No token found");
     }
     try {
       const token = await getToken();
-      const response = await axios.delete(
-        `${BASE_URL}/book/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.delete(`${BASE_URL}/book/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       console.log(error);
@@ -175,6 +181,9 @@ export const BookSlice = createSlice({
   name: "books",
   initialState,
   reducers: {
+    resetStateBook: (state) => {
+      state = initialState
+    },
     setId: (state, action) => {
       state.id = action.payload;
     },
@@ -189,6 +198,12 @@ export const BookSlice = createSlice({
     },
     setTanggalPengesahan: (state, action) => {
       state.tanggal_pengesahan = action.payload;
+    },
+    setKategoriBuku: (state, action) => {
+      state.kategori_buku = action.payload;
+    },
+    setDescription: (state, action) => {
+      state.description = action.payload;
     },
     setCurrentPageBook: (state, action) => {
       state.currentPageBook = action.payload;
@@ -224,6 +239,21 @@ export const BookSlice = createSlice({
     setActive: (state, action) => {
       state.active = action.payload;
     },
+    setFetchBook: (state, action) => {
+      state.fetchBook = action.payload;
+    },
+    setFetchBookSearch: (state, action) => {
+      state.fetchBookSearch = action.payload;
+    },
+    setIsLoadingBook: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    setIsDelete: (state, action) => {
+      state.isDelete = action.payload;
+    },
+    setToggleDetail: (state, action) => {
+      state.toggleDetail = action.payload
+    },
   },
   extraReducers: (builder) => {
     // Get Book using pagination
@@ -240,7 +270,9 @@ export const BookSlice = createSlice({
       state.isSubmit = false;
       state.isUpdate = false;
       state.status = null;
-      state.books = [];
+      state.books = action.payload?.books;
+      state.fetchBookSearch = true;
+      state.fetchBook = false;
     });
     builder.addCase(getAllBook.rejected, (state, action) => {
       state.isLoading = false;
@@ -265,6 +297,8 @@ export const BookSlice = createSlice({
       state.isSubmit = false;
       state.isUpdate = false;
       state.status = null;
+      state.fetchBookSearch = false;
+      state.fetchBook = true;
     });
     builder.addCase(getBook.rejected, (state, action) => {
       state.isLoading = false;
@@ -290,7 +324,7 @@ export const BookSlice = createSlice({
       state.isSuccess = false;
       state.message = action.payload;
     });
-    
+
     // Update Book
     builder.addCase(updateBook.pending, (state) => {
       state.isLoading = true;
@@ -334,7 +368,10 @@ export const {
   setNamaBuku,
   setKodeBuku,
   setTanggalPengesahan,
+  setDescription,
   setCurrentPageBook,
+  setFetchBook,
+  setFetchBookSearch,
   setMessage,
   setStatus,
   setEdit,
@@ -343,8 +380,13 @@ export const {
   setBookDetail,
   setBookSearch,
   setIdUser,
+  setIsLoadingBook,
   setDeleteFail,
-  setActive
+  setActive,
+  resetStateBook,
+  setKategoriBuku,
+  setIsDelete,
+  setToggleDetail
 } = BookSlice.actions;
 
 export default BookSlice.reducer;

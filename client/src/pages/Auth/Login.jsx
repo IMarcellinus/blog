@@ -24,10 +24,6 @@ function Login() {
   const [errorPassword, setErrorPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const deleteToken = () => {
-    Cookies.remove("token");
-  };
-
   const handleLogin = (e) => {
     e.preventDefault();
     isLoading(true);
@@ -73,7 +69,6 @@ function Login() {
   }, [user, isSuccess, dispatch, navigate]);
 
   useEffect(() => {
-    // deleteToken();
     document.body.style.overflow = 'auto';
   }, [])
 
@@ -85,9 +80,15 @@ function Login() {
     <section className="mx-auto max-w-[1280px] relative h-screen flex items-center justify-center">
       <div className="w-full space-y-6 md:space-y-6 bg-slate-300 rounded-xl shadow dark:border dark:bg-gray-800 dark:border-gray-700 dark:bg-white p-4 m-2 lg:m-20 xl:m-24">
         <div className="flex items-center flex-col">
-          <img src={SilaperLogo} className="h-28 sm:h-44 md:h-52"></img>
+          <img src={SilaperLogo} className="h-28 sm:h-44 md:h-60"></img>
           <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-black text-center">
-            Sistem Pelayanan Perpustakaan (SILAPER)
+            Sistem Layanan Perpustakaan (SILAPER)
+          </h1>
+          <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-black text-center">
+            Jurusan Teknik Elektro
+          </h1>
+          <h1 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-xl dark:text-black text-center">
+            Politeknik Negeri Semarang
           </h1>
         </div>
         {isError && (
