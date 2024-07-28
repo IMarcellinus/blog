@@ -197,13 +197,24 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       </div>
                       <div className="flex flex-col">
                         <label className="font-medium">Prodi</label>
-                        <input
+                        <select
                           required
                           value={prodi}
-                          onChange={(e) => dispatch(setProdi(e.target.value))}
+                          onChange={(e) =>
+                            dispatch(setProdi(e.target.value))
+                          }
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
-                          type="text"
-                        />
+                        >
+                          <option value="">Pilih Jenis Prodi</option>
+                          <option value="D3 - Teknik Listrik">D3 - Teknik Listrik</option>
+                          <option value="D3 - Teknik Elektronika">D3 - Teknik Elektronika</option>
+                          <option value="D3 - Teknik Informatika">D3 - Teknik Informatika</option>
+                          <option value="D3 - Teknik Telekomunikasi">D3 - Teknik Telekomunikasi</option>
+                          <option value="S.Tr - Teknologi Rekayasa Komputer">S.Tr - Teknologi Rekayasa Komputer</option>
+                          <option value="S.Tr - Teknologi Rekayasa Instalasi Listrik">S.Tr - Teknologi Rekayasa Instalasi Listrik</option>
+                          <option value="S.Tr - Teknologi Rekayasa Elektronika">S.Tr - Teknologi Rekayasa Elektronika</option>
+                          <option value="S.Tr - Teknik Telekomunikasi">S.Tr - Teknik Telekomunikasi</option>
+                        </select>
                       </div>
                       <div className="flex flex-col">
                         <label className="font-medium">Role</label>

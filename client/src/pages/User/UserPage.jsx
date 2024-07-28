@@ -21,6 +21,7 @@ import {
   setNim,
   setPassword,
   setProdi,
+  setQrCode,
   setRole,
   setSearch,
   setUrlQrCode,
@@ -69,6 +70,7 @@ const UserPage = ({ authUser }) => {
     dispatch(setMessage(""));
     dispatch(setEdit(false));
     dispatch(setBarcode(false));
+    dispatch(setQrCode(false))
     dispatch(setUrlQrCode(false));
     dispatch(setIsSucess(false));
     dispatch(setIsDelete(false));

@@ -586,11 +586,21 @@ func UserCreate(c *fiber.Ctx) error {
 		})
 	}
 
+	// Check if username already exists
 	var existingUser model.User
 	if err := database.DBConn.Where("username = ?", formData.Username).First(&existingUser).Error; err == nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"status": "Error",
 			"msg":    "Username already exists",
+		})
+	}
+
+	// Check if NIM already exists
+	var existingNimUser model.User
+	if err := database.DBConn.Where("nim = ?", formData.Nim).First(&existingNimUser).Error; err == nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": "Error",
+			"msg":    "NIM already exists",
 		})
 	}
 
@@ -701,6 +711,24 @@ func UserUpdate(c *fiber.Ctx) error {
 		return c.Status(400).JSON(context)
 	}
 
+	// Check if username already exists and not the same as the current record
+	var existingUser model.User
+	if err := database.DBConn.Where("username = ? AND id != ?", updatedRecord.Username, id).First(&existingUser).Error; err == nil {
+		log.Println("Username already exists.")
+		context["status_code"] = "400"
+		context["msg"] = "Username already exists."
+		return c.Status(400).JSON(context)
+	}
+
+	// Check if NIM already exists and not the same as the current record
+	var existingNimUser model.User
+	if err := database.DBConn.Where("nim = ? AND id != ?", updatedRecord.Nim, id).First(&existingNimUser).Error; err == nil {
+		log.Println("NIM already exists.")
+		context["status_code"] = "400"
+		context["msg"] = "NIM already exists."
+		return c.Status(400).JSON(context)
+	}
+
 	// Update user details
 	record.Role = updatedRecord.Role
 	record.Nim = updatedRecord.Nim
@@ -722,7 +750,6 @@ func UserUpdate(c *fiber.Ctx) error {
 	context["data"] = record
 
 	return c.Status(200).JSON(context)
-
 }
 
 // Function User Delete by Id

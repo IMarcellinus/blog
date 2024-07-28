@@ -117,7 +117,7 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                         disabled={toggleDetail === true}
                       />
                     </div>
-                    {toggleDetail && (
+                    {/* {toggleDetail && (
                       <div className="flex h-full flex-col">
                         <label className="font-medium">Kategori Buku</label>
                         <input
@@ -131,8 +131,8 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                           disabled={toggleDetail === true}
                         />
                       </div>
-                    )}
-                    {!toggleDetail && (
+                    )} */}
+                    {/* {!toggleDetail && ( */}
                       <div className="flex flex-col">
                         <label className="font-medium">Kategori Buku</label>
                         <select
@@ -142,6 +142,7 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                             dispatch(setKategoriBuku(e.target.value));
                           }}
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
+                          disabled={toggleDetail === true}
                         >
                           <option value="">Pilih Kategori</option>
                           <option value="laporan magang">Laporan Magang</option>
@@ -151,7 +152,7 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                           <option value="keteknikan">Keteknikan</option>
                         </select>
                       </div>
-                    )}
+                    {/* )} */}
                     <div className="flex h-full flex-col">
                       <label className="font-medium">Book Description</label>
                       <textarea

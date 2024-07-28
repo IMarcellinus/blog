@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
-import axios from "axios";
 import { BASE_URL } from "../../../utils/api";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState = {
   dataTotalManagement: [],
@@ -25,7 +25,7 @@ export const actionCreatorGetDataManagement = createAsyncThunk(
       return thunkAPI.rejectWithValue({ message: "No token found" });
     }
     try {
-      const response = await axios.get(`${BASE_URL}/dashboard-all`, {
+      const response = await axiosInstance.get(`${BASE_URL}/dashboard-all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -46,7 +46,7 @@ export const GetDataAvailableBooks = createAsyncThunk(
       return thunkAPI.rejectWithValue({ message: "No token found" });
     }
     try {
-      const response = await axios.get(`${BASE_URL}/available-books`, {
+      const response = await axiosInstance.get(`${BASE_URL}/available-books`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,7 +67,7 @@ export const GetDataBorrowBookProdi = createAsyncThunk(
       return thunkAPI.rejectWithValue({ message: "No token found" });
     }
     try {
-      const response = await axios.get(`${BASE_URL}/dashboard-prodi`, {
+      const response = await axiosInstance.get(`${BASE_URL}/dashboard-prodi`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

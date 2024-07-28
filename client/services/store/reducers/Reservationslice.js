@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../../../utils/api";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState = {
   reservations: [],
@@ -32,7 +32,7 @@ export const getAllReservation = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/reservationbook/${currentPageReservation}/8/${search}`,
         {
           headers: {
@@ -57,7 +57,7 @@ export const getReservation = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/reservationbook/${currentPageReservation}/8`,
         {
           headers: {

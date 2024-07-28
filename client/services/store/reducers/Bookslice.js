@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../../../utils/api";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState = {
   books: [],
@@ -52,7 +52,7 @@ export const getAllBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/book/${currentPageBook}/8/${search}`,
         {
           headers: {
@@ -77,7 +77,7 @@ export const getBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/book/${currentPageBook}/8`,
         {
           headers: {
@@ -102,7 +102,7 @@ export const createBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${BASE_URL}/book`,
         {
           nama_buku: create.nama_buku,
@@ -133,7 +133,7 @@ export const updateBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${BASE_URL}/book/${update.id}`,
         {
           nama_buku: update.nama_buku,
@@ -164,7 +164,7 @@ export const deleteBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.delete(`${BASE_URL}/book/${id}`, {
+      const response = await axiosInstance.delete(`${BASE_URL}/book/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
