@@ -1,238 +1,238 @@
 id,nama_buku,kode_buku,tanggal_pengesahan,kategori_buku,description,created_at
-1,Implementasi dan Analisis Sistem Tenaga Listrik di Pabrik Manufaktur,1,2015-11-10,Laporan Magang,,2024-07-09 12:49:25
-2,Teknologi Voice Over Internet Protokol (VOIP) di Indonesia,2,2011-12-08,Laporan Skripsi,,2024-07-09 12:49:25
-3,Implementasi Sistem Sistem Tenaga Listrik,3,2014-01-05,Keteknikan,,2024-07-09 12:49:25
-4,Rancang Bangun Sistem Kendali Otomatis untuk Robot Industri,4,2011-12-10,Laporan Magang,,2024-07-09 12:49:25
-5,Studi dan Implementasi Task Modeling Studi Kasus Sistem Informasi Pelanggan pada Distro,5,2023-12-19,Laporan Skripsi,,2024-07-09 12:49:25
-6,Rancang Bangun Sistem Komunikasi Digital,6,2015-11-21,Keteknikan,,2024-07-09 12:49:25
-7,Studi Kasus: Perbaikan dan Pemeliharaan Jaringan Distribusi Listrik di Perusahaan XYZ,7,2015-04-16,Laporan Magang,,2024-07-09 12:49:25
-8,Studi Dan Implementasi Active Fuzzy Constrained Clustering Untuk Pengelompokan Dokumen,8,2022-05-24,Laporan Skripsi,,2024-07-09 12:49:25
-9,Rancang Bangun Sistem Sistem Tenaga Listrik,9,2012-06-05,Keteknikan,,2024-07-09 12:49:25
-10,Desain dan Implementasi Sistem Energi Terbarukan Berbasis Panel Surya,10,2017-03-13,Laporan Magang,,2024-07-09 12:49:25
-11,Studi Banding Implementasi Java RMI Dan Java Corba Pada Sistem Terdistribusi Dengan Kasus Komputasi,11,2012-12-26,Laporan Skripsi,,2024-07-09 12:49:25
-12,Pengembangan Sistem Monitoring dan Pengendalian Jarak Jauh pada Gardu Induk,13,2020-06-03,Laporan Magang,,2024-07-09 12:49:25
-13,SMS Gateway Untuk Informasi Jadwal Penerbangan,14,2022-10-17,Laporan Skripsi,,2024-07-09 12:49:25
-14,Analisis Sistem Komunikasi Digital,15,2017-02-05,Keteknikan,,2024-07-09 12:49:25
-15,Optimisasi Sistem Pendingin pada Data Center dengan Teknologi IoT,16,2011-03-09,Laporan Magang,,2024-07-09 12:49:25
-16,SMS Gateway Application For Location Based Service (LBS) System With Cell Global Identity And Timing,17,2023-08-12,Laporan Skripsi,,2024-07-09 12:49:25
-17,Implementasi Sistem Elektronika Analog,18,2019-02-11,Keteknikan,,2024-07-09 12:49:25
-18,Aplikasi Teknik Kendali Digital pada Sistem Robotika di Industri Otomotif,19,2012-10-19,Laporan Magang,,2024-07-09 12:49:25
-19,Sistem Perwalian Berbasis Web,20,2023-10-22,Laporan Skripsi,,2024-07-09 12:49:25
-20,Analisis Sistem Sistem Tenaga Listrik,21,2021-10-14,Keteknikan,,2024-07-09 12:49:25
-21,Penerapan Algoritma Pengoptimalan untuk Efisiensi Konsumsi Energi di Gedung Perkantoran,22,2011-05-11,Laporan Magang,,2024-07-09 12:49:25
-22,Sistem Pencatatan Pemakaian Fasilitas Menggunakan Visual Basic 6.0,23,2013-07-10,Laporan Skripsi,,2024-07-09 12:49:25
-23,Analisis Kinerja Motor Listrik pada Mesin Produksi di Pabrik ABC,25,2013-09-11,Laporan Magang,,2024-07-09 12:49:25
-24,Sistem Informasi Perpustakaan Universitas Muhammadiyah Bengkulu Berbasis Jaringan,26,2011-08-21,Laporan Skripsi,,2024-07-09 12:49:25
-25,Rancang Bangun Sistem Elektronika Analog,27,2010-04-23,Keteknikan,,2024-07-09 12:49:25
-26,Pengembangan Sistem Proteksi Kebocoran Arus pada Instalasi Rumah Tangga,28,2014-05-18,Laporan Magang,,2024-07-09 12:49:25
-27,Sistem Informasi Penggajian Pada Pt.Surya Lagang Ostentasi Medan,29,2019-12-02,Laporan Skripsi,,2024-07-09 12:49:25
-28,Implementasi Sistem Komunikasi Digital,30,2021-03-01,Keteknikan,,2024-07-09 12:49:25
-29,Implementasi Teknologi Smart Grid untuk Meningkatkan Efisiensi Jaringan Listrik,31,2015-03-30,Laporan Magang,,2024-07-09 12:49:25
-30,Rancangan Arsitektur dan Infrastruktur Pada Sistem Grid,32,2019-03-07,Laporan Skripsi,,2024-07-09 12:49:25
-31,Rancang Bangun Sistem Pengisian Daya Kendaraan Listrik di Perkotaan,34,2014-10-04,Laporan Magang,,2024-07-09 12:49:25
-32,Protokol Identifikasi Challange-Response Dengan Implementasinya Berupa Passcode Generator Atas Paltform J2ME dan Bluetooth,35,2011-05-25,Laporan Skripsi,,2024-07-09 12:49:25
-33,Penggunaan Sensor dan Aktuator pada Sistem Otomasi Industri,37,2016-04-05,Laporan Magang,,2024-07-09 12:49:25
-34,Perangkat Lunak Pengintegrasian Data Untuk Analisis Penjualan Produk,38,2010-07-01,Laporan Skripsi,,2024-07-09 12:49:25
-35,Analisis Stabilitas Sistem Tenaga Listrik dengan Beban Variabel,40,2013-07-01,Laporan Magang,,2024-07-09 12:49:25
-36,Perangkat Lunak Bantu Reporting Software Configuration Management Dengan Pemanfaatan Informasi Configuration Management Database,41,2010-01-08,Laporan Skripsi,,2024-07-09 12:49:25
-37,Desain Sistem Kendali Kecepatan Motor Listrik Menggunakan Teknik PWM,43,2017-06-23,Laporan Magang,,2024-07-09 12:49:25
-38,Perancangan Sistem Penjualan Berbasis Web Pada PT. Restu Mahkota Karya,44,2014-02-17,Laporan Skripsi,,2024-07-09 12:49:25
-39,Implementasi Sistem Manajemen Energi di Gedung Bertingkat,46,2012-02-08,Laporan Magang,,2024-07-09 12:49:25
-40,Perancangan Sistem Informasi Persediaan Pada Kantor Pelayanan Pajak Pratama Semarang Selatan,47,2019-09-12,Laporan Skripsi,,2024-07-09 12:49:25
-41,Studi dan Implementasi Sistem Proteksi pada Instalasi Tegangan Tinggi,49,2013-01-09,Laporan Magang,,2024-07-09 12:49:25
-42,Perancangan Sistem Informasi Berbasis Internet Untuk Laporan Fisik Dan Keuangan,50,2011-02-06,Laporan Skripsi,,2024-07-09 12:49:25
-43,Desain Sistem Penerangan Jalan Umum Berbasis Energi Terbarukan,52,2019-04-01,Laporan Magang,,2024-07-09 12:49:25
-44,Perancangan Sistem Informasi Akademik Online Lembaga Pendidikan Informal Studi Kasus Cyber Campus,53,2020-11-24,Laporan Skripsi,,2024-07-09 12:49:25
-45,Pemanfaatan Teknologi IoT untuk Monitoring Konsumsi Energi Rumah Tangga,55,2012-01-08,Laporan Magang,,2024-07-09 12:49:25
-46,Perancangan Sistem Client Server Untuk Pemrosesan Data Akademik Di Universitas Lampung,56,2019-11-26,Laporan Skripsi,,2024-07-09 12:49:25
-47,Rancang Bangun Sistem Kendali Suhu pada Greenhouse Menggunakan PLC,58,2014-11-14,Laporan Magang,,2024-07-09 12:49:25
-48,Analisis Efisiensi Sistem Pemanas Air Berbasis Energi Surya,61,2014-03-17,Laporan Magang,,2024-07-09 12:49:25
-49,Pengembangan Sistem Alarm Kebakaran Berbasis Sensor Suhu dan Asap,64,2015-02-10,Laporan Magang,,2024-07-09 12:49:25
-50,Studi Kasus: Implementasi Sistem SCADA pada Industri Minyak dan Gas,67,2021-02-28,Laporan Magang,,2024-07-09 12:49:25
-51,Desain dan Implementasi Sistem Backup Power Menggunakan Baterai Lithium-Ion,70,2018-02-27,Laporan Magang,,2024-07-09 12:49:25
-52,Analisis dan Optimisasi Sistem Distribusi Energi di Kawasan Industri,73,2010-02-24,Laporan Magang,,2024-07-09 12:49:25
-53,Pengembangan Sistem Kendali Pintu Otomatis Berbasis Mikrokontroler,76,2017-08-31,Laporan Magang,,2024-07-09 12:49:25
-54,Implementasi Sistem Penyimpanan Energi Menggunakan Flywheel,79,2023-09-10,Laporan Magang,,2024-07-09 12:49:25
-55,Studi Pengaruh Harmonik pada Kinerja Sistem Tenaga Listrik,82,2019-03-21,Laporan Magang,,2024-07-09 12:49:25
-56,Desain Sistem Pengaturan Intensitas Cahaya Lampu LED Berbasis Sensor Cahaya,85,2010-11-12,Laporan Magang,,2024-07-09 12:49:25
-57,Analisis Sistem Elektronika Analog,87,2013-07-02,Keteknikan,,2024-07-09 12:49:25
-58,Pemanfaatan Energi Angin untuk Sistem Pembangkitan Listrik Skala Kecil,88,2018-07-16,Laporan Magang,,2024-07-09 12:49:25
-59,Rancang Bangun Sistem Kendali Pencahayaan Ruangan Berbasis Sensor Gerak,91,2018-07-04,Laporan Magang,,2024-07-09 12:49:25
-60,Analisis Kinerja Sistem Inverter pada Pembangkit Listrik Tenaga Surya,94,2011-01-08,Laporan Magang,,2024-07-09 12:49:25
-61,Pengembangan Sistem Proteksi Petir pada Instalasi Listrik Gedung Bertingkat,97,2023-02-14,Laporan Magang,,2024-07-09 12:49:25
-62,Studi dan Implementasi Sistem Penyimpanan Energi Menggunakan Superkapasitor,100,2020-05-03,Laporan Magang,,2024-07-09 12:49:25
-63,Desain Sistem Pengaturan Kecepatan Motor Induksi Menggunakan VFD,103,2023-05-27,Laporan Magang,,2024-07-09 12:49:25
-64,Analisis Efisiensi Sistem Penggerak Elektrik pada Kendaraan Listrik,106,2022-05-11,Laporan Magang,,2024-07-09 12:49:25
-65,Implementasi Sistem Kendali Otomatis untuk Pengolahan Air Limbah Industri,109,2014-06-27,Laporan Magang,,2024-07-09 12:49:25
-66,Pengembangan Sistem Monitoring Kualitas Udara dalam Ruangan Berbasis IoT,112,2017-07-22,Laporan Magang,,2024-07-09 12:49:25
-67,Desain dan Implementasi Sistem Proteksi Kebakaran Berbasis Sensor Infrared,115,2012-08-03,Laporan Magang,,2024-07-09 12:49:25
-68,Studi Kasus: Optimalisasi Konsumsi Energi pada Pabrik Tekstil,118,2017-09-29,Laporan Magang,,2024-07-09 12:49:25
-69,Pengembangan Sistem Kendali Robot Lengan Berbasis Mikrokontroler,121,2014-08-18,Laporan Magang,,2024-07-09 12:49:25
-70,Analisis Kinerja Sistem Penyimpanan Energi Menggunakan Baterai Flow,124,2015-04-27,Laporan Magang,,2024-07-09 12:49:25
-71,Desain Sistem Pengisian Daya Nirkabel untuk Perangkat Elektronik Portable,127,2010-11-13,Laporan Magang,,2024-07-09 12:49:25
-72,Implementasi Sistem Kendali Otomatis pada Proses Produksi Minuman,130,2020-05-16,Laporan Magang,,2024-07-09 12:49:25
-73,Pengembangan Sistem Proteksi Arus Lebih pada Instalasi Listrik Rumah Tangga,133,2018-11-03,Laporan Magang,,2024-07-09 12:49:25
-74,Studi dan Implementasi Sistem Monitoring Getaran pada Mesin Industri,136,2016-10-24,Laporan Magang,,2024-07-09 12:49:25
-75,Desain Sistem Pengendalian Otomatis untuk Proses Pengeringan Produk Pertanian,139,2017-04-28,Laporan Magang,,2024-07-09 12:49:25
-76,Analisis Kinerja Sistem Tenaga Listrik Berbasis Energi Biomassa,142,2019-07-30,Laporan Magang,,2024-07-09 12:49:25
-77,Pengembangan Sistem Kendali Jarak Jauh untuk Aplikasi Rumah Pintar,145,2015-07-28,Laporan Magang,,2024-07-09 12:49:25
-78,Desain dan Implementasi Sistem Kendali Otomatis untuk Lift Berbasis PLC,148,2013-04-10,Laporan Magang,,2024-07-09 12:49:25
-79,Rancang Bangun Sistem Keamanan Jaringan,151,2017-05-22,Laporan Magang,,2024-07-09 12:49:25
-80,Analisis Sistem Keamanan Jaringan,154,2018-02-12,Laporan Magang,,2024-07-09 12:49:25
-81,Rancang Bangun Sistem Pemrograman Python,163,2018-04-18,Laporan Magang,,2024-07-09 12:49:25
-82,Analisis Sistem Pemrograman Python,166,2017-12-31,Laporan Magang,,2024-07-09 12:49:25
-83,Analisis Sistem Manajemen Data,172,2023-04-16,Laporan Magang,,2024-07-09 12:49:25
-84,Implementasi Sistem Keamanan Jaringan,193,2016-11-18,Laporan Magang,,2024-07-09 12:49:25
-85,Rancang Bangun Sistem Manajemen Data,211,2019-05-07,Laporan Magang,,2024-07-09 12:49:25
-86,Implementasi Sistem Manajemen Data,214,2016-03-13,Laporan Magang,,2024-07-09 12:49:25
-87,Implementasi Sistem Pemrograman Python,220,2016-04-28,Laporan Magang,,2024-07-09 12:49:25
-88,Dasar-Dasar Teknik Elektro,88,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-89,Prinsip-Prinsip Elektronika,89,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-90,Pengantar Sistem Tenaga Listrik,90,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-91,Teknik Digital: Teori dan Aplikasi,91,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-92,Elektronika Analog dan Digital,92,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-93,Kendali Otomatis: Teori dan Aplikasi,93,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-94,Sistem Komunikasi Digital,94,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-95,Robotika dan Otomasi,95,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-96,Mikroprosesor dan Mikrokontroler,96,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-97,Teknik Energi Terbarukan,97,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-98,Pemrograman PLC dan Aplikasinya,98,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-99,Teknik Sistem Tenaga,99,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-100,Desain Sistem Kontrol,100,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-101,Pengantar Mekatronika,101,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-102,Teknik Telekomunikasi,102,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-103,Sistem Pengukuran dan Instrumentasi,103,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-104,Dasar-Dasar Mikroelektronika,104,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-105,Sistem Kendali Digital,105,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-106,Teknik Elektromagnetik,106,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-107,Jaringan Listrik: Perancangan dan Analisis,107,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-108,Sistem Distribusi Listrik,108,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-109,Energi dan Konversi Energi,109,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-110,Teknik Tenaga Listrik: Generasi dan Transmisi,110,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-111,Elektronika Daya dan Aplikasinya,111,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-112,Sistem Kendali Lanjutan,112,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-113,Dasar-Dasar Elektronika Daya,113,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-114,Teknik Elektronika Industri,114,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-115,Sistem SCADA: Konsep dan Implementasi,115,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-116,Pemodelan dan Simulasi Sistem Tenaga,116,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-117,Sistem Proteksi Listrik,117,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-118,Teknik Pengaturan Kecepatan Motor,118,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-119,Desain dan Implementasi Sistem IoT,119,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-120,Teknik Telekomunikasi Nirkabel,120,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-121,Sistem Energi Terbarukan,121,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-122,Teknik Kendali Nonlinear,122,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-123,Elektronika Otomotif,123,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-124,Sistem Embedded dan Aplikasinya,124,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-125,Teknik Pengolahan Sinyal Digital,125,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-126,Sistem Tenaga Mikrogrid,126,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-127,Teknik Kendali Adaptif,127,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-128,Dasar-Dasar Teknologi Sel Surya,128,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-129,Sistem Energi Hibrid,129,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-130,Pengantar Teknik Audio dan Akustik,130,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-131,Teknik Komputer dan Jaringan,131,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-132,Pemrograman Robot dengan Arduino,132,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-133,Desain Sistem Kendali Listrik,133,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-134,Elektronika dan Teknik Kendali,134,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-135,Dasar-Dasar Pemrosesan Sinyal,135,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-136,Sistem Tenaga Listrik: Studi Kasus,136,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-137,Teknik Pemeliharaan dan Perbaikan Elektronik,137,2024-07-13,Keteknikan,,2024-07-13 06:44:49
-138,Desain dan Implementasi Sistem Pendeteksi Kebocoran Gas Berbasis IoT,138,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-139,Pengembangan Sistem Monitoring Lingkungan pada Gedung Pintar,139,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-140,Implementasi Kendali Motor DC Menggunakan Arduino,140,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-141,Studi Penggunaan Daya pada Sistem Pendingin Udara di Perkantoran,141,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-142,Rancang Bangun Sistem Kendali Lampu Lalu Lintas Berbasis PLC,142,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-143,Analisis Kinerja Sistem Tenaga Listrik Berbasis Hidroelektrik,143,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-144,Desain dan Implementasi Sistem Keamanan Rumah Pintar,144,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-145,Studi Kasus: Optimalisasi Penggunaan Energi di Rumah Sakit,145,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-146,Pengembangan Sistem Kendali Otomatis untuk Proses Fermentasi,146,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-147,Implementasi Sistem Monitoring Getaran pada Jembatan,147,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-148,Desain Sistem Pengisian Daya Berbasis Induksi untuk Kendaraan Listrik,148,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-149,Analisis dan Desain Sistem Proteksi Tegangan Lebih pada Instalasi Rumah Tangga,149,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-150,Pengembangan Sistem Kendali Kecepatan Kipas Angin Menggunakan Mikrokontroler,150,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-151,Studi Penggunaan Teknologi RFID untuk Manajemen Aset,151,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-152,Desain dan Implementasi Sistem Pendeteksi Kebakaran Hutan Berbasis IoT,152,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-153,Analisis Efisiensi Energi pada Sistem Penerangan Jalan Umum,153,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-154,Pengembangan Sistem Kendali Suhu pada Inkubator Berbasis Mikrokontroler,154,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-155,Implementasi Sistem Peringatan Dini Tsunami Berbasis Sensor Gelombang,155,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-156,Desain dan Implementasi Sistem Kendali Lampu Hemat Energi Berbasis IoT,156,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-157,Studi Kasus: Peningkatan Efisiensi Energi pada Pabrik Pengolahan Air,157,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-158,Pengembangan Sistem Kendali Otomatis untuk Proses Pengeringan Kayu,158,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-159,Analisis Penggunaan Baterai Lithium-Ion pada Sistem Energi Terbarukan,159,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-160,Desain Sistem Pengendalian Jarak Jauh untuk Kincir Angin,160,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-161,Implementasi Sistem Monitoring Kualitas Air Menggunakan Sensor dan IoT,161,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-162,Pengembangan Sistem Kendali Robot Mobile Berbasis Mikrokontroler,162,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-163,Studi Penggunaan Teknologi IoT pada Pertanian Cerdas,163,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-164,Desain dan Implementasi Sistem Pendeteksi Banjir Berbasis Sensor Ultrasonik,164,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-165,Analisis Kinerja Sistem Tenaga Listrik Berbasis Biomassa,165,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-166,Pengembangan Sistem Kendali Otomatis untuk Proses Pemotongan Logam,166,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-167,Implementasi Sistem Monitoring Polusi Udara Berbasis IoT di Perkotaan,167,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-168,Desain dan Implementasi Sistem Pengisian Daya Cepat untuk Kendaraan Listrik,168,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-169,Analisis dan Desain Sistem Proteksi Arus Bocor pada Instalasi Rumah Tangga,169,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-170,Pengembangan Sistem Kendali Kecepatan Pompa Air Menggunakan Mikrokontroler,170,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-171,Studi Penggunaan Teknologi NFC untuk Sistem Pembayaran Elektronik,171,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-172,Desain dan Implementasi Sistem Pendeteksi Longsor Berbasis IoT,172,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-173,Analisis Efisiensi Energi pada Sistem Pemanas Ruangan,173,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-174,Pengembangan Sistem Kendali Suhu pada Alat Sterilisasi Medis,174,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-175,Implementasi Sistem Peringatan Dini Gempa Bumi Berbasis Sensor Getaran,175,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-176,Desain dan Implementasi Sistem Kendali Pintu Gerbang Otomatis Berbasis IoT,176,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-177,Studi Kasus: Optimalisasi Penggunaan Energi di Supermarket,177,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-178,Pengembangan Sistem Kendali Otomatis untuk Proses Pengolahan Limbah,178,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-179,Analisis Penggunaan Baterai Nikel-Kadmium pada Sistem Energi Terbarukan,179,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-180,Desain Sistem Pengendalian Jarak Jauh untuk Panel Surya,180,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-181,Implementasi Sistem Monitoring Kebisingan Menggunakan Sensor dan IoT,181,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-182,Pengembangan Sistem Kendali Robot Underwater Berbasis Mikrokontroler,182,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-183,Studi Penggunaan Teknologi IoT pada Pengelolaan Sampah Cerdas,183,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-184,Desain dan Implementasi Sistem Pendeteksi Kualitas Udara Dalam Ruangan,184,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-185,Analisis Kinerja Sistem Tenaga Listrik Berbasis Geotermal,185,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-186,Pengembangan Sistem Kendali Otomatis untuk Proses Penyedotan Debu,186,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-187,Implementasi Sistem Monitoring Kualitas Tanah Menggunakan Sensor dan IoT,187,2024-07-13,Laporan Magang,,2024-07-13 06:48:34
-188,Desain Sistem Kendali Motor Induksi Menggunakan PLC,188,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-189,Analisis Kinerja Pembangkit Listrik Tenaga Surya di Area Perkotaan,189,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-190,Implementasi Sistem Monitoring Konsumsi Energi pada Gedung Perkantoran,190,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-191,Pengembangan Sistem Proteksi Arus Lebih pada Instalasi Rumah Tangga,191,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-192,Studi Kinerja Sistem Distribusi Listrik di Kawasan Industri,192,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-193,Desain dan Implementasi Sistem Kendali Lampu Otomatis Berbasis Mikrokontroler,193,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-194,Pengembangan Sistem Pengukuran Suhu dan Kelembaban Berbasis IoT,194,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-195,Analisis Efisiensi Energi pada Sistem Elektronika Daya,195,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-196,Implementasi Sistem Pendeteksi Kebocoran Gas Berbasis Sensor,196,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-197,Pengembangan Sistem Monitoring Kualitas Udara dalam Ruangan,197,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-198,Desain dan Implementasi Sistem Komunikasi Data Menggunakan Radio Frekuensi,198,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-199,Analisis Kinerja Jaringan Telekomunikasi di Area Pedesaan,199,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-200,Implementasi Teknologi IoT pada Sistem Monitoring Lingkungan,200,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-201,Pengembangan Aplikasi Mobile untuk Monitoring Jaringan Telekomunikasi,201,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-202,Studi Penggunaan Teknologi 5G untuk Komunikasi Data Cepat,202,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-203,Pengembangan Aplikasi Mobile untuk Manajemen Inventaris Barang,203,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-204,Implementasi Algoritma Machine Learning untuk Prediksi Penjualan,204,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-205,Desain dan Pengembangan Sistem Informasi Geografis untuk Pemantauan Bencana Alam,205,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-206,Pengembangan Sistem Deteksi Plagiarisme pada Dokumen Teks Menggunakan NLP,206,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-207,Studi Keamanan pada Protokol Komunikasi IoT,207,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-208,Desain Jaringan Telekomunikasi Fiber Optik untuk Perumahan,208,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-209,Implementasi Sistem Monitoring Kinerja Jaringan Telekomunikasi,209,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-210,Pengembangan Aplikasi Berbasis Web untuk Manajemen Jaringan Telekomunikasi,210,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-211,Analisis Kinerja Sistem Telekomunikasi Berbasis Satelit,211,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-212,Studi Penggunaan Teknologi Li-Fi untuk Komunikasi Data Nirkabel,212,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-213,Desain Sistem Instalasi Listrik untuk Bangunan Komersial,213,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-214,Implementasi Sistem Pengendalian Jarak Jauh pada Instalasi Listrik,214,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-215,Pengembangan Sistem Proteksi Petir pada Instalasi Listrik,215,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-216,Studi Efisiensi Energi pada Sistem Penerangan Jalan Umum,216,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-217,Desain dan Implementasi Sistem Manajemen Energi pada Gedung Bertingkat,217,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-218,Pengembangan Sistem Keamanan Jaringan Menggunakan Firewall Berbasis Open Source,218,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-219,Implementasi Sistem Pengolahan Data Besar (Big Data) pada Perusahaan Retail,219,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-220,Desain dan Pengembangan Aplikasi Berbasis Web untuk Manajemen Proyek,220,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-221,Pengembangan Sistem Monitoring Server Berbasis IoT,221,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-222,Studi Penerapan Teknologi Blockchain pada Sistem Keuangan,222,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-223,Desain dan Implementasi Sistem Pengendalian Robot Lengan Berbasis Mikrokontroler,223,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-224,Pengembangan Sistem Monitoring dan Kontrol pada Greenhouse Berbasis IoT,224,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-225,Analisis Kinerja Sistem Elektronika Daya pada Kendaraan Listrik,225,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-226,Implementasi Sistem Pendeteksi Kebakaran Berbasis Sensor dan IoT,226,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-227,Desain Sistem Pengisian Daya Nirkabel untuk Perangkat Elektronik,227,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-228,Pengembangan Aplikasi Berbasis IoT untuk Pemantauan Kualitas Air Sungai,228,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-229,Desain Sistem Pendeteksi Gempa Bumi Berbasis Sensor Getaran,229,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-230,Implementasi Sistem Kendali Suhu dan Kelembaban pada Ruang Server,230,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-231,Studi Penggunaan Teknologi Augmented Reality pada Pembelajaran Teknik,231,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-232,Pengembangan Sistem Keamanan Berbasis Biometrik untuk Gedung Perkantoran,232,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-233,Desain dan Implementasi Sistem Smart Home Berbasis IoT,233,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-234,Analisis Penggunaan Teknologi NFC untuk Sistem Pembayaran Elektronik,234,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-235,Pengembangan Sistem Monitoring Polusi Udara Berbasis Sensor dan IoT,235,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-236,Desain Sistem Peringatan Dini Banjir Berbasis Sensor Ultrasonik,236,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
-237,Implementasi Sistem Pengisian Daya Cepat untuk Kendaraan Listrik,237,2024-07-13,Laporan Skripsi,,2024-07-13 06:55:12
+1,Implementasi dan Analisis Sistem Tenaga Listrik di Pabrik Manufaktur,1,2015-11-10,laporan magang,,2024-07-09 12:49:25
+2,Teknologi Voice Over Internet Protokol (VOIP) di Indonesia,2,2011-12-08,laporan skripsi,,2024-07-09 12:49:25
+3,Implementasi Sistem Sistem Tenaga Listrik,3,2014-01-05,keteknikan,,2024-07-09 12:49:25
+4,Rancang Bangun Sistem Kendali Otomatis untuk Robot Industri,4,2011-12-10,laporan magang,,2024-07-09 12:49:25
+5,Studi dan Implementasi Task Modeling Studi Kasus Sistem Informasi Pelanggan pada Distro,5,2023-12-19,laporan skripsi,,2024-07-09 12:49:25
+6,Rancang Bangun Sistem Komunikasi Digital,6,2015-11-21,keteknikan,,2024-07-09 12:49:25
+7,Studi Kasus: Perbaikan dan Pemeliharaan Jaringan Distribusi Listrik di Perusahaan XYZ,7,2015-04-16,laporan magang,,2024-07-09 12:49:25
+8,Studi Dan Implementasi Active Fuzzy Constrained Clustering Untuk Pengelompokan Dokumen,8,2022-05-24,laporan skripsi,,2024-07-09 12:49:25
+9,Rancang Bangun Sistem Sistem Tenaga Listrik,9,2012-06-05,keteknikan,,2024-07-09 12:49:25
+10,Desain dan Implementasi Sistem Energi Terbarukan Berbasis Panel Surya,10,2017-03-13,laporan magang,,2024-07-09 12:49:25
+11,Studi Banding Implementasi Java RMI Dan Java Corba Pada Sistem Terdistribusi Dengan Kasus Komputasi,11,2012-12-26,laporan skripsi,,2024-07-09 12:49:25
+12,Pengembangan Sistem Monitoring dan Pengendalian Jarak Jauh pada Gardu Induk,13,2020-06-03,laporan magang,,2024-07-09 12:49:25
+13,SMS Gateway Untuk Informasi Jadwal Penerbangan,14,2022-10-17,laporan skripsi,,2024-07-09 12:49:25
+14,Analisis Sistem Komunikasi Digital,15,2017-02-05,keteknikan,,2024-07-09 12:49:25
+15,Optimisasi Sistem Pendingin pada Data Center dengan Teknologi IoT,16,2011-03-09,laporan magang,,2024-07-09 12:49:25
+16,SMS Gateway Application For Location Based Service (LBS) System With Cell Global Identity And Timing,17,2023-08-12,laporan skripsi,,2024-07-09 12:49:25
+17,Implementasi Sistem Elektronika Analog,18,2019-02-11,keteknikan,,2024-07-09 12:49:25
+18,Aplikasi Teknik Kendali Digital pada Sistem Robotika di Industri Otomotif,19,2012-10-19,laporan magang,,2024-07-09 12:49:25
+19,Sistem Perwalian Berbasis Web,20,2023-10-22,laporan skripsi,,2024-07-09 12:49:25
+20,Analisis Sistem Sistem Tenaga Listrik,21,2021-10-14,keteknikan,,2024-07-09 12:49:25
+21,Penerapan Algoritma Pengoptimalan untuk Efisiensi Konsumsi Energi di Gedung Perkantoran,22,2011-05-11,laporan magang,,2024-07-09 12:49:25
+22,Sistem Pencatatan Pemakaian Fasilitas Menggunakan Visual Basic 6.0,23,2013-07-10,laporan skripsi,,2024-07-09 12:49:25
+23,Analisis Kinerja Motor Listrik pada Mesin Produksi di Pabrik ABC,25,2013-09-11,laporan magang,,2024-07-09 12:49:25
+24,Sistem Informasi Perpustakaan Universitas Muhammadiyah Bengkulu Berbasis Jaringan,26,2011-08-21,laporan skripsi,,2024-07-09 12:49:25
+25,Rancang Bangun Sistem Elektronika Analog,27,2010-04-23,keteknikan,,2024-07-09 12:49:25
+26,Pengembangan Sistem Proteksi Kebocoran Arus pada Instalasi Rumah Tangga,28,2014-05-18,laporan magang,,2024-07-09 12:49:25
+27,Sistem Informasi Penggajian Pada Pt.Surya Lagang Ostentasi Medan,29,2019-12-02,laporan skripsi,,2024-07-09 12:49:25
+28,Implementasi Sistem Komunikasi Digital,30,2021-03-01,keteknikan,,2024-07-09 12:49:25
+29,Implementasi Teknologi Smart Grid untuk Meningkatkan Efisiensi Jaringan Listrik,31,2015-03-30,laporan magang,,2024-07-09 12:49:25
+30,Rancangan Arsitektur dan Infrastruktur Pada Sistem Grid,32,2019-03-07,laporan skripsi,,2024-07-09 12:49:25
+31,Rancang Bangun Sistem Pengisian Daya Kendaraan Listrik di Perkotaan,34,2014-10-04,laporan magang,,2024-07-09 12:49:25
+32,Protokol Identifikasi Challange-Response Dengan Implementasinya Berupa Passcode Generator Atas Paltform J2ME dan Bluetooth,35,2011-05-25,laporan skripsi,,2024-07-09 12:49:25
+33,Penggunaan Sensor dan Aktuator pada Sistem Otomasi Industri,37,2016-04-05,laporan magang,,2024-07-09 12:49:25
+34,Perangkat Lunak Pengintegrasian Data Untuk Analisis Penjualan Produk,38,2010-07-01,laporan skripsi,,2024-07-09 12:49:25
+35,Analisis Stabilitas Sistem Tenaga Listrik dengan Beban Variabel,40,2013-07-01,laporan magang,,2024-07-09 12:49:25
+36,Perangkat Lunak Bantu Reporting Software Configuration Management Dengan Pemanfaatan Informasi Configuration Management Database,41,2010-01-08,laporan skripsi,,2024-07-09 12:49:25
+37,Desain Sistem Kendali Kecepatan Motor Listrik Menggunakan Teknik PWM,43,2017-06-23,laporan magang,,2024-07-09 12:49:25
+38,Perancangan Sistem Penjualan Berbasis Web Pada PT. Restu Mahkota Karya,44,2014-02-17,laporan skripsi,,2024-07-09 12:49:25
+39,Implementasi Sistem Manajemen Energi di Gedung Bertingkat,46,2012-02-08,laporan magang,,2024-07-09 12:49:25
+40,Perancangan Sistem Informasi Persediaan Pada Kantor Pelayanan Pajak Pratama Semarang Selatan,47,2019-09-12,laporan skripsi,,2024-07-09 12:49:25
+41,Studi dan Implementasi Sistem Proteksi pada Instalasi Tegangan Tinggi,49,2013-01-09,laporan magang,,2024-07-09 12:49:25
+42,Perancangan Sistem Informasi Berbasis Internet Untuk Laporan Fisik Dan Keuangan,50,2011-02-06,laporan skripsi,,2024-07-09 12:49:25
+43,Desain Sistem Penerangan Jalan Umum Berbasis Energi Terbarukan,52,2019-04-01,laporan magang,,2024-07-09 12:49:25
+44,Perancangan Sistem Informasi Akademik Online Lembaga Pendidikan Informal Studi Kasus Cyber Campus,53,2020-11-24,laporan skripsi,,2024-07-09 12:49:25
+45,Pemanfaatan Teknologi IoT untuk Monitoring Konsumsi Energi Rumah Tangga,55,2012-01-08,laporan magang,,2024-07-09 12:49:25
+46,Perancangan Sistem Client Server Untuk Pemrosesan Data Akademik Di Universitas Lampung,56,2019-11-26,laporan skripsi,,2024-07-09 12:49:25
+47,Rancang Bangun Sistem Kendali Suhu pada Greenhouse Menggunakan PLC,58,2014-11-14,laporan magang,,2024-07-09 12:49:25
+48,Analisis Efisiensi Sistem Pemanas Air Berbasis Energi Surya,61,2014-03-17,laporan magang,,2024-07-09 12:49:25
+49,Pengembangan Sistem Alarm Kebakaran Berbasis Sensor Suhu dan Asap,64,2015-02-10,laporan magang,,2024-07-09 12:49:25
+50,Studi Kasus: Implementasi Sistem SCADA pada Industri Minyak dan Gas,67,2021-02-28,laporan magang,,2024-07-09 12:49:25
+51,Desain dan Implementasi Sistem Backup Power Menggunakan Baterai Lithium-Ion,70,2018-02-27,laporan magang,,2024-07-09 12:49:25
+52,Analisis dan Optimisasi Sistem Distribusi Energi di Kawasan Industri,73,2010-02-24,laporan magang,,2024-07-09 12:49:25
+53,Pengembangan Sistem Kendali Pintu Otomatis Berbasis Mikrokontroler,76,2017-08-31,laporan magang,,2024-07-09 12:49:25
+54,Implementasi Sistem Penyimpanan Energi Menggunakan Flywheel,79,2023-09-10,laporan magang,,2024-07-09 12:49:25
+55,Studi Pengaruh Harmonik pada Kinerja Sistem Tenaga Listrik,82,2019-03-21,laporan magang,,2024-07-09 12:49:25
+56,Desain Sistem Pengaturan Intensitas Cahaya Lampu LED Berbasis Sensor Cahaya,85,2010-11-12,laporan magang,,2024-07-09 12:49:25
+57,Analisis Sistem Elektronika Analog,87,2013-07-02,keteknikan,,2024-07-09 12:49:25
+58,Pemanfaatan Energi Angin untuk Sistem Pembangkitan Listrik Skala Kecil,88,2018-07-16,laporan magang,,2024-07-09 12:49:25
+59,Rancang Bangun Sistem Kendali Pencahayaan Ruangan Berbasis Sensor Gerak,91,2018-07-04,laporan magang,,2024-07-09 12:49:25
+60,Analisis Kinerja Sistem Inverter pada Pembangkit Listrik Tenaga Surya,94,2011-01-08,laporan magang,,2024-07-09 12:49:25
+61,Pengembangan Sistem Proteksi Petir pada Instalasi Listrik Gedung Bertingkat,97,2023-02-14,laporan magang,,2024-07-09 12:49:25
+62,Studi dan Implementasi Sistem Penyimpanan Energi Menggunakan Superkapasitor,100,2020-05-03,laporan magang,,2024-07-09 12:49:25
+63,Desain Sistem Pengaturan Kecepatan Motor Induksi Menggunakan VFD,103,2023-05-27,laporan magang,,2024-07-09 12:49:25
+64,Analisis Efisiensi Sistem Penggerak Elektrik pada Kendaraan Listrik,106,2022-05-11,laporan magang,,2024-07-09 12:49:25
+65,Implementasi Sistem Kendali Otomatis untuk Pengolahan Air Limbah Industri,109,2014-06-27,laporan magang,,2024-07-09 12:49:25
+66,Pengembangan Sistem Monitoring Kualitas Udara dalam Ruangan Berbasis IoT,112,2017-07-22,laporan magang,,2024-07-09 12:49:25
+67,Desain dan Implementasi Sistem Proteksi Kebakaran Berbasis Sensor Infrared,115,2012-08-03,laporan magang,,2024-07-09 12:49:25
+68,Studi Kasus: Optimalisasi Konsumsi Energi pada Pabrik Tekstil,118,2017-09-29,laporan magang,,2024-07-09 12:49:25
+69,Pengembangan Sistem Kendali Robot Lengan Berbasis Mikrokontroler,121,2014-08-18,laporan magang,,2024-07-09 12:49:25
+70,Analisis Kinerja Sistem Penyimpanan Energi Menggunakan Baterai Flow,124,2015-04-27,laporan magang,,2024-07-09 12:49:25
+71,Desain Sistem Pengisian Daya Nirkabel untuk Perangkat Elektronik Portable,127,2010-11-13,laporan magang,,2024-07-09 12:49:25
+72,Implementasi Sistem Kendali Otomatis pada Proses Produksi Minuman,130,2020-05-16,laporan magang,,2024-07-09 12:49:25
+73,Pengembangan Sistem Proteksi Arus Lebih pada Instalasi Listrik Rumah Tangga,133,2018-11-03,laporan magang,,2024-07-09 12:49:25
+74,Studi dan Implementasi Sistem Monitoring Getaran pada Mesin Industri,136,2016-10-24,laporan magang,,2024-07-09 12:49:25
+75,Desain Sistem Pengendalian Otomatis untuk Proses Pengeringan Produk Pertanian,139,2017-04-28,laporan magang,,2024-07-09 12:49:25
+76,Analisis Kinerja Sistem Tenaga Listrik Berbasis Energi Biomassa,142,2019-07-30,laporan magang,,2024-07-09 12:49:25
+77,Pengembangan Sistem Kendali Jarak Jauh untuk Aplikasi Rumah Pintar,145,2015-07-28,laporan magang,,2024-07-09 12:49:25
+78,Desain dan Implementasi Sistem Kendali Otomatis untuk Lift Berbasis PLC,148,2013-04-10,laporan magang,,2024-07-09 12:49:25
+79,Rancang Bangun Sistem Keamanan Jaringan,151,2017-05-22,laporan magang,,2024-07-09 12:49:25
+80,Analisis Sistem Keamanan Jaringan,154,2018-02-12,laporan magang,,2024-07-09 12:49:25
+81,Rancang Bangun Sistem Pemrograman Python,163,2018-04-18,laporan magang,,2024-07-09 12:49:25
+82,Analisis Sistem Pemrograman Python,166,2017-12-31,laporan magang,,2024-07-09 12:49:25
+83,Analisis Sistem Manajemen Data,172,2023-04-16,laporan magang,,2024-07-09 12:49:25
+84,Implementasi Sistem Keamanan Jaringan,193,2016-11-18,laporan magang,,2024-07-09 12:49:25
+85,Rancang Bangun Sistem Manajemen Data,211,2019-05-07,laporan magang,,2024-07-09 12:49:25
+86,Implementasi Sistem Manajemen Data,214,2016-03-13,laporan magang,,2024-07-09 12:49:25
+87,Implementasi Sistem Pemrograman Python,220,2016-04-28,laporan magang,,2024-07-09 12:49:25
+88,Dasar-Dasar Teknik Elektro,88,2024-07-13,keteknikan,,2024-07-13 06:44:49
+89,Prinsip-Prinsip Elektronika,89,2024-07-13,keteknikan,,2024-07-13 06:44:49
+90,Pengantar Sistem Tenaga Listrik,90,2024-07-13,keteknikan,,2024-07-13 06:44:49
+91,Teknik Digital: Teori dan Aplikasi,91,2024-07-13,keteknikan,,2024-07-13 06:44:49
+92,Elektronika Analog dan Digital,92,2024-07-13,keteknikan,,2024-07-13 06:44:49
+93,Kendali Otomatis: Teori dan Aplikasi,93,2024-07-13,keteknikan,,2024-07-13 06:44:49
+94,Sistem Komunikasi Digital,94,2024-07-13,keteknikan,,2024-07-13 06:44:49
+95,Robotika dan Otomasi,95,2024-07-13,keteknikan,,2024-07-13 06:44:49
+96,Mikroprosesor dan Mikrokontroler,96,2024-07-13,keteknikan,,2024-07-13 06:44:49
+97,Teknik Energi Terbarukan,97,2024-07-13,keteknikan,,2024-07-13 06:44:49
+98,Pemrograman PLC dan Aplikasinya,98,2024-07-13,keteknikan,,2024-07-13 06:44:49
+99,Teknik Sistem Tenaga,99,2024-07-13,keteknikan,,2024-07-13 06:44:49
+100,Desain Sistem Kontrol,100,2024-07-13,keteknikan,,2024-07-13 06:44:49
+101,Pengantar Mekatronika,101,2024-07-13,keteknikan,,2024-07-13 06:44:49
+102,Teknik Telekomunikasi,102,2024-07-13,keteknikan,,2024-07-13 06:44:49
+103,Sistem Pengukuran dan Instrumentasi,103,2024-07-13,keteknikan,,2024-07-13 06:44:49
+104,Dasar-Dasar Mikroelektronika,104,2024-07-13,keteknikan,,2024-07-13 06:44:49
+105,Sistem Kendali Digital,105,2024-07-13,keteknikan,,2024-07-13 06:44:49
+106,Teknik Elektromagnetik,106,2024-07-13,keteknikan,,2024-07-13 06:44:49
+107,Jaringan Listrik: Perancangan dan Analisis,107,2024-07-13,keteknikan,,2024-07-13 06:44:49
+108,Sistem Distribusi Listrik,108,2024-07-13,keteknikan,,2024-07-13 06:44:49
+109,Energi dan Konversi Energi,109,2024-07-13,keteknikan,,2024-07-13 06:44:49
+110,Teknik Tenaga Listrik: Generasi dan Transmisi,110,2024-07-13,keteknikan,,2024-07-13 06:44:49
+111,Elektronika Daya dan Aplikasinya,111,2024-07-13,keteknikan,,2024-07-13 06:44:49
+112,Sistem Kendali Lanjutan,112,2024-07-13,keteknikan,,2024-07-13 06:44:49
+113,Dasar-Dasar Elektronika Daya,113,2024-07-13,keteknikan,,2024-07-13 06:44:49
+114,Teknik Elektronika Industri,114,2024-07-13,keteknikan,,2024-07-13 06:44:49
+115,Sistem SCADA: Konsep dan Implementasi,115,2024-07-13,keteknikan,,2024-07-13 06:44:49
+116,Pemodelan dan Simulasi Sistem Tenaga,116,2024-07-13,keteknikan,,2024-07-13 06:44:49
+117,Sistem Proteksi Listrik,117,2024-07-13,keteknikan,,2024-07-13 06:44:49
+118,Teknik Pengaturan Kecepatan Motor,118,2024-07-13,keteknikan,,2024-07-13 06:44:49
+119,Desain dan Implementasi Sistem IoT,119,2024-07-13,keteknikan,,2024-07-13 06:44:49
+120,Teknik Telekomunikasi Nirkabel,120,2024-07-13,keteknikan,,2024-07-13 06:44:49
+121,Sistem Energi Terbarukan,121,2024-07-13,keteknikan,,2024-07-13 06:44:49
+122,Teknik Kendali Nonlinear,122,2024-07-13,keteknikan,,2024-07-13 06:44:49
+123,Elektronika Otomotif,123,2024-07-13,keteknikan,,2024-07-13 06:44:49
+124,Sistem Embedded dan Aplikasinya,124,2024-07-13,keteknikan,,2024-07-13 06:44:49
+125,Teknik Pengolahan Sinyal Digital,125,2024-07-13,keteknikan,,2024-07-13 06:44:49
+126,Sistem Tenaga Mikrogrid,126,2024-07-13,keteknikan,,2024-07-13 06:44:49
+127,Teknik Kendali Adaptif,127,2024-07-13,keteknikan,,2024-07-13 06:44:49
+128,Dasar-Dasar Teknologi Sel Surya,128,2024-07-13,keteknikan,,2024-07-13 06:44:49
+129,Sistem Energi Hibrid,129,2024-07-13,keteknikan,,2024-07-13 06:44:49
+130,Pengantar Teknik Audio dan Akustik,130,2024-07-13,keteknikan,,2024-07-13 06:44:49
+131,Teknik Komputer dan Jaringan,131,2024-07-13,keteknikan,,2024-07-13 06:44:49
+132,Pemrograman Robot dengan Arduino,132,2024-07-13,keteknikan,,2024-07-13 06:44:49
+133,Desain Sistem Kendali Listrik,133,2024-07-13,keteknikan,,2024-07-13 06:44:49
+134,Elektronika dan Teknik Kendali,134,2024-07-13,keteknikan,,2024-07-13 06:44:49
+135,Dasar-Dasar Pemrosesan Sinyal,135,2024-07-13,keteknikan,,2024-07-13 06:44:49
+136,Sistem Tenaga Listrik: Studi Kasus,136,2024-07-13,keteknikan,,2024-07-13 06:44:49
+137,Teknik Pemeliharaan dan Perbaikan Elektronik,137,2024-07-13,keteknikan,,2024-07-13 06:44:49
+138,Desain dan Implementasi Sistem Pendeteksi Kebocoran Gas Berbasis IoT,138,2024-07-13,laporan magang,,2024-07-13 06:48:34
+139,Pengembangan Sistem Monitoring Lingkungan pada Gedung Pintar,139,2024-07-13,laporan magang,,2024-07-13 06:48:34
+140,Implementasi Kendali Motor DC Menggunakan Arduino,140,2024-07-13,laporan magang,,2024-07-13 06:48:34
+141,Studi Penggunaan Daya pada Sistem Pendingin Udara di Perkantoran,141,2024-07-13,laporan magang,,2024-07-13 06:48:34
+142,Rancang Bangun Sistem Kendali Lampu Lalu Lintas Berbasis PLC,142,2024-07-13,laporan magang,,2024-07-13 06:48:34
+143,Analisis Kinerja Sistem Tenaga Listrik Berbasis Hidroelektrik,143,2024-07-13,laporan magang,,2024-07-13 06:48:34
+144,Desain dan Implementasi Sistem Keamanan Rumah Pintar,144,2024-07-13,laporan magang,,2024-07-13 06:48:34
+145,Studi Kasus: Optimalisasi Penggunaan Energi di Rumah Sakit,145,2024-07-13,laporan magang,,2024-07-13 06:48:34
+146,Pengembangan Sistem Kendali Otomatis untuk Proses Fermentasi,146,2024-07-13,laporan magang,,2024-07-13 06:48:34
+147,Implementasi Sistem Monitoring Getaran pada Jembatan,147,2024-07-13,laporan magang,,2024-07-13 06:48:34
+148,Desain Sistem Pengisian Daya Berbasis Induksi untuk Kendaraan Listrik,148,2024-07-13,laporan magang,,2024-07-13 06:48:34
+149,Analisis dan Desain Sistem Proteksi Tegangan Lebih pada Instalasi Rumah Tangga,149,2024-07-13,laporan magang,,2024-07-13 06:48:34
+150,Pengembangan Sistem Kendali Kecepatan Kipas Angin Menggunakan Mikrokontroler,150,2024-07-13,laporan magang,,2024-07-13 06:48:34
+151,Studi Penggunaan Teknologi RFID untuk Manajemen Aset,151,2024-07-13,laporan magang,,2024-07-13 06:48:34
+152,Desain dan Implementasi Sistem Pendeteksi Kebakaran Hutan Berbasis IoT,152,2024-07-13,laporan magang,,2024-07-13 06:48:34
+153,Analisis Efisiensi Energi pada Sistem Penerangan Jalan Umum,153,2024-07-13,laporan magang,,2024-07-13 06:48:34
+154,Pengembangan Sistem Kendali Suhu pada Inkubator Berbasis Mikrokontroler,154,2024-07-13,laporan magang,,2024-07-13 06:48:34
+155,Implementasi Sistem Peringatan Dini Tsunami Berbasis Sensor Gelombang,155,2024-07-13,laporan magang,,2024-07-13 06:48:34
+156,Desain dan Implementasi Sistem Kendali Lampu Hemat Energi Berbasis IoT,156,2024-07-13,laporan magang,,2024-07-13 06:48:34
+157,Studi Kasus: Peningkatan Efisiensi Energi pada Pabrik Pengolahan Air,157,2024-07-13,laporan magang,,2024-07-13 06:48:34
+158,Pengembangan Sistem Kendali Otomatis untuk Proses Pengeringan Kayu,158,2024-07-13,laporan magang,,2024-07-13 06:48:34
+159,Analisis Penggunaan Baterai Lithium-Ion pada Sistem Energi Terbarukan,159,2024-07-13,laporan magang,,2024-07-13 06:48:34
+160,Desain Sistem Pengendalian Jarak Jauh untuk Kincir Angin,160,2024-07-13,laporan magang,,2024-07-13 06:48:34
+161,Implementasi Sistem Monitoring Kualitas Air Menggunakan Sensor dan IoT,161,2024-07-13,laporan magang,,2024-07-13 06:48:34
+162,Pengembangan Sistem Kendali Robot Mobile Berbasis Mikrokontroler,162,2024-07-13,laporan magang,,2024-07-13 06:48:34
+163,Studi Penggunaan Teknologi IoT pada Pertanian Cerdas,163,2024-07-13,laporan magang,,2024-07-13 06:48:34
+164,Desain dan Implementasi Sistem Pendeteksi Banjir Berbasis Sensor Ultrasonik,164,2024-07-13,laporan magang,,2024-07-13 06:48:34
+165,Analisis Kinerja Sistem Tenaga Listrik Berbasis Biomassa,165,2024-07-13,laporan magang,,2024-07-13 06:48:34
+166,Pengembangan Sistem Kendali Otomatis untuk Proses Pemotongan Logam,166,2024-07-13,laporan magang,,2024-07-13 06:48:34
+167,Implementasi Sistem Monitoring Polusi Udara Berbasis IoT di Perkotaan,167,2024-07-13,laporan magang,,2024-07-13 06:48:34
+168,Desain dan Implementasi Sistem Pengisian Daya Cepat untuk Kendaraan Listrik,168,2024-07-13,laporan magang,,2024-07-13 06:48:34
+169,Analisis dan Desain Sistem Proteksi Arus Bocor pada Instalasi Rumah Tangga,169,2024-07-13,laporan magang,,2024-07-13 06:48:34
+170,Pengembangan Sistem Kendali Kecepatan Pompa Air Menggunakan Mikrokontroler,170,2024-07-13,laporan magang,,2024-07-13 06:48:34
+171,Studi Penggunaan Teknologi NFC untuk Sistem Pembayaran Elektronik,171,2024-07-13,laporan magang,,2024-07-13 06:48:34
+172,Desain dan Implementasi Sistem Pendeteksi Longsor Berbasis IoT,172,2024-07-13,laporan magang,,2024-07-13 06:48:34
+173,Analisis Efisiensi Energi pada Sistem Pemanas Ruangan,173,2024-07-13,laporan magang,,2024-07-13 06:48:34
+174,Pengembangan Sistem Kendali Suhu pada Alat Sterilisasi Medis,174,2024-07-13,laporan magang,,2024-07-13 06:48:34
+175,Implementasi Sistem Peringatan Dini Gempa Bumi Berbasis Sensor Getaran,175,2024-07-13,laporan magang,,2024-07-13 06:48:34
+176,Desain dan Implementasi Sistem Kendali Pintu Gerbang Otomatis Berbasis IoT,176,2024-07-13,laporan magang,,2024-07-13 06:48:34
+177,Studi Kasus: Optimalisasi Penggunaan Energi di Supermarket,177,2024-07-13,laporan magang,,2024-07-13 06:48:34
+178,Pengembangan Sistem Kendali Otomatis untuk Proses Pengolahan Limbah,178,2024-07-13,laporan magang,,2024-07-13 06:48:34
+179,Analisis Penggunaan Baterai Nikel-Kadmium pada Sistem Energi Terbarukan,179,2024-07-13,laporan magang,,2024-07-13 06:48:34
+180,Desain Sistem Pengendalian Jarak Jauh untuk Panel Surya,180,2024-07-13,laporan magang,,2024-07-13 06:48:34
+181,Implementasi Sistem Monitoring Kebisingan Menggunakan Sensor dan IoT,181,2024-07-13,laporan magang,,2024-07-13 06:48:34
+182,Pengembangan Sistem Kendali Robot Underwater Berbasis Mikrokontroler,182,2024-07-13,laporan magang,,2024-07-13 06:48:34
+183,Studi Penggunaan Teknologi IoT pada Pengelolaan Sampah Cerdas,183,2024-07-13,laporan magang,,2024-07-13 06:48:34
+184,Desain dan Implementasi Sistem Pendeteksi Kualitas Udara Dalam Ruangan,184,2024-07-13,laporan magang,,2024-07-13 06:48:34
+185,Analisis Kinerja Sistem Tenaga Listrik Berbasis Geotermal,185,2024-07-13,laporan magang,,2024-07-13 06:48:34
+186,Pengembangan Sistem Kendali Otomatis untuk Proses Penyedotan Debu,186,2024-07-13,laporan magang,,2024-07-13 06:48:34
+187,Implementasi Sistem Monitoring Kualitas Tanah Menggunakan Sensor dan IoT,187,2024-07-13,laporan magang,,2024-07-13 06:48:34
+188,Desain Sistem Kendali Motor Induksi Menggunakan PLC,188,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+189,Analisis Kinerja Pembangkit Listrik Tenaga Surya di Area Perkotaan,189,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+190,Implementasi Sistem Monitoring Konsumsi Energi pada Gedung Perkantoran,190,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+191,Pengembangan Sistem Proteksi Arus Lebih pada Instalasi Rumah Tangga,191,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+192,Studi Kinerja Sistem Distribusi Listrik di Kawasan Industri,192,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+193,Desain dan Implementasi Sistem Kendali Lampu Otomatis Berbasis Mikrokontroler,193,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+194,Pengembangan Sistem Pengukuran Suhu dan Kelembaban Berbasis IoT,194,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+195,Analisis Efisiensi Energi pada Sistem Elektronika Daya,195,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+196,Implementasi Sistem Pendeteksi Kebocoran Gas Berbasis Sensor,196,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+197,Pengembangan Sistem Monitoring Kualitas Udara dalam Ruangan,197,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+198,Desain dan Implementasi Sistem Komunikasi Data Menggunakan Radio Frekuensi,198,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+199,Analisis Kinerja Jaringan Telekomunikasi di Area Pedesaan,199,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+200,Implementasi Teknologi IoT pada Sistem Monitoring Lingkungan,200,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+201,Pengembangan Aplikasi Mobile untuk Monitoring Jaringan Telekomunikasi,201,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+202,Studi Penggunaan Teknologi 5G untuk Komunikasi Data Cepat,202,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+203,Pengembangan Aplikasi Mobile untuk Manajemen Inventaris Barang,203,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+204,Implementasi Algoritma Machine Learning untuk Prediksi Penjualan,204,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+205,Desain dan Pengembangan Sistem Informasi Geografis untuk Pemantauan Bencana Alam,205,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+206,Pengembangan Sistem Deteksi Plagiarisme pada Dokumen Teks Menggunakan NLP,206,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+207,Studi Keamanan pada Protokol Komunikasi IoT,207,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+208,Desain Jaringan Telekomunikasi Fiber Optik untuk Perumahan,208,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+209,Implementasi Sistem Monitoring Kinerja Jaringan Telekomunikasi,209,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+210,Pengembangan Aplikasi Berbasis Web untuk Manajemen Jaringan Telekomunikasi,210,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+211,Analisis Kinerja Sistem Telekomunikasi Berbasis Satelit,211,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+212,Studi Penggunaan Teknologi Li-Fi untuk Komunikasi Data Nirkabel,212,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+213,Desain Sistem Instalasi Listrik untuk Bangunan Komersial,213,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+214,Implementasi Sistem Pengendalian Jarak Jauh pada Instalasi Listrik,214,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+215,Pengembangan Sistem Proteksi Petir pada Instalasi Listrik,215,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+216,Studi Efisiensi Energi pada Sistem Penerangan Jalan Umum,216,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+217,Desain dan Implementasi Sistem Manajemen Energi pada Gedung Bertingkat,217,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+218,Pengembangan Sistem Keamanan Jaringan Menggunakan Firewall Berbasis Open Source,218,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+219,Implementasi Sistem Pengolahan Data Besar (Big Data) pada Perusahaan Retail,219,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+220,Desain dan Pengembangan Aplikasi Berbasis Web untuk Manajemen Proyek,220,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+221,Pengembangan Sistem Monitoring Server Berbasis IoT,221,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+222,Studi Penerapan Teknologi Blockchain pada Sistem Keuangan,222,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+223,Desain dan Implementasi Sistem Pengendalian Robot Lengan Berbasis Mikrokontroler,223,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+224,Pengembangan Sistem Monitoring dan Kontrol pada Greenhouse Berbasis IoT,224,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+225,Analisis Kinerja Sistem Elektronika Daya pada Kendaraan Listrik,225,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+226,Implementasi Sistem Pendeteksi Kebakaran Berbasis Sensor dan IoT,226,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+227,Desain Sistem Pengisian Daya Nirkabel untuk Perangkat Elektronik,227,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+228,Pengembangan Aplikasi Berbasis IoT untuk Pemantauan Kualitas Air Sungai,228,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+229,Desain Sistem Pendeteksi Gempa Bumi Berbasis Sensor Getaran,229,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+230,Implementasi Sistem Kendali Suhu dan Kelembaban pada Ruang Server,230,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+231,Studi Penggunaan Teknologi Augmented Reality pada Pembelajaran Teknik,231,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+232,Pengembangan Sistem Keamanan Berbasis Biometrik untuk Gedung Perkantoran,232,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+233,Desain dan Implementasi Sistem Smart Home Berbasis IoT,233,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+234,Analisis Penggunaan Teknologi NFC untuk Sistem Pembayaran Elektronik,234,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+235,Pengembangan Sistem Monitoring Polusi Udara Berbasis Sensor dan IoT,235,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+236,Desain Sistem Peringatan Dini Banjir Berbasis Sensor Ultrasonik,236,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
+237,Implementasi Sistem Pengisian Daya Cepat untuk Kendaraan Listrik,237,2024-07-13,laporan skripsi,,2024-07-13 06:55:12
