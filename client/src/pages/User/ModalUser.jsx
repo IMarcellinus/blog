@@ -87,6 +87,15 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
     }
   };
 
+  const handleDownload = (url, filename) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <>
       {modalIsOpen && (
@@ -119,13 +128,28 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                 <p className="text-red-600">{message}</p>
                 <div className="h-full">
                   {qrcode || barcode ? (
-                    <img
-                      src={`data:image/png;base64,${
-                        qrcode ? urlqrcode : urlbarcode
-                      }`}
-                      alt={qrcode ? "QR Code" : "Barcode"}
-                      className="h-full w-full"
-                    />
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={`data:image/png;base64,${
+                          qrcode ? urlqrcode : urlbarcode
+                        }`}
+                        alt={qrcode ? "QR Code" : "Barcode"}
+                        className="h-full w-full"
+                      />
+                      <button
+                        onClick={() =>
+                          handleDownload(
+                            `data:image/png;base64,${
+                              qrcode ? urlqrcode : urlbarcode
+                            }`,
+                            qrcode ? "qrcode.png" : "barcode.png"
+                          )
+                        }
+                        className="mt-4 rounded-md bg-blue-500 py-2 px-4 text-white"
+                      >
+                        Download {qrcode ? "QR Code" : "Barcode"}
+                      </button>
+                    </div>
                   ) : (
                     <form
                       onSubmit={handleSubmit}
