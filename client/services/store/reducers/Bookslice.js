@@ -22,6 +22,7 @@ const initialState = {
   nama_buku: "",
   kodeBuku: "",
   tanggal_pengesahan: "",
+  book_prodi: "",
   kategori_buku: "",
   description: "",
   search: "",
@@ -109,6 +110,7 @@ export const createBook = createAsyncThunk(
           tanggal_pengesahan: create.tanggal_pengesahan,
           kategori_buku: create.kategori_buku,
           description: create.description,
+          book_prodi: create.book_prodi
         },
         {
           headers: {
@@ -140,6 +142,7 @@ export const updateBook = createAsyncThunk(
           tanggal_pengesahan: update.tanggal_pengesahan,
           kategori_buku: update.kategori_buku,
           description: update.description,
+          book_prodi: update.book_prodi
         },
         {
           headers: {
@@ -254,6 +257,9 @@ export const BookSlice = createSlice({
     setToggleDetail: (state, action) => {
       state.toggleDetail = action.payload
     },
+    setBookProdi: (state, action) => {
+      state.book_prodi = action.payload;
+    }
   },
   extraReducers: (builder) => {
     // Get Book using pagination
@@ -322,7 +328,7 @@ export const BookSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload;
+      state.message = action.payload.msg;
     });
 
     // Update Book
@@ -339,7 +345,7 @@ export const BookSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload;
+      state.message = action.payload.msg;
     });
 
     // Delete Book
@@ -386,7 +392,8 @@ export const {
   resetStateBook,
   setKategoriBuku,
   setIsDelete,
-  setToggleDetail
+  setToggleDetail,
+  setBookProdi
 } = BookSlice.actions;
 
 export default BookSlice.reducer;

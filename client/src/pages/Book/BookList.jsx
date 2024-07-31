@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteBook,
+  setBookProdi,
   setCurrentPageBook,
   setDeleteFail,
   setDescription,
@@ -118,6 +119,7 @@ const BookList = ({
     dispatch(setTanggalPengesahan(book.tanggal_pengesahan));
     dispatch(setKategoriBuku(book.kategori_buku));
     dispatch(setDescription(book.description));
+    dispatch(setBookProdi(book.book_prodi));
     dispatch(setToggleDetail(true));
     document.body.style.overflow = "hidden";
   };
@@ -144,6 +146,7 @@ const BookList = ({
     dispatch(setTanggalPengesahan(book.tanggal_pengesahan));
     dispatch(setKategoriBuku(book.kategori_buku));
     dispatch(setDescription(book.description));
+    dispatch(setBookProdi(book.book_prodi));
     dispatch(setEdit(true));
     setModalIsOpen(true);
   };

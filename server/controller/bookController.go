@@ -13,6 +13,24 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+type formDataBook struct {
+	NamaBuku          string `json:"nama_buku"`
+	KodeBuku          string `json:"kode_buku"`
+	TanggalPengesahan string `json:"tanggal_pengesahan"`
+	KategoriBuku      string `json:"kategori_buku"`
+	Description       string `json:"Description"`
+	BookProdi         string `json:"book_prodi"`
+}
+
+// errorResponse sends a JSON response with an error message and status code.
+func errorResponse(c *fiber.Ctx, statusCode int, msg string) error {
+	context := fiber.Map{
+		"status_code": statusCode,
+		"msg":         msg,
+	}
+	return c.Status(statusCode).JSON(context)
+}
+
 func BookList(c *fiber.Ctx) error {
 
 	time.Sleep(time.Millisecond * 500)
@@ -159,6 +177,12 @@ func BookCreate(c *fiber.Ctx) error {
 		return c.Status(400).JSON(context)
 	}
 
+	if record.BookProdi == "" {
+		context["status_code"] = "400"
+		context["msg"] = "book prodi cannot be empty"
+		return c.Status(400).JSON(context)
+	}
+
 	// Mengonversi string tanggal pengesahan ke dalam format time.Time
 	tanggalPengesahan, err := time.Parse("2006-01-02", record.TanggalPengesahan)
 	if err != nil {
@@ -212,62 +236,52 @@ func BookUpdate(c *fiber.Ctx) error {
 
 	record := new(model.Book)
 
+	// Fetch book record by ID
 	database.DBConn.First(&record, id)
 
 	if record.ID == 0 {
 		log.Println("Record not found.")
-		context["status_code"] = "400"
-		context["msg"] = "Record not Found."
-		c.Status(400)
-		return c.JSON(context)
+		return errorResponse(c, fiber.StatusBadRequest, "Record not Found.")
 	}
 
 	// Parsing body request
-	updatedRecord := new(model.Book)
+	updatedRecord := new(formDataBook)
 	if err := c.BodyParser(updatedRecord); err != nil {
 		log.Println("Error in parsing request.")
-		context["status_code"] = "400"
-		context["msg"] = "Something went wrong JSON format"
-		return c.Status(400).JSON(context)
+		return errorResponse(c, fiber.StatusBadRequest, "Something went wrong JSON format")
 	}
 
 	// Validate input
-	if updatedRecord.NamaBuku == "" || updatedRecord.TanggalPengesahan == "" || updatedRecord.KategoriBuku == "" || updatedRecord.Description == "" {
+	if updatedRecord.NamaBuku == "" || updatedRecord.TanggalPengesahan == "" || updatedRecord.KategoriBuku == "" || updatedRecord.Description == "" || updatedRecord.BookProdi == "" {
 		log.Println("Some fields are missing.")
-		context["status_code"] = "400"
-		context["msg"] = "All fields are required."
-		return c.Status(400).JSON(context)
+		return errorResponse(c, fiber.StatusBadRequest, "All fields are required.")
 	}
 
-	// Update only nama_buku, tanggal_pengesahan, kategori_buku, and description
+	// Validate tanggal_pengesahan format
+	if _, err := time.Parse("2006-01-02", updatedRecord.TanggalPengesahan); err != nil {
+		log.Println("Invalid tanggal pengesahan format:", err)
+		return errorResponse(c, fiber.StatusBadRequest, "Invalid tanggal pengesahan format. Please use format yyyy-MM-dd")
+	}
+
+	// Update book details
 	record.NamaBuku = updatedRecord.NamaBuku
 	record.TanggalPengesahan = updatedRecord.TanggalPengesahan
 	record.KategoriBuku = updatedRecord.KategoriBuku
 	record.Description = updatedRecord.Description
-
-	// Validating tanggal_pengesahan format
-	_, err := time.Parse("2006-01-02", record.TanggalPengesahan)
-	if err != nil {
-		log.Println("Error in parsing tanggal pengesahan:", err)
-		context["status_code"] = "400"
-		context["msg"] = "Invalid tanggal pengesahan format. Please use format yyyy-MM-dd"
-		return c.Status(400).JSON(context)
-	}
+	record.BookProdi = updatedRecord.BookProdi
 
 	// Save updated record to database
 	result := database.DBConn.Save(record)
 
 	if result.Error != nil {
-		log.Println("Error in update data.")
-		context["status_code"] = "500"
-		context["msg"] = "Error in updating data"
-		return c.Status(500).JSON(context)
+		log.Println("Error in updating data:", result.Error)
+		return errorResponse(c, fiber.StatusInternalServerError, "Error in updating data")
 	}
 
 	context["msg"] = "Record is updated successfully."
 	context["data"] = record
 
-	return c.Status(200).JSON(context)
+	return c.Status(fiber.StatusOK).JSON(context)
 }
 
 // Function Book Delete

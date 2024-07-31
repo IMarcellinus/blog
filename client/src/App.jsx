@@ -40,7 +40,6 @@ function App() {
       window.location.pathname !== "/login"
     ) {
       if (status === 401) {
-        console.log(status)
         navigate("/loginuser");
         Swal.fire({
           icon: "error",

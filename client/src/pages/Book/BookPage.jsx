@@ -8,6 +8,7 @@ import {
   getAllBook,
   getBook,
   setActive,
+  setBookProdi,
   setBookSearch,
   setCurrentPageBook,
   setDescription,
@@ -45,7 +46,6 @@ const BookPage = ({ authUser }) => {
     fetchUser,
   } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleOpenModal = () => {
     setModalIsOpen(true);
@@ -62,6 +62,7 @@ const BookPage = ({ authUser }) => {
     dispatch(setKategoriBuku(""));
     dispatch(setDescription(""));
     dispatch(setMessage(""));
+    dispatch(setBookProdi(""));
     dispatch(setEdit(""));
     dispatch(setToggleDetail(false));
     document.body.style.overflow = "auto";

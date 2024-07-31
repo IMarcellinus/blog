@@ -124,7 +124,7 @@ export const createUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.log(error);
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.response.data.msg);
     }
   }
 );
@@ -156,7 +156,7 @@ export const updateUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.log(error);
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.response.data.msg);
     }
   }
 );
@@ -372,7 +372,7 @@ export const UserSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload;
+      state.message = action.payload.msg;
     });
     // Update User
     builder.addCase(updateUser.pending, (state) => {
@@ -388,7 +388,7 @@ export const UserSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload;
+      state.message = action.payload.msg;
     });
 
     // Delete User

@@ -68,7 +68,7 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
       ) {
         dispatch(
           setMessage(
-            "Username, password, NIM, nama, jenis kelamin, dan prodi harus diisi."
+            "Username, password, NIM, nama, jenis kelamin, prodi, dan role harus diisi."
           )
         );
       } else {
@@ -161,7 +161,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                           <div className="flex flex-col">
                             <label className="font-medium">Username</label>
                             <input
-                              required
                               value={username}
                               onChange={(e) =>
                                 dispatch(setUsername(e.target.value))
@@ -173,7 +172,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                           <div className="flex flex-col">
                             <label className="font-medium">Password</label>
                             <input
-                              required
                               value={password}
                               onChange={(e) =>
                                 dispatch(setPassword(e.target.value))
@@ -187,7 +185,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       <div className="flex flex-col">
                         <label className="font-medium">NIM</label>
                         <input
-                          required
                           value={nim}
                           onChange={(e) => dispatch(setNim(e.target.value))}
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
@@ -197,7 +194,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       <div className="flex flex-col">
                         <label className="font-medium">Nama</label>
                         <input
-                          required
                           value={nama}
                           onChange={(e) => dispatch(setNama(e.target.value))}
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
@@ -207,7 +203,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       <div className="flex flex-col">
                         <label className="font-medium">Jenis Kelamin</label>
                         <select
-                          required
                           value={jeniskelamin}
                           onChange={(e) =>
                             dispatch(setJenisKelamin(e.target.value))
@@ -222,7 +217,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       <div className="flex flex-col">
                         <label className="font-medium">Prodi</label>
                         <select
-                          required
                           value={prodi}
                           onChange={(e) =>
                             dispatch(setProdi(e.target.value))
@@ -243,7 +237,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       <div className="flex flex-col">
                         <label className="font-medium">Role</label>
                         <select
-                          required
                           value={role}
                           onChange={(e) => dispatch(setRole(e.target.value))}
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
