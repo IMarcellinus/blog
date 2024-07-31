@@ -66,6 +66,7 @@ function DashboardPage({ authUser }) {
                 <p className="mt-2">Kode Buku: {book.kode_buku}</p>
                 <p className="mt-1 text-gray-600">Kategori: {book.kategori_buku}</p>
                 <p className="mt-1 text-gray-600">Tanggal Pengesahan: {book.tanggal_pengesahan}</p>
+                <p className="mt-1 text-gray-600">Buku Prodi: {book.book_prodi}</p>
               </div>
             ))}
           </div>
