@@ -34,13 +34,12 @@ function DashboardPage({ authUser }) {
         const bookDetails = await Promise.all(
           data.map(async (rec) => {
             const response = await fetch(`http://127.0.0.1:5000/bookdetails?book_id=${rec.book_id}`);
-            return response.json();
+            const bookDetail = await response.json();
+            return { ...bookDetail[0], predicted_rating: rec.predicted_rating };
           })
         );
-        // Extract the actual book details from the array
-        const flattenedBookDetails = bookDetails.map(bookArray => bookArray[0]);
-        console.log("Fetched book details:", flattenedBookDetails);
-        setBooks(flattenedBookDetails);
+        console.log("Fetched book details:", bookDetails);
+        setBooks(bookDetails);
       } catch (error) {
         console.error('Error fetching book details:', error);
       }
@@ -67,6 +66,7 @@ function DashboardPage({ authUser }) {
                 <p className="mt-1 text-gray-600">Kategori: {book.kategori_buku}</p>
                 <p className="mt-1 text-gray-600">Tanggal Pengesahan: {book.tanggal_pengesahan}</p>
                 <p className="mt-1 text-gray-600">Buku Prodi: {book.book_prodi}</p>
+                <p className="mt-1 text-gray-600">Rating: {book.predicted_rating.toFixed(2)}</p>
               </div>
             ))}
           </div>
@@ -77,7 +77,6 @@ function DashboardPage({ authUser }) {
     </main>
   );
 }
-
 
 DashboardPage.propTypes = {
   authUser: PropTypes.object.isRequired,
