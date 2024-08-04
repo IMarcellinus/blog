@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../../../utils/api";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState = {
   isError: false,
@@ -132,7 +133,7 @@ export const getBarcodeByuser = createAsyncThunk(
   async (barcode, thunkAPI) => {
     const token = await getToken();
     try {
-      const response = await axios.get(`${BASE_URL}/barcode/${barcode.id}`, {
+      const response = await axios.axiosInstance(`${BASE_URL}/barcode/${barcode.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -154,7 +155,7 @@ export const changePassword = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${BASE_URL}/change-password`,
         {
           old_password: password.oldPassword,

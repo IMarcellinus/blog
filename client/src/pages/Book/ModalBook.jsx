@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import { FaWindowClose } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-// import { store } from "../../../services/store/Store";
 import {
   createBook,
+  setBookProdi,
   setDescription,
   setKategoriBuku,
   setMessage,
@@ -22,33 +22,38 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
     edit,
     description,
     toggleDetail,
+    book_prodi,
   } = useSelector((state) => state.books);
   const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Check if all required fields are filled
+    if (
+      !nama_buku.trim() ||
+      !tanggal_pengesahan.trim() ||
+      !kategori_buku.trim() ||
+      !description.trim() ||
+      !book_prodi.trim()
+    ) {
+      dispatch(
+        setMessage(
+          "Nama buku, tanggal pengesahan, kategori, description, dan book prodi buku harus diisi."
+        )
+      );
+      return;
+    }
+    
     if (!id) {
-      if (
-        !nama_buku.trim() ||
-        !tanggal_pengesahan.trim() ||
-        !kategori_buku.trim() ||
-        !description.trim()
-      ) {
-        dispatch(
-          setMessage(
-            "Nama buku, tanggal pengesahan, kategori, dan description buku harus diisi."
-          )
-        );
-      } else {
-        dispatch(
-          createBook({
-            nama_buku,
-            tanggal_pengesahan,
-            kategori_buku,
-            description,
-          })
-        );
-      }
+      dispatch(
+        createBook({
+          nama_buku,
+          tanggal_pengesahan,
+          kategori_buku,
+          description,
+          book_prodi,
+        })
+      );
     } else {
       dispatch(
         updateBook({
@@ -57,6 +62,7 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
           tanggal_pengesahan,
           kategori_buku,
           description,
+          book_prodi,
         })
       );
     }
@@ -117,41 +123,43 @@ const ModalBook = ({ modalIsOpen, handleCloseModal }) => {
                         disabled={toggleDetail === true}
                       />
                     </div>
-                    {toggleDetail && (
-                      <div className="flex h-full flex-col">
-                        <label className="font-medium">Kategori Buku</label>
-                        <input
-                          name="kategori_buku"
-                          value={kategori_buku}
-                          onChange={(e) => {
-                            dispatch(setKategoriBuku(e.target.value));
-                          }}
-                          className="rounded-md border border-sky-600 px-2 py-3 text-xs focus:border-[2px] focus:border-sky-500 focus:outline-none sm:py-2 sm:text-base"
-                          type="text"
-                          disabled={toggleDetail === true}
-                        />
-                      </div>
-                    )}
-                    {!toggleDetail && (
-                      <div className="flex flex-col">
-                        <label className="font-medium">Kategori Buku</label>
-                        <select
-                          name="kategori_buku"
-                          value={kategori_buku}
-                          onChange={(e) => {
-                            dispatch(setKategoriBuku(e.target.value));
-                          }}
+                    <div className="flex flex-col">
+                      <label className="font-medium">Kategori Buku</label>
+                      <select
+                        name="kategori_buku"
+                        value={kategori_buku}
+                        onChange={(e) => {
+                          dispatch(setKategoriBuku(e.target.value));
+                        }}
+                        className="rounded-md border-2 border-sky-700 p-2 text-sm"
+                        disabled={toggleDetail === true}
+                      >
+                        <option value="">Pilih Kategori</option>
+                        <option value="laporan magang">Laporan Magang</option>
+                        <option value="laporan skripsi">Laporan Skripsi</option>
+                        <option value="keteknikan">Keteknikan</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="font-medium">Book Prodi</label>
+                      <select
+                          value={book_prodi}
+                          onChange={(e) =>
+                            dispatch(setBookProdi(e.target.value))
+                          }
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
                         >
-                          <option value="">Pilih Kategori</option>
-                          <option value="laporan magang">Laporan Magang</option>
-                          <option value="laporan skripsi">
-                            Laporan Skripsi
-                          </option>
-                          <option value="keteknikan">Keteknikan</option>
+                          <option value="">Pilih Jenis Prodi</option>
+                          <option value="D3 - Teknik Listrik">D3 - Teknik Listrik</option>
+                          <option value="D3 - Teknik Elektronika">D3 - Teknik Elektronika</option>
+                          <option value="D3 - Teknik Informatika">D3 - Teknik Informatika</option>
+                          <option value="D3 - Teknik Telekomunikasi">D3 - Teknik Telekomunikasi</option>
+                          <option value="S.Tr - Teknologi Rekayasa Komputer">S.Tr - Teknologi Rekayasa Komputer</option>
+                          <option value="S.Tr - Teknologi Rekayasa Instalasi Listrik">S.Tr - Teknologi Rekayasa Instalasi Listrik</option>
+                          <option value="S.Tr - Teknologi Rekayasa Elektronika">S.Tr - Teknologi Rekayasa Elektronika</option>
+                          <option value="S.Tr - Teknik Telekomunikasi">S.Tr - Teknik Telekomunikasi</option>
                         </select>
-                      </div>
-                    )}
+                    </div>
                     <div className="flex h-full flex-col">
                       <label className="font-medium">Book Description</label>
                       <textarea

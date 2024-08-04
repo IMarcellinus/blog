@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../../../utils/api";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState = {
   users: [],
@@ -53,7 +54,7 @@ export const getAllUser = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/users/${currentPageUser}/8/${search}`,
         {
           headers: {
@@ -78,7 +79,7 @@ export const getUser = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/users/${currentPageUser}/8`,
         {
           headers: {
@@ -123,7 +124,7 @@ export const createUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.log(error);
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.response.data.msg);
     }
   }
 );
@@ -155,7 +156,7 @@ export const updateUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.log(error);
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.response.data.msg);
     }
   }
 );
@@ -371,7 +372,7 @@ export const UserSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload;
+      state.message = action.payload.msg;
     });
     // Update User
     builder.addCase(updateUser.pending, (state) => {
@@ -387,7 +388,7 @@ export const UserSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload;
+      state.message = action.payload.msg;
     });
 
     // Delete User

@@ -39,14 +39,14 @@ function App() {
     if (
       window.location.pathname !== "/login"
     ) {
-      if (status == 401) {
+      if (status === 401) {
         navigate("/loginuser");
         Swal.fire({
           icon: "error",
           text: "Sesi Telah Habis, Silahkan Login Kembali :)",
         });
       }
-      if (status == 401) {
+      if (status === 401) {
         Cookies.remove("token");
       }
     }

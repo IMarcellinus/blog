@@ -46,7 +46,6 @@ const PeminjamanList = ({
       : order === "asc"
       ? getBorrowBookAsc
       : getBorrowBookDsc;
-    console.log(isAscending);
 
     dispatch(
       sortAction({

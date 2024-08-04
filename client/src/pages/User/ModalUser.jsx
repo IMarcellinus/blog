@@ -68,7 +68,7 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
       ) {
         dispatch(
           setMessage(
-            "Username, password, NIM, nama, jenis kelamin, dan prodi harus diisi."
+            "Username, password, NIM, nama, jenis kelamin, prodi, dan role harus diisi."
           )
         );
       } else {
@@ -85,6 +85,15 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
         );
       }
     }
+  };
+
+  const handleDownload = (url, filename) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -119,13 +128,28 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                 <p className="text-red-600">{message}</p>
                 <div className="h-full">
                   {qrcode || barcode ? (
-                    <img
-                      src={`data:image/png;base64,${
-                        qrcode ? urlqrcode : urlbarcode
-                      }`}
-                      alt={qrcode ? "QR Code" : "Barcode"}
-                      className="h-full w-full"
-                    />
+                    <div className="flex flex-col items-center">
+                      <img
+                        src={`data:image/png;base64,${
+                          qrcode ? urlqrcode : urlbarcode
+                        }`}
+                        alt={qrcode ? "QR Code" : "Barcode"}
+                        className="h-full w-full"
+                      />
+                      <button
+                        onClick={() =>
+                          handleDownload(
+                            `data:image/png;base64,${
+                              qrcode ? urlqrcode : urlbarcode
+                            }`,
+                            qrcode ? "qrcode.png" : "barcode.png"
+                          )
+                        }
+                        className="mt-4 rounded-md bg-blue-500 py-2 px-4 text-white"
+                      >
+                        Download {qrcode ? "QR Code" : "Barcode"}
+                      </button>
+                    </div>
                   ) : (
                     <form
                       onSubmit={handleSubmit}
@@ -137,7 +161,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                           <div className="flex flex-col">
                             <label className="font-medium">Username</label>
                             <input
-                              required
                               value={username}
                               onChange={(e) =>
                                 dispatch(setUsername(e.target.value))
@@ -149,7 +172,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                           <div className="flex flex-col">
                             <label className="font-medium">Password</label>
                             <input
-                              required
                               value={password}
                               onChange={(e) =>
                                 dispatch(setPassword(e.target.value))
@@ -163,7 +185,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       <div className="flex flex-col">
                         <label className="font-medium">NIM</label>
                         <input
-                          required
                           value={nim}
                           onChange={(e) => dispatch(setNim(e.target.value))}
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
@@ -173,7 +194,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       <div className="flex flex-col">
                         <label className="font-medium">Nama</label>
                         <input
-                          required
                           value={nama}
                           onChange={(e) => dispatch(setNama(e.target.value))}
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
@@ -183,7 +203,6 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       <div className="flex flex-col">
                         <label className="font-medium">Jenis Kelamin</label>
                         <select
-                          required
                           value={jeniskelamin}
                           onChange={(e) =>
                             dispatch(setJenisKelamin(e.target.value))
@@ -197,18 +216,27 @@ const ModalUser = ({ modalIsOpen, handleCloseModal }) => {
                       </div>
                       <div className="flex flex-col">
                         <label className="font-medium">Prodi</label>
-                        <input
-                          required
+                        <select
                           value={prodi}
-                          onChange={(e) => dispatch(setProdi(e.target.value))}
+                          onChange={(e) =>
+                            dispatch(setProdi(e.target.value))
+                          }
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"
-                          type="text"
-                        />
+                        >
+                          <option value="">Pilih Jenis Prodi</option>
+                          <option value="D3 - Teknik Listrik">D3 - Teknik Listrik</option>
+                          <option value="D3 - Teknik Elektronika">D3 - Teknik Elektronika</option>
+                          <option value="D3 - Teknik Informatika">D3 - Teknik Informatika</option>
+                          <option value="D3 - Teknik Telekomunikasi">D3 - Teknik Telekomunikasi</option>
+                          <option value="S.Tr - Teknologi Rekayasa Komputer">S.Tr - Teknologi Rekayasa Komputer</option>
+                          <option value="S.Tr - Teknologi Rekayasa Instalasi Listrik">S.Tr - Teknologi Rekayasa Instalasi Listrik</option>
+                          <option value="S.Tr - Teknologi Rekayasa Elektronika">S.Tr - Teknologi Rekayasa Elektronika</option>
+                          <option value="S.Tr - Teknik Telekomunikasi">S.Tr - Teknik Telekomunikasi</option>
+                        </select>
                       </div>
                       <div className="flex flex-col">
                         <label className="font-medium">Role</label>
                         <select
-                          required
                           value={role}
                           onChange={(e) => dispatch(setRole(e.target.value))}
                           className="rounded-md border-2 border-sky-700 p-2 text-sm"

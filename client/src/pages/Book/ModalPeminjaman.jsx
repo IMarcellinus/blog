@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 
 const ModalPeminjaman = ({ modalIsOpen, handleCloseModal }) => {
   const dispatch = useDispatch();
-  const { kode_buku, message } = useSelector((state) => state.borrowbooks);
+  const { message } = useSelector((state) => state.borrowbooks);
   const {
     currentPageBook,
     isLoading,
@@ -90,6 +90,7 @@ const ModalPeminjaman = ({ modalIsOpen, handleCloseModal }) => {
     if (currentPage === totalPages) {
       return;
     }
+    // console.log(currentPage)
     dispatch(setIsLoadingBook(true));
     setTimeout(() => {
       setPage(currentPage + 1);
@@ -100,9 +101,9 @@ const ModalPeminjaman = ({ modalIsOpen, handleCloseModal }) => {
 
   useEffect(() => {
     if (currentPage > 1 && searchQuery === "") {
-      dispatch(getBook({ currentPageBook }));
+      dispatch(getBook({ currentPageBook: currentPage }));
     } else if (currentPage > 1 && searchQuery !== "") {
-      dispatch(getAllBook({ currentPageBook, search: searchQuery }));
+      dispatch(getAllBook({ currentPageBook: currentPage, search: searchQuery }));
     }
   }, [currentPage]);
 

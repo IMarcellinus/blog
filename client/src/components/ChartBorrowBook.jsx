@@ -92,7 +92,7 @@ const ChartBorrowBook = () => {
   return (
     <div className="col-span-2 row-span-1 h-[550px] rounded-lg bg-white p-4 shadow-md lg:p-6">
       <h1 className="text-center text-base font-semibold lg:text-lg">
-        Data Borrowed Book of Prodi
+        Graph of Book Borrowing per Department for this Month
       </h1>
       <ReactApexChart
         options={options}

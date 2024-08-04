@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../../../utils/api";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState = {
   booksBorrows: [],
@@ -47,7 +47,7 @@ export const getAllBookBorrow = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/${
           role !== "user" ? "borrowbook" : "borrowbookuser"
         }/${currentPageBookBorrow}/8/${search}`,
@@ -74,7 +74,7 @@ export const getAllBookBorrowAsc = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/${
           role !== "user" ? "borrowbookasc" : "borrowbookuserasc"
         }/${currentPageBookBorrow}/8/${search}`,
@@ -101,7 +101,7 @@ export const getAllBookBorrowDsc = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/${
           role !== "user" ? "borrowbookdsc" : "borrowbookuserdsc"
         }/${currentPageBookBorrow}/8/${search}`,
@@ -128,7 +128,7 @@ export const getBorrowBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/${
           role !== "user" ? "borrowbook" : "borrowbookuser"
         }/${currentPageBookBorrow}/8`,
@@ -155,7 +155,7 @@ export const getBorrowBookAsc = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/${
           role !== "user" ? "borrowbookasc" : "borrowbookuserasc"
         }/${currentPageBookBorrow}/8`,
@@ -183,7 +183,7 @@ export const getBorrowBookDsc = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/${
           role !== "user" ? "borrowbookdsc" : "borrowbookuserdsc"
         }/${currentPageBookBorrow}/8`,
@@ -211,7 +211,7 @@ export const createBorrowBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${BASE_URL}/borrowbook`,
         {
           kode_buku: create.kode_buku,
@@ -239,7 +239,7 @@ export const returnBorrowBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${BASE_URL}/borrowbook/${update.id}`,
         {
           rating: update.rating,

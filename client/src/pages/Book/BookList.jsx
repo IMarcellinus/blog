@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteBook,
+  setBookProdi,
   setCurrentPageBook,
   setDeleteFail,
   setDescription,
@@ -50,6 +51,7 @@ const BookRow = ({ book, index, role, handleDetail, handleEdit, handleDelete }) 
       <td className="p-4 text-left">{book.kode_buku}</td>
       <td className="p-4 text-left">{book.kategori_buku}</td>
       <td className="p-4 text-left">{book.tanggal_pengesahan}</td>
+      <td className="p-4 text-left">{book.book_prodi}</td>
       {role === "admin" && (
         <td className="relative flex h-full gap-3 px-4 py-3">
           <Tippy content="Show" followCursor>
@@ -117,6 +119,7 @@ const BookList = ({
     dispatch(setTanggalPengesahan(book.tanggal_pengesahan));
     dispatch(setKategoriBuku(book.kategori_buku));
     dispatch(setDescription(book.description));
+    dispatch(setBookProdi(book.book_prodi));
     dispatch(setToggleDetail(true));
     document.body.style.overflow = "hidden";
   };
@@ -143,6 +146,7 @@ const BookList = ({
     dispatch(setTanggalPengesahan(book.tanggal_pengesahan));
     dispatch(setKategoriBuku(book.kategori_buku));
     dispatch(setDescription(book.description));
+    dispatch(setBookProdi(book.book_prodi));
     dispatch(setEdit(true));
     setModalIsOpen(true);
   };
@@ -182,6 +186,7 @@ const BookList = ({
             <th className="px-4 py-3 text-left">Kode Buku</th>
             <th className="px-4 py-3 text-left">Kategori Buku</th>
             <th className="px-4 py-3 text-left">Tanggal Pengesahan</th>
+            <th className="px-4 py-3 text-left">Buku Prodi</th>
             {role !== "user" && (
               <th className="px-4 py-3 text-left">Action</th>
             )}

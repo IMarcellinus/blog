@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
 import Cookies from "js-cookie";
 import { BASE_URL } from "../../../utils/api";
+import axiosInstance from "../../../utils/axiosInstance";
 
 const initialState = {
   books: [],
@@ -22,6 +22,7 @@ const initialState = {
   nama_buku: "",
   kodeBuku: "",
   tanggal_pengesahan: "",
+  book_prodi: "",
   kategori_buku: "",
   description: "",
   search: "",
@@ -52,7 +53,7 @@ export const getAllBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/book/${currentPageBook}/8/${search}`,
         {
           headers: {
@@ -77,7 +78,7 @@ export const getBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.get(
+      const response = await axiosInstance.get(
         `${BASE_URL}/book/${currentPageBook}/8`,
         {
           headers: {
@@ -102,13 +103,14 @@ export const createBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${BASE_URL}/book`,
         {
           nama_buku: create.nama_buku,
           tanggal_pengesahan: create.tanggal_pengesahan,
           kategori_buku: create.kategori_buku,
           description: create.description,
+          book_prodi: create.book_prodi
         },
         {
           headers: {
@@ -133,13 +135,14 @@ export const updateBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${BASE_URL}/book/${update.id}`,
         {
           nama_buku: update.nama_buku,
           tanggal_pengesahan: update.tanggal_pengesahan,
           kategori_buku: update.kategori_buku,
           description: update.description,
+          book_prodi: update.book_prodi
         },
         {
           headers: {
@@ -164,7 +167,7 @@ export const deleteBook = createAsyncThunk(
     }
     try {
       const token = await getToken();
-      const response = await axios.delete(`${BASE_URL}/book/${id}`, {
+      const response = await axiosInstance.delete(`${BASE_URL}/book/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -254,6 +257,9 @@ export const BookSlice = createSlice({
     setToggleDetail: (state, action) => {
       state.toggleDetail = action.payload
     },
+    setBookProdi: (state, action) => {
+      state.book_prodi = action.payload;
+    }
   },
   extraReducers: (builder) => {
     // Get Book using pagination
@@ -322,7 +328,7 @@ export const BookSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload;
+      state.message = action.payload.msg;
     });
 
     // Update Book
@@ -339,7 +345,7 @@ export const BookSlice = createSlice({
       state.isLoading = false;
       state.isError = true;
       state.isSuccess = false;
-      state.message = action.payload;
+      state.message = action.payload.msg;
     });
 
     // Delete Book
@@ -386,7 +392,8 @@ export const {
   resetStateBook,
   setKategoriBuku,
   setIsDelete,
-  setToggleDetail
+  setToggleDetail,
+  setBookProdi
 } = BookSlice.actions;
 
 export default BookSlice.reducer;

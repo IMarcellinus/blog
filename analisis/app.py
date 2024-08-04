@@ -29,10 +29,6 @@ def load_data():
         datapinjam_new = pd.read_sql('SELECT * FROM peminjamen', db.engine)
         datauser_new = pd.read_sql('SELECT * FROM users', db.engine)
         databuku_new = pd.read_sql('SELECT * FROM books', db.engine)
-        # Debug: print the head of the datasets
-        print(datapinjam_new.head())
-        print(datauser_new.head())
-        print(databuku_new.head())
     return datapinjam_new, datauser_new, databuku_new
 
 def update_svd_model():
@@ -41,15 +37,7 @@ def update_svd_model():
     # Create the user-item interaction matrix
     datapinjam_new, datauser_new, databuku_new = load_data()
     
-    # Debugging: Print the first few rows of datapinjam_new
-    print("Peminjaman Data:")
-    print(datapinjam_new.head())
-    
     interaction_matrix_new = datapinjam_new.pivot_table(index='user_id', columns='book_id', values='rating').fillna(0)
-    
-    # Debugging: Print the interaction matrix
-    print("Interaction Matrix:")
-    print(interaction_matrix_new.head())
     
     # Apply SVD
     n_components = 35  # Set optimal number of components based on previous analysis
@@ -60,7 +48,6 @@ def update_svd_model():
         latent_matrix = svd.fit_transform(interaction_matrix_new)
         latent_matrix_transposed = svd.components_
     else:
-        print("Interaction matrix is not valid for SVD")
         latent_matrix = np.array([])
         latent_matrix_transposed = np.array([])
 
@@ -89,7 +76,9 @@ def recommend_books(user_id, num_recommendations=5):
     user_ratings = interaction_matrix_new.loc[user_id]
     already_rated = user_ratings[user_ratings > 0].index.tolist()
     
-    book_ids = interaction_matrix_new.columns.tolist()
+    user_prodi = datauser_new[datauser_new['id'] == user_id]['prodi'].values[0]
+    book_ids = databuku_new[databuku_new['book_prodi'] == user_prodi]['id'].tolist()
+    
     predictions = [predict_ratings_svd(user_id, book_id) for book_id in book_ids]
     
     recommendations = pd.DataFrame({'book_id': book_ids, 'predicted_rating': predictions})

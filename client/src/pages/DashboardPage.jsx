@@ -13,6 +13,7 @@ import { GetDataAvailableBooks } from "../../services/store/reducers/Dashboardsl
 import SkeletonChart from "../components/Skeleton/SkeletonChart";
 import SkeletonCardDashboard from "../components/Skeleton/SkeletonCardDashboard";
 import ChartBorrowBook from "../components/ChartBorrowBook";
+import SkeletonChartProdi from "../components/Skeleton/SkeletonChartProdi";
 
 function DashboardPage({ authUser }) {
   const { isLoading } = useSelector((state) => state.dashboard);
@@ -28,7 +29,7 @@ function DashboardPage({ authUser }) {
   return (
     <main className="min-h-full w-full sm:px-2 lg:pt-5">
       <div className="grid min-w-full grid-cols-1 grid-rows-2 gap-4 sm:container lg:grid-cols-4 lg:grid-rows-1">
-        <ChartBorrowBook />
+        {isLoading ? <SkeletonChartProdi /> : <ChartBorrowBook />}
         {isLoading ? <SkeletonChart /> : <ChartTotalDataManagement />}
         <div className="col-span-2 h-[550px] w-full rounded-lg lg:col-span-1 lg:row-span-1 flex flex-col items-center justify-between">
           <div className="h-full w-full mb-2">
